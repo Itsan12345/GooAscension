@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
 
     [Header("Movement Settings")]
-    private float xInput;
+    private float xInput;   
     private bool facingRight = true;
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private float moveSpeed = 5f;
@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Collision Detection")]
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float ventCheckDistance;
     private bool isGrounded;
     [SerializeField] private LayerMask whatIsGround;
 
@@ -42,6 +43,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject slimeAnimator;
     [SerializeField] private GameObject humanHitbox;
     [SerializeField] private GameObject humanAnimator;
+
+
+    [Header("Weapon System")]
+[SerializeField] private GameObject bulletPrefab;
+[SerializeField] private Transform firePoint;
+[SerializeField] private float shootCooldown = 0.3f;
+
+
+[Header("Water Physics")]
+[SerializeField] private float slimeBuoyancy = 15f;   // upward force for slime
+[SerializeField] private float humanWeight = 5f;      // downward force for human
+[SerializeField] private float waterDrag = 2f;        // slow movement in water
+private bool isInWater = false;
+
+private bool usingGun = false;
+private bool canShoot = true;
 
     private bool isHuman = false;        // Start as Slime
     private bool canTransform = false;   // Enable after Code Fragment
@@ -83,7 +100,15 @@ public class PlayerMovement : MonoBehaviour
             TryToJump();
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
-            TryToAttack();
+{
+    if (isHuman && usingGun)
+        TryToShoot();
+    else
+        TryToAttack();
+}
+
+if (Input.GetKeyDown(KeyCode.Q))
+    SwitchWeapon();
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
             TryToDash();    
@@ -111,11 +136,75 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void TryToAttack()
+
+    private void TryToShoot()
+{
+    if (!canShoot || !isHuman)
+        return;
+
+    if (firePoint == null || bulletPrefab == null)
     {
-        if (isGrounded)
-            anim.SetTrigger("attack");
+        Debug.LogError("FirePoint or BulletPrefab is missing!");
+        return;
     }
+
+    canShoot = false;
+
+    anim.SetTrigger("shoot");
+
+    GameObject bullet = Instantiate(
+        bulletPrefab,
+        firePoint.position,
+        Quaternion.identity
+    );
+
+    // Set bullet z-position to be above background
+    Vector3 bulletPos = bullet.transform.position;
+    bulletPos.z = -1f;
+    bullet.transform.position = bulletPos;
+
+    // Set sorting order above background
+    SpriteRenderer bulletSprite = bullet.GetComponent<SpriteRenderer>();
+    if (bulletSprite != null)
+    {
+        bulletSprite.sortingOrder = 10;
+    }
+
+    Bullet bulletScript = bullet.GetComponent<Bullet>();
+    if (bulletScript != null)
+    {
+        float dir = facingRight ? 1f : -1f;
+        bulletScript.SetDirection(dir);
+    }
+
+    Invoke(nameof(ResetShoot), shootCooldown);
+}
+
+private void ResetShoot()
+{
+    canShoot = true;
+}
+
+
+
+private void SwitchWeapon()
+{
+    if (!isHuman)
+        return;
+
+    usingGun = !usingGun;
+    anim.SetTrigger("switchWeapon");
+
+    Debug.Log(usingGun ? "Switched to GUN" : "Switched to SWORD");
+}
+
+
+
+    private void TryToAttack()
+{
+    if (!usingGun && isGrounded)
+        anim.SetTrigger("attack");
+}
 
     private void TryToJump()
     {
@@ -163,6 +252,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleMovement()
     {
+
+
+        // Apply water physics
+if (isInWater)
+{
+    if (!isHuman) // Slime: float
+    {
+        rb.AddForce(Vector2.up * slimeBuoyancy);
+    }
+    else // Human: sink naturally
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Max(rb.linearVelocity.y, -humanWeight));
+    }
+}
+
+
         if (isDashing) return;
 
         if(canMove)
@@ -173,8 +278,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCollision()
     {
-        // Cast from the bottom of the collider
-        Collider2D col = rb.GetComponent<Collider2D>();
+        // Get collider from active hitbox
+        Collider2D col = isHuman ? humanHitbox.GetComponent<Collider2D>() : slimeHitbox.GetComponent<Collider2D>();
         Vector2 raycastOrigin = new Vector2(rb.transform.position.x, col.bounds.min.y);
         
         isGrounded = Physics2D.Raycast(raycastOrigin, Vector2.down, 0.1f, whatIsGround);
@@ -200,22 +305,32 @@ public class PlayerMovement : MonoBehaviour
 
     private void Flip()
     {
-        // Flip BOTH slime and human animators to keep them in sync
-        Vector3 slimeScale = slimeAnimator.transform.localScale;
-        slimeScale.x *= -1;
-        slimeAnimator.transform.localScale = slimeScale;
-
-        Vector3 humanScale = humanAnimator.transform.localScale;
-        humanScale.x *= -1;
-        humanAnimator.transform.localScale = humanScale;
-
         facingRight = !facingRight;
+        
+        // Rotate hitboxes to face direction (Y rotation 0 for right, 180 for left)
+        Quaternion newRotation = facingRight ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+        
+        slimeHitbox.transform.rotation = newRotation;
+        humanHitbox.transform.rotation = newRotation;
     }
 
     private void OnDrawGizmos()
     {
+        // Ground check (downward)
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
+        
+        // Vent/confined space check (upward)
+        bool isConfined = Physics2D.Raycast(transform.position, Vector2.up, ventCheckDistance, whatIsGround);
+        Gizmos.color = isConfined ? Color.yellow : Color.blue;
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y + ventCheckDistance));
+    }
+
+    private bool IsConfinedSpace()
+    {
+        // Check if there's a collider above within ventCheckDistance
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, ventCheckDistance, whatIsGround);
+        return hit.collider != null;
     }
 
     #region Slime ↔ Human Transformation
@@ -230,10 +345,16 @@ public class PlayerMovement : MonoBehaviour
         if (!canTransform)
         {
             Debug.Log("Cannot transform yet - need Code Fragment!");
+            usingGun = false; // Reset to sword when transforming
             return;
         }
 
-       
+        // Check if confined space above (vent check)
+        if (!isHuman && IsConfinedSpace())
+        {
+            Debug.Log("Cannot transform - confined space above!");
+            return;
+        }
 
         // Preserve velocity
         preservedVelocity = rb.linearVelocity;
@@ -257,7 +378,7 @@ public class PlayerMovement : MonoBehaviour
         humanAnimator.SetActive(isHuman);
 
         // Update Rigidbody2D and Animator references
-        rb = isHuman ? humanHitbox.GetComponent<Rigidbody2D>() : slimeHitbox.GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         anim = isHuman ? humanAnimator.GetComponent<Animator>() : slimeAnimator.GetComponent<Animator>();
 
         // Reset jump counter and dash when transforming
@@ -271,6 +392,27 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log("Transformed to " + (isHuman ? "Human" : "Slime"));
     }
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+{
+    if (collision.CompareTag("Water"))
+    {
+        isInWater = true;
+        rb.linearDamping = waterDrag; // slow horizontal movement
+    }
+}
+
+private void OnTriggerExit2D(Collider2D collision)
+{
+    if (collision.CompareTag("Water"))
+    {
+        isInWater = false;
+        rb.linearDamping = 0f; // reset drag
+    }
+}
+
+
+
     private void SetForm(bool human)
     {
         isHuman = human;
@@ -279,7 +421,7 @@ public class PlayerMovement : MonoBehaviour
         humanHitbox.SetActive(human);
         humanAnimator.SetActive(human);
 
-        rb = human ? humanHitbox.GetComponent<Rigidbody2D>() : slimeHitbox.GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         anim = human ? humanAnimator.GetComponent<Animator>() : slimeAnimator.GetComponent<Animator>();
         
         // Set jump counter based on form
