@@ -1,4 +1,0 @@
-repository "Goo’s Ascension/GooAscension@18968354387757@cloud"
-  path "/"
-    br "/main"
-    co "/main"

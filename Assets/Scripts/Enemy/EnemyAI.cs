@@ -35,7 +35,13 @@ public class EnemyAI : MonoBehaviour
 
     private void ChasePlayer()
     {
-        if (player == null) return;
+        // SAFETY CHECK: If the player is missing or has been deactivated (killed)
+        if (player == null || !player.gameObject.activeInHierarchy)
+        {
+            // Stop all horizontal movement immediately
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
 
         float distance = Vector2.Distance(transform.position, player.position);
         if (distance <= stopDistance)
@@ -44,7 +50,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // Check if player is directly above/below the enemy (horizontally aligned)
+        // Check if player is directly above/below the enemy
         float horizontalDifference = Mathf.Abs(player.position.x - transform.position.x);
         if (player.position.y > transform.position.y && horizontalDifference < horizontalAlignmentThreshold)
         {
@@ -86,5 +92,21 @@ public class EnemyAI : MonoBehaviour
     {
         anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
         anim.SetBool("isGrounded", isGrounded);
+    }
+    [Header("Combat Settings")]
+    [SerializeField] private float damageAmount = 10f;
+    [SerializeField] private float attackCooldown = 1.0f;
+    private float nextAttackTime;
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // Search the object we hit OR its parent for the PlayerHealth script
+        PlayerHealth health = collision.gameObject.GetComponentInParent<PlayerHealth>();
+
+        if (health != null && Time.time >= nextAttackTime)
+        {
+            health.TakeDamage(damageAmount);
+            nextAttackTime = Time.time + attackCooldown;
+        }
     }
 }

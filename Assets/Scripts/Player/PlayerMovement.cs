@@ -428,4 +428,22 @@ private void OnTriggerExit2D(Collider2D collision)
         jumpsRemaining = human ? maxJumpsHuman : maxJumpsSlime;
     }
     #endregion
+
+    //Getting hit flash effect
+    public SpriteRenderer GetActiveSpriteRenderer()
+    {
+        if (isHuman && humanAnimator != null)
+        {
+            // Assuming the SpriteRenderer is on the same object as the Animator
+            return humanAnimator.GetComponent<SpriteRenderer>();
+        }
+        else if (!isHuman && slimeAnimator != null)
+        {
+            return slimeAnimator.GetComponent<SpriteRenderer>();
+        }
+
+        // Fallback if something is missing
+        Debug.LogWarning("Could not find active SpriteRenderer for flash effect.");
+        return null;
+    }
 }
