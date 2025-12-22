@@ -125,8 +125,18 @@ public class PlayerHealth : MonoBehaviour
         {
             child.gameObject.SetActive(false);
         }
-    }
+        // Spawn explosion at current position
+        if (explosionPrefab != null)
+        {
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        }
 
+        // This is the key: Deactivating the parent triggers the enemy's stop logic
+        this.gameObject.SetActive(false);
+
+        Invoke(nameof(ReloadLevel), 2f);
+    }
+   
     void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);

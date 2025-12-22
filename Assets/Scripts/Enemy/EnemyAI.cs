@@ -22,7 +22,53 @@ public class EnemyAI : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = animatorObj.GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        // Look for the player right at the start
+        FindTargetPlayer();
+    }
+
+    private void FindTargetPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+    }
+
+    private void ChasePlayer()
+    {
+        float horizontalDifference = Mathf.Abs(player.position.x - transform.position.x);
+
+        // If the player is directly above the enemy, the enemy stops to wait/look up
+        if (player.position.y > transform.position.y && horizontalDifference < horizontalAlignmentThreshold)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+        // 1. If we lost the player reference, try to find it again immediately
+        if (player == null)
+        {
+            FindTargetPlayer();
+            if (player == null) return;
+        }
+
+        // 2. SAFETY CHECK: Only stop if the player is dead (inactive)
+        if (!player.gameObject.activeInHierarchy)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
+        // 3. Movement Logic (Following the parent's position)
+        float distance = Vector2.Distance(transform.position, player.position);
+        if (distance <= stopDistance)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
+        float dir = Mathf.Sign(player.position.x - transform.position.x);
+        rb.linearVelocity = new Vector2(dir * moveSpeed, rb.linearVelocity.y);
     }
 
     private void Update()
@@ -33,34 +79,7 @@ public class EnemyAI : MonoBehaviour
         UpdateAnimations();
     }
 
-    private void ChasePlayer()
-    {
-        // SAFETY CHECK: If the player is missing or has been deactivated (killed)
-        if (player == null || !player.gameObject.activeInHierarchy)
-        {
-            // Stop all horizontal movement immediately
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
-
-        float distance = Vector2.Distance(transform.position, player.position);
-        if (distance <= stopDistance)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
-
-        // Check if player is directly above/below the enemy
-        float horizontalDifference = Mathf.Abs(player.position.x - transform.position.x);
-        if (player.position.y > transform.position.y && horizontalDifference < horizontalAlignmentThreshold)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
-
-        float dir = Mathf.Sign(player.position.x - transform.position.x);
-        rb.linearVelocity = new Vector2(dir * moveSpeed, rb.linearVelocity.y);
-    }
+   
 
     private void HandleFlip()
     {
@@ -100,12 +119,23 @@ public class EnemyAI : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // Search the object we hit OR its parent for the PlayerHealth script
         PlayerHealth health = collision.gameObject.GetComponentInParent<PlayerHealth>();
 
         if (health != null && Time.time >= nextAttackTime)
         {
             health.TakeDamage(damageAmount);
+
+            // --- ADD KNOCKBACK CALL HERE ---
+            PlayerMovement pm = health.GetComponent<PlayerMovement>();
+            if (pm != null)
+            {
+                // Calculate direction: from enemy to player
+                Vector2 knockbackDir = (collision.transform.position - transform.position).normalized;
+                // Add a little bit of upward lift to the knockback
+                knockbackDir.y += 0.5f;
+                pm.ApplyKnockback(knockbackDir.normalized);
+            }
+
             nextAttackTime = Time.time + attackCooldown;
         }
     }

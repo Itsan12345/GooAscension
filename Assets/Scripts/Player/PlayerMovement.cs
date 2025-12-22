@@ -66,6 +66,7 @@ private bool canShoot = true;
 
     void Awake()
     {
+        playerEnergy = GetComponent<PlayerEnergy>();
         SetForm(false); // Start as Slime - this will set rb and anim
     }
 
@@ -200,11 +201,42 @@ private void SwitchWeapon()
 
 
 
+    [Header("Attack Settings")]
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackRange = 0.5f;
+    [SerializeField] private LayerMask enemyLayers;
+    [SerializeField] private float attackDamage = 10f;
+
     private void TryToAttack()
-{
-    if (!usingGun && isGrounded)
-        anim.SetTrigger("attack");
-}
+    {
+        if (!usingGun && isGrounded)
+        {
+            anim.SetTrigger("attack");
+
+            // Detect all colliders in range on the Enemy layer
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                // Use GetComponentInParent in case the collider is on a child object
+                EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
+
+                if (enemyHealth != null)
+                {
+                    enemyHealth.TakeDamage(attackDamage);
+                    Debug.Log("Dealt " + attackDamage + " damage to " + enemy.name);
+                }
+            }
+        }
+    }
+
+    // Visualize the attack range in the editor
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+
 
     private void TryToJump()
     {
@@ -306,12 +338,16 @@ if (isInWater)
     private void Flip()
     {
         facingRight = !facingRight;
-        
-        // Rotate hitboxes to face direction (Y rotation 0 for right, 180 for left)
-        Quaternion newRotation = facingRight ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
-        
-        slimeHitbox.transform.rotation = newRotation;
-        humanHitbox.transform.rotation = newRotation;
+
+        // Negate the x-axis of the local scale
+        // This flips the sprites AND moves the AttackPoint/FirePoint to the other side
+        Vector3 currentScale = transform.localScale;
+        currentScale.x *= -1;
+        transform.localScale = currentScale;
+
+        /* NOTE: You can now remove the lines that rotate the hitboxes individually 
+           because flipping the parent's scale handles everything at once.
+        */
     }
 
     private void OnDrawGizmos()
@@ -340,8 +376,19 @@ if (isInWater)
         Debug.Log("Human transformation unlocked! Press E to transform.");
     }
 
+
+    [SerializeField] private float transformCost = 25f;
+    private PlayerEnergy playerEnergy;
+
+    
     private void SwitchForm()
     {
+        // Check if player has enough energy
+        if (!playerEnergy.CanAffordTransform(transformCost))
+        {
+            Debug.Log("Not enough energy to transform!");
+            return;
+        }
         if (!canTransform)
         {
             Debug.Log("Cannot transform yet - need Code Fragment!");
@@ -390,6 +437,7 @@ if (isInWater)
             rb.linearVelocity = preservedVelocity;
 
         Debug.Log("Transformed to " + (isHuman ? "Human" : "Slime"));
+        playerEnergy.SpendEnergy(transformCost);
     }
 
 
@@ -446,4 +494,19 @@ private void OnTriggerExit2D(Collider2D collision)
         Debug.LogWarning("Could not find active SpriteRenderer for flash effect.");
         return null;
     }
+
+
+
+    [Header("Knockback Settings")]
+    [SerializeField] private float knockbackForce = 10f;
+
+    public void ApplyKnockback(Vector2 direction)
+    {
+        // Stop current movement and apply an upward-outward force
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
+    }
+
+
+
 }
