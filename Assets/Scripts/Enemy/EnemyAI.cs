@@ -5,6 +5,9 @@ public class EnemyAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform animatorObj;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackPointOffset = 1.5f;
+    private AttackPointTrigger attackPointTrigger;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -21,7 +24,15 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = animatorObj.GetComponent<Animator>();
+        if (animatorObj != null)
+        {
+            anim = animatorObj.GetComponent<Animator>();
+        }
+        // Get the AttackPointTrigger from the attack point child
+        if (attackPoint != null)
+        {
+            attackPointTrigger = attackPoint.GetComponent<AttackPointTrigger>();
+        }
         // Look for the player right at the start
         FindTargetPlayer();
     }
@@ -37,6 +48,13 @@ public class EnemyAI : MonoBehaviour
 
     private void ChasePlayer()
     {
+        // Stop movement while attacking
+        if (isAttacking)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
         float horizontalDifference = Mathf.Abs(player.position.x - transform.position.x);
 
         // If the player is directly above the enemy, the enemy stops to wait/look up
@@ -75,6 +93,7 @@ public class EnemyAI : MonoBehaviour
     {
         CheckGrounded();
         ChasePlayer();
+        UpdateAttackPointPosition();
         HandleFlip();
         UpdateAnimations();
     }
@@ -95,6 +114,18 @@ public class EnemyAI : MonoBehaviour
         animatorObj.localRotation = facingRight
             ? Quaternion.Euler(0, 0, 0)
             : Quaternion.Euler(0, 180, 0);
+        UpdateAttackPointPosition();
+    }
+
+    private void UpdateAttackPointPosition()
+    {
+        if (attackPoint == null)
+            return;
+
+        // Position the attack point in front of the enemy based on facing direction
+        float offset = facingRight ? attackPointOffset : -attackPointOffset;
+        Vector3 newPosition = transform.position + new Vector3(offset, 0, 0);
+        attackPoint.position = newPosition;
     }
 
     private void CheckGrounded()
@@ -109,34 +140,78 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdateAnimations()
     {
-        anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
-        anim.SetBool("isGrounded", isGrounded);
+        if (anim != null)
+        {
+            anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
+            anim.SetBool("isGrounded", isGrounded);
+        }
     }
+
     [Header("Combat Settings")]
     [SerializeField] private float damageAmount = 10f;
     [SerializeField] private float attackCooldown = 1.0f;
     private float nextAttackTime;
+    private bool canMove = true;
+    private bool isAttacking = false;
 
-    private void OnCollisionStay2D(Collision2D collision)
+    public void DamageTarget()
     {
-        PlayerHealth health = collision.gameObject.GetComponentInParent<PlayerHealth>();
+        if (player == null)
+            return;
 
+        // Only damage if player is actually in the attack point zone
+        if (attackPointTrigger != null && !attackPointTrigger.IsPlayerInZone())
+            return;
+
+        PlayerHealth health = player.GetComponentInParent<PlayerHealth>();
         if (health != null && Time.time >= nextAttackTime)
         {
             health.TakeDamage(damageAmount);
 
-            // --- ADD KNOCKBACK CALL HERE ---
-            PlayerMovement pm = health.GetComponent<PlayerMovement>();
+            PlayerMovement pm = player.GetComponentInParent<PlayerMovement>();
             if (pm != null)
             {
-                // Calculate direction: from enemy to player
-                Vector2 knockbackDir = (collision.transform.position - transform.position).normalized;
-                // Add a little bit of upward lift to the knockback
+                Vector2 knockbackDir = (player.position - transform.position).normalized;
                 knockbackDir.y += 0.5f;
                 pm.ApplyKnockback(knockbackDir.normalized);
             }
 
             nextAttackTime = Time.time + attackCooldown;
         }
+    }
+
+    public void EnableMovementAndJump(bool enable)
+    {
+        canMove = enable;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Check if player entered the attack point
+        if (collision.GetComponentInParent<PlayerMovement>() != null && !isAttacking && Time.time >= nextAttackTime)
+        {
+            TriggerAttack();
+        }
+    }
+
+    public void TriggerAttack()
+    {
+        if (!isAttacking && Time.time >= nextAttackTime && anim != null)
+        {
+            isAttacking = true;
+            anim.SetTrigger("attack");
+            Invoke(nameof(ResetAttack), 2.3f);
+        }
+    }
+
+    private void ResetAttack()
+    {
+        isAttacking = false;
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // Damage is only dealt through DamageTarget() when the attack animation is triggered
+        // This method now does nothing to prevent constant damage
     }
 }

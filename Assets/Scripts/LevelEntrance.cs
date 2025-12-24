@@ -6,7 +6,7 @@ public class LevelEntrance : MonoBehaviour
    
    private void OnTriggerEnter2D(Collider2D collision)
    {
-         if (collision.GetComponent<PlayerMovement>() != null)
+         if (collision.GetComponentInParent<PlayerMovement>() != null)
          {
               if (SceneController.instance != null)
               {
