@@ -1,15 +1,21 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float speed = 15f;
+    [SerializeField] private float speed = 10f;
     [SerializeField] private float lifeTime = 2f;
-    private float direction;
+
+    private float direction = 1f;
+    private float damage = 10f;
 
     public void SetDirection(float dir)
     {
-        direction = dir;
-        transform.localScale = new Vector3(dir, 1, 1);
+        direction = Mathf.Sign(dir);
+    }
+
+    public void SetDamage(float dmg)
+    {
+        damage = Mathf.Max(0f, dmg);
     }
 
     private void Start()
@@ -19,12 +25,24 @@ public class Bullet : MonoBehaviour
 
     private void Update()
     {
-        transform.Translate(Vector2.right * direction * speed * Time.deltaTime);
+        transform.Translate(Vector2.right * (speed * direction * Time.deltaTime));
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy") || other.CompareTag("Ground"))
+        // ✅ Damage enemies
+        EnemyHealth eh = other.GetComponentInParent<EnemyHealth>();
+        if (eh != null)
+        {
+            eh.TakeDamage(damage);
             Destroy(gameObject);
+            return;
+        }
+
+        // Optional: destroy bullet when hitting ground/walls
+        if (other.CompareTag("Ground"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

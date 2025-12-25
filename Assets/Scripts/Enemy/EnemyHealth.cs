@@ -2,35 +2,78 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField] private float health = 30f;
-    [SerializeField] private GameObject deathEffect; // Optional explosion for enemy
+    [Header("Health")]
+    [SerializeField] private float maxHealth = 30f;
+    private float currentHealth;
+
+    [Header("Death FX")]
+    [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] private float destroyDelay = 2f;
+    [SerializeField] private float explosionZ = -1f;
+
+    private bool dead;
+
+    private Rigidbody2D rb;
+    private Collider2D[] colliders;
+    private EnemyAI enemyAI;
+
+    private void Awake()
+    {
+        currentHealth = maxHealth;
+        rb = GetComponent<Rigidbody2D>();
+        colliders = GetComponentsInChildren<Collider2D>(true);
+        enemyAI = GetComponent<EnemyAI>();
+    }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        Debug.Log("Enemy hit! Health: " + health);
+        if (dead) return;
 
-        if (health <= 0)
+        currentHealth -= damage;
+        if (currentHealth <= 0f)
         {
             Die();
         }
     }
 
-    [SerializeField] private float energyReward = 20f;
-    void Die()
+    private void Die()
     {
-        // Find the player and give them energy
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        dead = true;
+
+        // Stop AI
+        if (enemyAI != null)
+            enemyAI.enabled = false;
+
+        // Stop physics / movement
+        if (rb != null)
         {
-            PlayerEnergy energy = player.GetComponent<PlayerEnergy>();
-            if (energy != null)
-            {
-                energy.GainEnergy(energyReward);
-            }
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false;
         }
 
-        if (deathEffect != null) Instantiate(deathEffect, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        // Disable all colliders so it can't be hit / hit the player
+        if (colliders != null)
+        {
+            foreach (var c in colliders)
+                if (c != null) c.enabled = false;
+        }
+
+        // Hide visuals (disable all SpriteRenderers)
+        var renderers = GetComponentsInChildren<SpriteRenderer>(true);
+        foreach (var r in renderers)
+            r.enabled = false;
+
+        // Spawn explosion once
+        if (explosionPrefab != null)
+        {
+            Instantiate(
+                explosionPrefab,
+                new Vector3(transform.position.x, transform.position.y, explosionZ),
+                Quaternion.identity
+            );
+        }
+
+        // Remove enemy after FX time
+        Destroy(gameObject, destroyDelay);
     }
 }

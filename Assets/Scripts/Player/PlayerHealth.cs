@@ -35,6 +35,13 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+
+        // I-frames: ignore damage while invulnerable (dash)
+        PlayerMovement pm = GetComponent<PlayerMovement>();
+        if (pm != null && pm.IsInvulnerable)
+            return;
+
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
@@ -96,47 +103,38 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player has died!");
 
-        // 1. Spawn the explosion at the player's position
+        // Show game over text
+        if (gameOverText != null)
+            gameOverText.SetActive(true);
+
+        // Spawn explosion once
         if (explosionPrefab != null)
-        {
-            // Use this to ensure the explosion is at Z = -1 (closer to the camera)
             Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y, -1f), Quaternion.identity);
-        }
 
-        // 2. Make the character "disappear"
-        // Disable the movement logic
-        GetComponent<PlayerMovement>().EnableMovementAndJump(false);
+        // Disable movement
+        var pm = GetComponent<PlayerMovement>();
+        if (pm != null)
+            pm.EnableMovementAndJump(false);
 
-        // Turn off all child objects (SlimeHitbox, HumanHitbox, etc.)
-        // This makes the player invisible and non-interactive immediately
+        // Disable hitboxes / visuals (children)
         foreach (Transform child in transform)
-        {
             child.gameObject.SetActive(false);
-        }
 
-        // 3. Disable the main collider and physics so enemies stop hitting a "ghost"
-        if (GetComponent<Rigidbody2D>()) GetComponent<Rigidbody2D>().simulated = false;
+        // Disable physics so nothing keeps pushing it around
+        var body = GetComponent<Rigidbody2D>();
+        if (body != null)
+            body.simulated = false;
 
-        // 4. Reload the level after the explosion finishes
+        var col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+
+        // IMPORTANT: Do NOT deactivate the whole player object,
+        // because you want UI / Invokes / logic to continue.
         Invoke(nameof(ReloadLevel), reloadDelay);
-
-        // This is the line that triggers the enemy to stop!
-        foreach (Transform child in transform)
-        {
-            child.gameObject.SetActive(false);
-        }
-        // Spawn explosion at current position
-        if (explosionPrefab != null)
-        {
-            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-        }
-
-        // This is the key: Deactivating the parent triggers the enemy's stop logic
-        this.gameObject.SetActive(false);
-
-        Invoke(nameof(ReloadLevel), 2f);
     }
-   
+
+
     void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
