@@ -2746,6 +2746,7 @@ GameObject:
   - component: {fileID: 1566574205}
   - component: {fileID: 1566574206}
   - component: {fileID: 1566574207}
+  - component: {fileID: 1566574208}
   m_Layer: 9
   m_Name: AttackPoint
   m_TagString: Untagged
@@ -2816,6 +2817,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebd576f88802f3a42812755428ee29f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackPointTrigger
+--- !u!114 &1566574208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566574204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b862e07a0fa3994f9c74874f3802526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackTelegraph
+  telegraphDuration: 0.5
+  telegraphColor: {r: 1, g: 0, b: 0, a: 0.5411765}
+  telegraphSize: 5
 --- !u!1 &1651298876
 GameObject:
   m_ObjectHideFlags: 0
@@ -3434,6 +3450,7 @@ GameObject:
   - component: {fileID: 2025484235}
   - component: {fileID: 2025484236}
   - component: {fileID: 2025484234}
+  - component: {fileID: 2025484237}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -3488,19 +3505,13 @@ MonoBehaviour:
   humanHitbox: {fileID: 977494581}
   humanAnimator: {fileID: 1493691544}
   transformCost: 25
-  bulletPrefab: {fileID: 6027531330172379228, guid: cb8086bd33de96e4ab7c6014dad288e6, type: 3}
-  firePoint: {fileID: 955531139}
-  shootCooldown: 0.3
-  attackPoint: {fileID: 385320230}
-  attackRange: 0.5
-  enemyLayers:
-    serializedVersion: 2
-    m_Bits: 1536
-  attackDamage: 10
   slimeBuoyancy: 15
   humanWeight: 5
   waterDrag: 2
   knockbackForce: 10
+  dashInvulnerable: 1
+  dashThroughEnemies: 1
+  enemyLayerName: Enemy
 --- !u!50 &2025484234
 Rigidbody2D:
   serializedVersion: 5
@@ -3563,6 +3574,30 @@ MonoBehaviour:
   currentEnergy: 0
   energyRegenRate: 5
   energySlider: {fileID: 2002402200}
+--- !u!114 &2025484237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025484231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf6fd246db385f448b021e1cd505f77e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  playerMovement: {fileID: 2025484233}
+  bulletPrefab: {fileID: 6027531330172379228, guid: cb8086bd33de96e4ab7c6014dad288e6, type: 3}
+  firePoint: {fileID: 955531139}
+  shootCooldown: 0.3
+  attackPoint: {fileID: 385320230}
+  attackRange: 0.5
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 1536
+  attackDamage: 10
+  usingGun: 0
+  gunDamage: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

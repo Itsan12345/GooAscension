@@ -8,6 +8,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform attackPoint;
     [SerializeField] private float attackPointOffset = 1.5f;
     private AttackPointTrigger attackPointTrigger;
+    private AttackTelegraph attackTelegraph;
 
     private Rigidbody2D rb;
     private Animator anim;
@@ -32,6 +33,7 @@ public class EnemyAI : MonoBehaviour
         if (attackPoint != null)
         {
             attackPointTrigger = attackPoint.GetComponent<AttackPointTrigger>();
+            attackTelegraph = attackPoint.GetComponent<AttackTelegraph>();
         }
         // Look for the player right at the start
         FindTargetPlayer();
@@ -143,6 +145,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    public void TriggerHurtAnimation()
+    {
+        if (anim != null && !isAttacking)
+        {
+            anim.SetTrigger("hurt");
+        }
+    }
+
     [Header("Combat Settings")]
     [SerializeField] private float damageAmount = 10f;
     [SerializeField] private float attackCooldown = 1.0f;
@@ -195,6 +205,13 @@ public class EnemyAI : MonoBehaviour
         if (!isAttacking && Time.time >= nextAttackTime && anim != null)
         {
             isAttacking = true;
+            
+            // Show telegraph warning before attack
+            if (attackTelegraph != null)
+            {
+                attackTelegraph.ShowTelegraph();
+            }
+            
             anim.SetTrigger("attack");
             Invoke(nameof(ResetAttack), 2.3f);
         }
