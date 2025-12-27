@@ -65,6 +65,13 @@ public class PlayerCombat : MonoBehaviour
 
         if (anim != null)
             anim.SetTrigger("attack");
+    }
+
+    public void DamageTarget()
+    {
+        // Only damage when using sword (not gun) and when grounded
+        if (usingGun) return;
+        if (!playerMovement.IsGrounded) return;
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
             attackPoint.position,

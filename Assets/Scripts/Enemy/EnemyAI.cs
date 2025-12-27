@@ -18,9 +18,29 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
     [SerializeField] private float stopDistance = 0.5f;
     [SerializeField] private float horizontalAlignmentThreshold = 0.2f;
+    
+    [Header("Detection")]
+    [SerializeField] private float detectionRadius = 5f;
+    [SerializeField] private float loseTargetRadius = 7f; // Slightly larger to prevent flickering
+    
+    [Header("Patrol")]
+    [SerializeField] private bool enablePatrol = true;
+    [SerializeField] private float patrolDistance = 4f;
+    [SerializeField] private float patrolSpeed = 2f;
+    [SerializeField] private float waitTimeAtEnd = 1f;
 
     private bool facingRight = true;
     private bool isGrounded;
+    private bool isChasing = false;
+    private bool isPatrolling = true;
+    
+    // Patrol state
+    private Vector2 currentPatrolCenter;
+    private Vector2 leftPatrolPoint;
+    private Vector2 rightPatrolPoint;
+    private bool movingRight = true;
+    private bool waitingAtPatrolEnd = false;
+    private float patrolWaitTimer;
 
     private void Awake()
     {
@@ -37,6 +57,16 @@ public class EnemyAI : MonoBehaviour
         }
         // Look for the player right at the start
         FindTargetPlayer();
+        
+        // Initialize patrol points around starting position
+        SetupPatrolArea(transform.position);
+    }
+    
+    private void SetupPatrolArea(Vector2 centerPosition)
+    {
+        currentPatrolCenter = centerPosition;
+        leftPatrolPoint = new Vector2(centerPosition.x - patrolDistance, centerPosition.y);
+        rightPatrolPoint = new Vector2(centerPosition.x + patrolDistance, centerPosition.y);
     }
 
     private void FindTargetPlayer()
@@ -90,13 +120,100 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         CheckGrounded();
-        ChasePlayer();
+        CheckPlayerDetection();
+        
+        if (isChasing)
+        {
+            isPatrolling = false;
+            ChasePlayer();
+        }
+        else if (enablePatrol)
+        {
+            isPatrolling = true;
+            Patrol();
+        }
+        else
+        {
+            StopMoving();
+        }
+            
         UpdateAttackPointPosition();
         HandleFlip();
         UpdateAnimations();
     }
 
-   
+    private void CheckPlayerDetection()
+    {
+        if (player == null || !player.gameObject.activeInHierarchy)
+        {
+            FindTargetPlayer();
+            if (player == null || !player.gameObject.activeInHierarchy)
+            {
+                isChasing = false;
+                return;
+            }
+        }
+
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+        if (!isChasing && distanceToPlayer <= detectionRadius)
+        {
+            isChasing = true;
+        }
+        else if (isChasing && distanceToPlayer > loseTargetRadius)
+        {
+            isChasing = false;
+            
+            // Set up new patrol area from current position where target was lost
+            SetupPatrolArea(transform.position);
+            waitingAtPatrolEnd = false; // Start patrolling immediately
+        }
+    }
+
+    private void StopMoving()
+    {
+        if (!isAttacking)
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+    }
+    
+    private void Patrol()
+    {
+        if (isAttacking)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
+        // Handle waiting at patrol ends
+        if (waitingAtPatrolEnd)
+        {
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            patrolWaitTimer -= Time.deltaTime;
+            
+            if (patrolWaitTimer <= 0f)
+            {
+                waitingAtPatrolEnd = false;
+                movingRight = !movingRight; // Switch direction
+            }
+            return;
+        }
+
+        Vector2 targetPoint = movingRight ? rightPatrolPoint : leftPatrolPoint;
+        float distanceToTarget = Mathf.Abs(transform.position.x - targetPoint.x);
+
+        // Check if reached patrol point
+        if (distanceToTarget <= 0.1f)
+        {
+            waitingAtPatrolEnd = true;
+            patrolWaitTimer = waitTimeAtEnd;
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
+        // Move toward target patrol point
+        float direction = movingRight ? 1f : -1f;
+        rb.linearVelocity = new Vector2(direction * patrolSpeed, rb.linearVelocity.y);
+    }
 
     private void HandleFlip()
     {
@@ -142,14 +259,6 @@ public class EnemyAI : MonoBehaviour
         {
             anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
             anim.SetBool("isGrounded", isGrounded);
-        }
-    }
-
-    public void TriggerHurtAnimation()
-    {
-        if (anim != null && !isAttacking)
-        {
-            anim.SetTrigger("hurt");
         }
     }
 
@@ -226,5 +335,52 @@ public class EnemyAI : MonoBehaviour
     {
         // Damage is only dealt through DamageTarget() when the attack animation is triggered
         // This method now does nothing to prevent constant damage
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Draw detection radius
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+        
+        // Draw lose target radius
+        Gizmos.color = Color.orange;
+        Gizmos.DrawWireSphere(transform.position, loseTargetRadius);
+        
+        // Draw current chase state
+        if (isChasing)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, 0.3f);
+        }
+        
+        // Draw patrol area
+        if (enablePatrol)
+        {
+            // Use current patrol center in play mode, or transform position in editor
+            Vector2 center = Application.isPlaying ? currentPatrolCenter : (Vector2)transform.position;
+            Vector2 leftPoint = new Vector2(center.x - patrolDistance, center.y);
+            Vector2 rightPoint = new Vector2(center.x + patrolDistance, center.y);
+            
+            // Draw patrol line
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(leftPoint, rightPoint);
+            
+            // Draw patrol endpoints
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(leftPoint, 0.2f);
+            Gizmos.DrawWireSphere(rightPoint, 0.2f);
+            
+            // Show patrol center
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(center, 0.15f);
+            
+            // Show current patrol state
+            if (Application.isPlaying && isPatrolling)
+            {
+                Gizmos.color = movingRight ? Color.green : Color.magenta;
+                Gizmos.DrawWireSphere(transform.position, 0.1f);
+            }
+        }
     }
 }
