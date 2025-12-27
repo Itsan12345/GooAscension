@@ -306,8 +306,8 @@ Transform:
   m_GameObject: {fileID: 91800535}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.097, y: -1.3211, z: 0}
-  m_LocalScale: {x: 22.746677, y: 1.49796, z: 1}
+  m_LocalPosition: {x: 6.1297, y: -1.3211, z: 0}
+  m_LocalScale: {x: 24.812077, y: 1.49796, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1651298878}
@@ -505,9 +505,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 196718586}
-  - component: {fileID: 196718589}
   - component: {fileID: 196718588}
-  - component: {fileID: 196718587}
   m_Layer: 9
   m_Name: SentinelMinionHitbox
   m_TagString: Untagged
@@ -530,29 +528,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1315094664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &196718587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196718585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd7116a701a78f34d93f3a5b5f1b06c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  animatorObj: {fileID: 552302410}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  attackPoint: {fileID: 1566574205}
-  attackPointOffset: 1.5
-  moveSpeed: 3
-  stopDistance: 0.5
-  horizontalAlignmentThreshold: 0.2
-  damageAmount: 30
-  attackCooldown: 1
 --- !u!61 &196718588
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -599,33 +574,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.3522573, y: 1.8886425}
   m_EdgeRadius: 0
---- !u!50 &196718589
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 196718585}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 3
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 3
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!1 &196956817
 GameObject:
   m_ObjectHideFlags: 0
@@ -1287,8 +1235,8 @@ GameObject:
   - component: {fileID: 552302410}
   - component: {fileID: 552302413}
   - component: {fileID: 552302412}
-  - component: {fileID: 552302411}
   - component: {fileID: 552302414}
+  - component: {fileID: 552302415}
   m_Layer: 9
   m_Name: SentinelMinionAnimator
   m_TagString: Untagged
@@ -1311,19 +1259,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1315094664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &552302411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552302409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bc7fb72fa594b84f8ac71dfdbbed256, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  hitbox: {fileID: 196718586}
 --- !u!95 &552302412
 Animator:
   serializedVersion: 7
@@ -1416,6 +1351,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c81792ec47e8747a6c2e8398accf90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationEvents
+--- !u!114 &552302415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552302409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bc7fb72fa594b84f8ac71dfdbbed256, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  hitbox: {fileID: 196718586}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1826,7 +1774,7 @@ GameObject:
   - component: {fileID: 876041022}
   - component: {fileID: 876041021}
   - component: {fileID: 876041023}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Water
   m_Icon: {fileID: 0}
@@ -2317,6 +2265,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1315094664}
   - component: {fileID: 1315094665}
+  - component: {fileID: 1315094667}
+  - component: {fileID: 1315094666}
   m_Layer: 9
   m_Name: SentinelMinion
   m_TagString: Enemy
@@ -2333,7 +2283,7 @@ Transform:
   m_GameObject: {fileID: 1315094663}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.08, y: -2.16, z: 0}
+  m_LocalPosition: {x: 6.47, y: -2.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2358,6 +2308,66 @@ MonoBehaviour:
   explosionPrefab: {fileID: 1776456872437759555, guid: abe02a104fca806418b05cf010a09625, type: 3}
   destroyDelay: 2
   explosionZ: -1
+  animatorObj: {fileID: 552302410}
+  deathAnimationDuration: 3
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
+--- !u!50 &1315094666
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315094663}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 5
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 3
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &1315094667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315094663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd7116a701a78f34d93f3a5b5f1b06c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  animatorObj: {fileID: 552302410}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  attackPoint: {fileID: 1566574205}
+  attackPointOffset: 1.5
+  moveSpeed: 3
+  stopDistance: 0.5
+  horizontalAlignmentThreshold: 0.2
+  detectionRadius: 6
+  loseTargetRadius: 8
+  enablePatrol: 1
+  patrolDistance: 4
+  patrolSpeed: 2
+  waitTimeAtEnd: 1
+  damageAmount: 30
+  attackCooldown: 1
 --- !u!1 &1396136300
 GameObject:
   m_ObjectHideFlags: 0
@@ -2519,6 +2529,7 @@ GameObject:
   - component: {fileID: 1493691545}
   - component: {fileID: 1493691547}
   - component: {fileID: 1493691546}
+  - component: {fileID: 1493691548}
   m_Layer: 8
   m_Name: HumanAnimator
   m_TagString: Player
@@ -2622,6 +2633,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1493691548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493691544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f0e1df259fa2b34485a4fb74e58eaa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationEvents
 --- !u!1 &1539301136
 GameObject:
   m_ObjectHideFlags: 0
@@ -3205,7 +3228,7 @@ Transform:
   m_GameObject: {fileID: 1912410212}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.98, y: -2.89, z: 0}
+  m_LocalPosition: {x: 12.1, y: -1.73, z: 0}
   m_LocalScale: {x: 1, y: 3.57, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
