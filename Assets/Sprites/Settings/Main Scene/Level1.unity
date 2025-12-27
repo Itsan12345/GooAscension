@@ -510,7 +510,7 @@ GameObject:
   - component: {fileID: 196718587}
   m_Layer: 9
   m_Name: SentinelMinionHitbox
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3044,6 +3044,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1663547498}
   m_CullTransparentMesh: 1
+--- !u!1 &1830399376
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1830399377}
+  m_Layer: 8
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1830399377
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1830399376}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.82, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2025484232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1912410212
 GameObject:
   m_ObjectHideFlags: 0
@@ -3430,6 +3461,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2025484232}
+  - component: {fileID: 2025484237}
   - component: {fileID: 2025484233}
   - component: {fileID: 2025484235}
   - component: {fileID: 2025484236}
@@ -3457,6 +3489,7 @@ Transform:
   - {fileID: 667192358}
   - {fileID: 977494583}
   - {fileID: 385320230}
+  - {fileID: 1830399377}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2025484233
@@ -3488,19 +3521,13 @@ MonoBehaviour:
   humanHitbox: {fileID: 977494581}
   humanAnimator: {fileID: 1493691544}
   transformCost: 25
-  bulletPrefab: {fileID: 6027531330172379228, guid: cb8086bd33de96e4ab7c6014dad288e6, type: 3}
-  firePoint: {fileID: 955531139}
-  shootCooldown: 0.3
-  attackPoint: {fileID: 385320230}
-  attackRange: 0.5
-  enemyLayers:
-    serializedVersion: 2
-    m_Bits: 1536
-  attackDamage: 10
   slimeBuoyancy: 15
   humanWeight: 5
   waterDrag: 2
   knockbackForce: 10
+  dashInvulnerable: 1
+  dashThroughEnemies: 1
+  enemyLayerName: Enemy
 --- !u!50 &2025484234
 Rigidbody2D:
   serializedVersion: 5
@@ -3563,6 +3590,30 @@ MonoBehaviour:
   currentEnergy: 0
   energyRegenRate: 5
   energySlider: {fileID: 2002402200}
+--- !u!114 &2025484237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025484231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf6fd246db385f448b021e1cd505f77e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  playerMovement: {fileID: 0}
+  bulletPrefab: {fileID: 6027531330172379228, guid: cb8086bd33de96e4ab7c6014dad288e6, type: 3}
+  firePoint: {fileID: 1830399377}
+  shootCooldown: 0.3
+  attackPoint: {fileID: 385320230}
+  attackRange: 0.5
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 1536
+  attackDamage: 10
+  usingGun: 0
+  gunDamage: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
