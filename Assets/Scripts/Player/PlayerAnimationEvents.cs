@@ -23,6 +23,18 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.DamageTarget();
     }
 
+    public void DamageTargetCharged()
+    {
+        if (playerCombat != null)
+            playerCombat.DamageTargetCharged();
+    }
+
+    public void ActivateSwordArc()
+    {
+        if (playerCombat != null)
+            playerCombat.ActivateSwordArcFromAnimation();
+    }
+
     private void DisableMovementAndJump() => player.EnableMovementAndJump(false);    
 
     private void EnableMovementAndJump() => player.EnableMovementAndJump(true);

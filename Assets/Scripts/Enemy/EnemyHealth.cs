@@ -6,6 +6,11 @@ public class EnemyHealth : MonoBehaviour
     [Header("Health")]
     [SerializeField] private float maxHealth = 30f;
     private float currentHealth;
+    
+    [Header("Health Bar UI")]
+    [SerializeField] private Canvas healthBarCanvas;
+    [SerializeField] private UnityEngine.UI.Slider healthBarSlider;
+    [SerializeField] private float healthBarOffset = .5f; // How high above enemy to show health bar
 
     [Header("Death FX")]
     [SerializeField] private GameObject explosionPrefab;
@@ -53,6 +58,23 @@ public class EnemyHealth : MonoBehaviour
                 originalColors[i] = spriteRenderers[i].color;
             }
         }
+        
+        // Initialize health bar but keep it disabled by default
+        SetupHealthBar();
+    }
+
+    private void Start()
+    {
+        // Enable health bar when game starts
+        if (healthBarCanvas != null)
+        {
+            healthBarCanvas.gameObject.SetActive(true);
+            // Ensure proper positioning after enabling
+            UpdateHealthBarPosition();
+        }
+        
+        // Update health bar to current state
+        UpdateHealthBar();
     }
 
     public void TakeDamage(float damage)
@@ -61,8 +83,13 @@ public class EnemyHealth : MonoBehaviour
 
         currentHealth -= damage;
         
+        // Update health bar
+        UpdateHealthBar();
+        
         // Trigger flash effect when damaged
         Flash();
+        
+        Debug.Log($"💥 ENEMY HEALTH: {gameObject.name} took {damage} damage! Health: {currentHealth}/{maxHealth}");
         
         if (currentHealth <= 0f)
         {
@@ -169,10 +196,85 @@ public class EnemyHealth : MonoBehaviour
             anim.SetTrigger("die");
         }
         
+        // Hide health bar when enemy dies
+        if (healthBarCanvas != null)
+        {
+            healthBarCanvas.gameObject.SetActive(false);
+        }
+        
         // Wait for death animation to complete, then show explosion and destroy
         Invoke(nameof(OnDeathAnimationComplete), deathAnimationDuration);
     }
     
+    private void Update()
+    {
+        // Update health bar position to stay above enemy
+        UpdateHealthBarPosition();
+    }
+    
+    private void SetupHealthBar()
+    {
+        // If no health bar assigned, try to find one in children
+        if (healthBarCanvas == null)
+        {
+            healthBarCanvas = GetComponentInChildren<Canvas>();
+        }
+        
+        if (healthBarSlider == null && healthBarCanvas != null)
+        {
+            healthBarSlider = healthBarCanvas.GetComponentInChildren<UnityEngine.UI.Slider>();
+        }
+        
+        if (healthBarCanvas != null)
+        {
+            // Set canvas to world space and face camera
+            healthBarCanvas.renderMode = RenderMode.WorldSpace;
+            healthBarCanvas.transform.localScale = Vector3.one * 0.01f; // Make it small
+            
+            // Position above enemy
+            UpdateHealthBarPosition();
+            
+            // Disable by default - will be enabled in Start()
+            healthBarCanvas.gameObject.SetActive(false);
+        }
+        
+        if (healthBarSlider == null)
+        {
+            Debug.LogWarning($"No health bar slider found for {gameObject.name}! Please assign healthBarSlider in inspector or add Canvas>Slider as child.");
+        }
+    }
+    
+    private void UpdateHealthBarPosition()
+    {
+        if (healthBarCanvas != null)
+        {
+            Vector3 healthBarPos = transform.position + Vector3.up * healthBarOffset;
+            healthBarCanvas.transform.position = healthBarPos;
+            
+            // Make health bar face camera
+            if (Camera.main != null)
+            {
+                healthBarCanvas.transform.LookAt(Camera.main.transform);
+                healthBarCanvas.transform.Rotate(0, 180, 0); // Flip to face correctly
+            }
+        }
+    }
+    
+    private void UpdateHealthBar()
+    {
+        if (healthBarSlider != null)
+        {
+            healthBarSlider.value = currentHealth / maxHealth;
+            
+            // Hide health bar when at full health (optional)
+            if (healthBarCanvas != null)
+            {
+                bool showHealthBar = currentHealth < maxHealth;
+                healthBarCanvas.gameObject.SetActive(showHealthBar);
+            }
+        }
+    }
+
     private void OnDeathAnimationComplete()
     {
         // Hide visuals (disable all SpriteRenderers) after animation
@@ -194,3 +296,4 @@ public class EnemyHealth : MonoBehaviour
         Destroy(gameObject, destroyDelay);
     }
 }
+    
