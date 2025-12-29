@@ -7,7 +7,7 @@ public class PlayerAnimationEvents : MonoBehaviour
     private PlayerCombat playerCombat;
 
     private void Awake()
-    {
+    {   
         player = GetComponentInParent<PlayerMovement>();
         playerCombat = GetComponentInParent<PlayerCombat>();
         
@@ -23,16 +23,16 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.DamageTarget();
     }
 
-    public void DamageTargetCharged()
-    {
-        if (playerCombat != null)
-            playerCombat.DamageTargetCharged();
-    }
-
     public void ActivateSwordArc()
     {
         if (playerCombat != null)
             playerCombat.ActivateSwordArcFromAnimation();
+    }
+
+    public void ActivateChargedShot()
+    {
+        if (playerCombat != null)
+            playerCombat.ActivateChargedShotFromAnimation();
     }
 
     private void DisableMovementAndJump() => player.EnableMovementAndJump(false);    

@@ -4,6 +4,7 @@ public class PlayerCombat : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private PlayerEnergy playerEnergy;
 
     private Animator anim;
     private bool facingRight = true;
@@ -23,13 +24,14 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Charged Sword Attack")]
     [SerializeField] private float maxChargeTime = 1.5f;
-    [SerializeField] private float chargedattackDamage = 20f;
     [SerializeField] private GameObject swordArcPrefab;
 
     private float chargeTimer;
     private bool isCharging;
+    private bool isGunCharging; // Separate charging state for gun
     private bool usingSword = true;
     private float storedChargeLevel; // Store charge for animation event
+    private float storedGunChargeLevel; // Store gun charge for animation event
     
     [Header("Quick Attack Settings")]
     [SerializeField] private float quickClickThreshold = 0.2f; // Time threshold for quick vs hold
@@ -40,12 +42,16 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private bool usingGun = false;
 
     [Header("Gun Settings")]
-    [SerializeField] private float gunDamage = 10f;
+    [SerializeField] private float gunDamage = 20f;
+    [SerializeField] private GameObject chargedShotPrefab;
 
     private void Awake()
     {
         if (playerMovement == null)
             playerMovement = GetComponent<PlayerMovement>();
+        
+        if (playerEnergy == null)
+            playerEnergy = GetComponent<PlayerEnergy>();
     }
 
     private void Update()
@@ -56,18 +62,23 @@ public class PlayerCombat : MonoBehaviour
         anim = playerMovement.CurrentAnimator;
         facingRight = playerMovement.FacingRight;
 
-        // Handle charged attack only when using sword and is human
-        if (usingSword && !usingGun && playerMovement.IsHuman)
+        // Handle charged attack for both sword and gun when human
+        if (playerMovement.IsHuman && (usingSword || usingGun))
         {
             HandleChargedAttack();
         }
         else
         {
-            // Reset charging state if not using sword
+            // Reset both charging states if not human or no weapon
             if (isCharging)
             {
                 isCharging = false;
                 anim.SetBool("isCharging", false);
+            }
+            if (isGunCharging)
+            {
+                isGunCharging = false;
+                anim.SetBool("isGunCharging", false);
             }
         }
 
@@ -87,22 +98,38 @@ public class PlayerCombat : MonoBehaviour
             mouseDownTimer += Time.deltaTime;
             
             // Start charging only after threshold is exceeded
-            if (mouseDownTimer >= quickClickThreshold && !isCharging)
+            if (mouseDownTimer >= quickClickThreshold)
             {
-                StartCharging();
+                if (usingGun && !isGunCharging)
+                {
+                    StartGunCharging();
+                }
+                else if (!usingGun && !isCharging)
+                {
+                    StartSwordCharging();
+                }
             }
             
-            if (isCharging)
+            // Continue charging for appropriate weapon
+            if (usingGun && isGunCharging)
             {
-                Charge();
+                ChargeGun();
+            }
+            else if (!usingGun && isCharging)
+            {
+                ChargeSword();
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (isCharging)
+            if (usingGun && isGunCharging)
             {
-                ReleaseCharge();
+                ReleaseGunCharge();
+            }
+            else if (!usingGun && isCharging)
+            {
+                ReleaseSwordCharge();
             }
             else if (mouseWasPressed && mouseDownTimer < quickClickThreshold)
             {
@@ -115,18 +142,52 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-void StartCharging()
+void StartSwordCharging()
 {
     if (isCharging) return;
+
+    // Check if player has at least half energy before allowing sword charging
+    if (playerEnergy == null || playerEnergy.currentEnergy < (playerEnergy.maxEnergy * 0.5f))
+    {
+        Debug.Log("⚔️ SWORD CHARGING BLOCKED: Energy less than half! Need at least 50% energy.");
+        return;
+    }
 
     isCharging = true;
     chargeTimer = 0f;
     anim.SetBool("isCharging", true);
+    Debug.Log("Started sword charging");
 }
 
-void Charge()
+void StartGunCharging()
+{
+    if (isGunCharging) return;
+
+    // Check if player has full energy before allowing gun charging
+    if (playerEnergy == null || playerEnergy.currentEnergy < playerEnergy.maxEnergy)
+    {
+        Debug.Log("⚡ GUN CHARGING BLOCKED: Energy not full! Cannot charge gun.");
+        return;
+    }
+
+    isGunCharging = true;
+    chargeTimer = 0f;
+    anim.SetBool("isGunCharging", true);
+    Debug.Log("Started gun charging");
+}
+
+void ChargeSword()
 {
     if (!isCharging) return;
+
+    // Stop charging if energy is less than half
+    if (playerEnergy == null || playerEnergy.currentEnergy < (playerEnergy.maxEnergy * 0.5f))
+    {
+        Debug.Log("⚔️ SWORD CHARGING STOPPED: Energy below half during charging!");
+        isCharging = false;
+        anim.SetBool("isCharging", false);
+        return;
+    }
 
     chargeTimer += Time.deltaTime;
     chargeTimer = Mathf.Min(chargeTimer, maxChargeTime);
@@ -135,16 +196,68 @@ void Charge()
     anim.SetFloat("chargeLevel", charge01);
 }
 
-void ReleaseCharge()
+void ChargeGun()
+{
+    if (!isGunCharging) return;
+
+    // Stop charging if energy is no longer full
+    if (playerEnergy == null || playerEnergy.currentEnergy < playerEnergy.maxEnergy)
+    {
+        Debug.Log("⚡ GUN CHARGING STOPPED: Energy depleted during charging!");
+        isGunCharging = false;
+        anim.SetBool("isGunCharging", false);
+        return;
+    }
+
+    chargeTimer += Time.deltaTime;
+    chargeTimer = Mathf.Min(chargeTimer, maxChargeTime);
+
+    float charge01 = chargeTimer / maxChargeTime;
+    anim.SetFloat("chargeLevel", charge01);
+}
+
+void ReleaseSwordCharge()
 {
     if (!isCharging) return;
+
+    // Check if player has at least half energy for charged sword attack
+    if (playerEnergy == null || playerEnergy.currentEnergy < (playerEnergy.maxEnergy * 0.5f))
+    {
+        Debug.Log("⚔️ CHARGED SWORD BLOCKED: Not enough energy! Need at least half energy bar.");
+        isCharging = false;
+        anim.SetBool("isCharging", false);
+        return;
+    }
 
     isCharging = false;
     anim.SetBool("isCharging", false);
     anim.SetTrigger("chargedAttack");
-
+    
     // Store charge level for animation event
     storedChargeLevel = chargeTimer / maxChargeTime;
+    Debug.Log($"⚔️ CHARGED SWORD READY: Released sword charge: {storedChargeLevel:F2}");
+}
+
+void ReleaseGunCharge()
+{
+    if (!isGunCharging) return;
+
+    // Check if player has full energy for charged shot
+    if (playerEnergy == null || playerEnergy.currentEnergy < playerEnergy.maxEnergy)
+    {
+        Debug.Log("⚡ CHARGED SHOT BLOCKED: Not enough energy! Need full energy bar.");
+        isGunCharging = false;
+        anim.SetBool("isGunCharging", false);
+        return;
+    }
+
+    isGunCharging = false;
+    anim.SetBool("isGunCharging", false);
+    anim.SetTrigger("chargedShot");
+    
+    // Store charge level for animation event
+    storedGunChargeLevel = chargeTimer / maxChargeTime;
+    Debug.Log($"⚡ CHARGED SHOT READY: Released gun charge: {storedGunChargeLevel:F2}");
 }
 
 
@@ -154,6 +267,21 @@ public void ActivateSwordArc(float charge01)
     {
         Debug.LogError("SwordArcPrefab is not assigned!");
         return;
+    }
+
+    // Double-check energy before firing (safety check)
+    if (playerEnergy != null && playerEnergy.currentEnergy < (playerEnergy.maxEnergy * 0.5f))
+    {
+        Debug.LogWarning("⚔️ CHARGED SWORD CANCELLED: Insufficient energy during firing!");
+        return;
+    }
+
+    // Consume energy to half
+    if (playerEnergy != null)
+    {
+        float halfEnergy = playerEnergy.maxEnergy * 0.5f;
+        playerEnergy.SpendEnergy(playerEnergy.currentEnergy - halfEnergy);
+        Debug.Log($"⚔️ ENERGY CONSUMED: Energy reduced to half for charged sword! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
     }
 
     // Instantiate the sword arc at the attack point
@@ -172,12 +300,61 @@ public void ActivateSwordArc(float charge01)
 
     // Destroy the arc after a short duration
     Destroy(arcInstance, 1f);
+    
+    Debug.Log($"⚔️ CHARGED SWORD FIRED: Charge level: {charge01:F2}, Energy reduced to half!");
 }
 
 // Method to be called from animation events
 public void ActivateSwordArcFromAnimation()
 {
     ActivateSwordArc(storedChargeLevel);
+}
+
+public void ActivateChargedShot(float charge01)
+{
+    Debug.Log($"ActivateChargedShot called on {gameObject.name}, chargedShotPrefab = {chargedShotPrefab}");
+    
+    if (chargedShotPrefab == null)
+    {
+        Debug.LogError($"ChargedShotPrefab is not assigned on {gameObject.name}! Check the PlayerCombat component.");
+        return;
+    }
+
+    // Double-check energy before firing (safety check)
+    if (playerEnergy != null && playerEnergy.currentEnergy < playerEnergy.maxEnergy)
+    {
+        Debug.LogWarning("⚡ CHARGED SHOT CANCELLED: Insufficient energy during firing!");
+        return;
+    }
+
+    // Consume all player energy
+    if (playerEnergy != null)
+    {
+        playerEnergy.SpendEnergy(playerEnergy.maxEnergy);
+        Debug.Log($"⚡ ENERGY CONSUMED: All energy spent for charged shot! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
+    }
+
+    // Instantiate the charged shot at the fire point
+    GameObject shotInstance = Instantiate(chargedShotPrefab, firePoint.position, Quaternion.identity);
+    
+    // Set the direction based on facing direction
+    float dir = facingRight ? 1 : -1;
+    
+    // Set up the charged shot
+    ChargedShot chargedShot = shotInstance.GetComponent<ChargedShot>();
+    if (chargedShot != null)
+    {
+        chargedShot.SetDirection(dir);
+        chargedShot.SetCharge(charge01);
+    }
+
+    Debug.Log($"🔥 CHARGED SHOT FIRED: Charge level: {charge01:F2}, Energy depleted!");
+}
+
+// Method to be called from animation events
+public void ActivateChargedShotFromAnimation()
+{
+    ActivateChargedShot(storedGunChargeLevel);
 }
 
 
@@ -188,23 +365,30 @@ public void ActivateSwordArcFromAnimation()
         if (Input.GetKeyDown(KeyCode.Q))
             SwitchWeapon();
 
-        // Handle gun shooting separately
-        if (Input.GetKeyDown(KeyCode.Mouse0) && usingGun && playerMovement.IsHuman)
-        {
-            TryToShoot();
-        }
+        // Handle regular gun shooting only for quick clicks (not charging)
+        // The charging system now handles both sword and gun charged attacks
+        // Regular gun shooting is now handled by quick clicks in the charging system
         
-        // Note: Sword attacks (both regular and charged) are now handled in HandleChargedAttack()
+        // Note: Both sword and gun attacks (regular and charged) are now handled in HandleChargedAttack()
     }
 
     private void TryToAttack()
     {
-        // Keep your original rule: sword attack only when grounded, and not using gun
-        if (usingGun) return;
-        if (!playerMovement.IsGrounded) return;
-
-        if (anim != null)
-            anim.SetTrigger("attack");
+        if (!playerMovement.IsHuman) return;
+        
+        if (usingGun)
+        {
+            // Quick gun shot
+            TryToShoot();
+        }
+        else
+        {
+            // Sword attack only when grounded
+            if (!playerMovement.IsGrounded) return;
+            
+            if (anim != null)
+                anim.SetTrigger("attack");
+        }
     }
 
     public void DamageTarget()
@@ -224,31 +408,8 @@ public void ActivateSwordArcFromAnimation()
             EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(attackDamage);
-                Debug.Log("Dealt " + attackDamage + " damage to " + enemy.name);
-            }
-        }
-    }
-
-    public void DamageTargetCharged()
-    {
-        // Only damage when using sword (not gun) and when grounded
-        if (usingGun) return;
-        if (!playerMovement.IsGrounded) return;
-
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
-            attackPoint.position,
-            attackRange,
-            enemyLayers
-        );
-
-        foreach (Collider2D enemy in hitEnemies)
-        {
-            EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
-            if (enemyHealth != null)
-            {
-                enemyHealth.TakeDamage(chargedattackDamage);
-                Debug.Log("Dealt " + chargedattackDamage + " CHARGED damage to " + enemy.name);
+                enemyHealth.TakeDamage(10f); // ALWAYS 10 damage for quick attacks
+                Debug.Log("Dealt 10 QUICK damage to " + enemy.name);
             }
         }
     }
