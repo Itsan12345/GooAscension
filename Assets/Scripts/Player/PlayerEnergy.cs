@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +8,10 @@ public class PlayerEnergy : MonoBehaviour
     public float maxEnergy = 100f;
     public float currentEnergy;
     [SerializeField] private float energyRegenRate = 5f; // Passive regen over time
+    
+    [Header("Kill Rewards")]
+    [SerializeField] private float energyGainOnKill = 15f; // Energy gained when player kills an enemy
+    [SerializeField] private bool showKillEnergyGainDebug = true;
 
     [Header("UI Reference")]
     public Slider energySlider;
@@ -52,6 +56,18 @@ public class PlayerEnergy : MonoBehaviour
         if (energySlider != null)
         {
             energySlider.value = currentEnergy / maxEnergy;
+        }
+    }
+    
+    // Called when player kills an enemy
+    public void OnEnemyKilled()
+    {
+        float previousEnergy = currentEnergy;
+        GainEnergy(energyGainOnKill);
+        
+        if (showKillEnergyGainDebug)
+        {
+            Debug.Log($"⚡ ENERGY REWARD: Gained {energyGainOnKill} energy for enemy kill! Energy: {previousEnergy:F1} → {currentEnergy:F1}");
         }
     }
 }

@@ -152,6 +152,9 @@ public class EnemyHealth : MonoBehaviour
     {
         dead = true;
 
+        // Notify player of energy gain for kill
+        NotifyPlayerOfKill();
+
         // Stop any active flash coroutine and restore colors before death
         if (flashCoroutine != null)
         {
@@ -294,6 +297,28 @@ public class EnemyHealth : MonoBehaviour
 
         // Remove enemy after FX time
         Destroy(gameObject, destroyDelay);
+    }
+    
+    private void NotifyPlayerOfKill()
+    {
+        // Find the player in the scene and notify their energy system
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            PlayerEnergy playerEnergy = player.GetComponent<PlayerEnergy>();
+            if (playerEnergy != null)
+            {
+                playerEnergy.OnEnemyKilled();
+            }
+            else
+            {
+                Debug.LogWarning("Player found but no PlayerEnergy component attached!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No GameObject with 'Player' tag found for energy reward!");
+        }
     }
 }
     

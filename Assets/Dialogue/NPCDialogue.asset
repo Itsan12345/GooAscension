@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 133cff43f3468d24ab65f71b35b3496a, type: 3}
+  m_Name: NPCDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogue
+  npcName: Charlie Kirk
+  npcPortrait: {fileID: -855298285791758126, guid: 90eb10822bf351a4c90801e70300d82d, type: 3}
+  dialogueLines:
+  - What's Up, Nigger!
+  - Palit kag bato? Barato nalang kaayo ni oh kaning akong gikuptan mao nalang ni
+    nahibilin
+  autoProgressLines: 0100
+  autoProgressDelay: 1.5
+  typingSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 16d0b26fa682c474994e66f219568be4, type: 3}
+  voicePitch: 1
