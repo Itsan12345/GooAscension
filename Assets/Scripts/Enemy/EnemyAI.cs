@@ -5,6 +5,7 @@ public class EnemyAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform animatorObj;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask enemyLayer; // Layer for detecting other enemies
     [SerializeField] private Transform attackPoint;
     [SerializeField] private float attackPointOffset = 1.5f;
     private AttackPointTrigger attackPointTrigger;
@@ -41,6 +42,10 @@ public class EnemyAI : MonoBehaviour
     private bool movingRight = true;
     private bool waitingAtPatrolEnd = false;
     private float patrolWaitTimer;
+    
+    // Enemy collision avoidance
+    private float lastCollisionTime = 0f;
+    private float collisionCooldown = 1f; // Prevent rapid direction changes
 
     private void Awake()
     {
@@ -231,6 +236,21 @@ public class EnemyAI : MonoBehaviour
             : Quaternion.Euler(0, 180, 0);
         UpdateAttackPointPosition();
     }
+    
+    private void ReverseDirection()
+    {
+        // Reverse movement direction for patrol
+        if (isPatrolling)
+        {
+            movingRight = !movingRight;
+        }
+        
+        // Stop current movement momentarily to prevent getting stuck
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        
+        // Force flip to face the new direction immediately
+        Flip();
+    }
 
     private void UpdateAttackPointPosition()
     {
@@ -298,6 +318,22 @@ public class EnemyAI : MonoBehaviour
     public void EnableMovementAndJump(bool enable)
     {
         canMove = enable;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if collided with another enemy and if enough time has passed since last collision
+        if (Time.time - lastCollisionTime >= collisionCooldown)
+        {
+            EnemyAI otherEnemy = collision.gameObject.GetComponent<EnemyAI>();
+            if (otherEnemy != null)
+            {
+                // Reverse direction when colliding with another enemy
+                ReverseDirection();
+                lastCollisionTime = Time.time;
+                Debug.Log($"{gameObject.name} collided with {collision.gameObject.name}, reversing direction!");
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

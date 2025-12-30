@@ -44,7 +44,6 @@ public class NPC : MonoBehaviour, IInteractable
        if (exclamationSprite != null)
        {
            exclamationSprite.SetActive(false);
-           Debug.Log($"NPC {gameObject.name}: Exclamation sprite hidden at start");
        }
        
        // Validate dialogue data
@@ -264,8 +263,6 @@ public class NPC : MonoBehaviour, IInteractable
                 Vector3 offset = GetExclamationOffset();
                 exclamationSprite.transform.position = currentPlayer.transform.position + offset;
             }
-            
-            Debug.Log($"NPC {gameObject.name}: Exclamation sprite {(show ? "shown" : "hidden")} above player");
         }
         else if (show)
         {
@@ -286,10 +283,7 @@ public class NPC : MonoBehaviour, IInteractable
             {
                 bool isHuman = playerMovement.IsHuman;
                 float yOffset = isHuman ? humanYOffset : slimeYOffset;
-                
-                // Debug logging to identify the issue
-                Debug.Log($"NPC {gameObject.name}: Player form - IsHuman: {isHuman}, Using Y offset: {yOffset} (Slime: {slimeYOffset}, Human: {humanYOffset})");
-                
+        
                 return new Vector3(0f, yOffset, 0f);
             }
             else
@@ -301,9 +295,6 @@ public class NPC : MonoBehaviour, IInteractable
         {
             Debug.LogWarning($"NPC {gameObject.name}: currentPlayer is null!");
         }
-        
-        // Default to slime offset if we can't determine the form
-        Debug.Log($"NPC {gameObject.name}: Defaulting to slime offset: {slimeYOffset}");
         return new Vector3(0f, slimeYOffset, 0f);
     }
     

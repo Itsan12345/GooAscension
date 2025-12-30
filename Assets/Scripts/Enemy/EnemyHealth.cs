@@ -305,7 +305,7 @@ public class EnemyHealth : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            PlayerEnergy playerEnergy = player.GetComponent<PlayerEnergy>();
+            PlayerEnergy playerEnergy = player.GetComponentInParent<PlayerEnergy>();
             if (playerEnergy != null)
             {
                 playerEnergy.OnEnemyKilled();
