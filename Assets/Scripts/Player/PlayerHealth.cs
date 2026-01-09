@@ -10,8 +10,9 @@ public class PlayerHealth : MonoBehaviour
     public float maxHealth = 100f;
     private float currentHealth;
 
-    [Header("UI Reference")]
-    public Slider healthSlider;
+    [Header("UI References")]
+    public Image healthBarTotal;
+    public Image healthBarCurrent;
 
     [Header("Damage Flash")]
     [Tooltip("The color the sprite flashes when hit.")]
@@ -87,9 +88,9 @@ public class PlayerHealth : MonoBehaviour
 
     void UpdateUI()
     {
-        if (healthSlider != null)
+        if (healthBarCurrent != null)
         {
-            healthSlider.value = currentHealth / maxHealth;
+            healthBarCurrent.fillAmount = currentHealth / maxHealth;
         }
     }
 
