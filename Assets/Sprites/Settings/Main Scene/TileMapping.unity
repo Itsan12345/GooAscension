@@ -547,9 +547,20 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attackPoint: {fileID: 0}
+  attackPointOffset: 1.5
   moveSpeed: 3
   stopDistance: 0.5
   horizontalAlignmentThreshold: 0.2
+  detectionRadius: 5
+  loseTargetRadius: 7
+  enablePatrol: 1
+  patrolDistance: 4
+  patrolSpeed: 2
+  waitTimeAtEnd: 1
   damageAmount: 30
   attackCooldown: 1
 --- !u!61 &196718588
@@ -637,9 +648,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12586902ea080b548836f68884dd1882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  health: 30
-  deathEffect: {fileID: 1776456872437759555, guid: abe02a104fca806418b05cf010a09625, type: 3}
-  energyReward: 20
+  maxHealth: 50
+  healthBarCanvas: {fileID: 0}
+  healthBarSlider: {fileID: 0}
+  healthBarOffset: 0.5
+  explosionPrefab: {fileID: 0}
+  destroyDelay: 2
+  explosionZ: -1
+  animatorObj: {fileID: 0}
+  deathAnimationDuration: 1
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &196956817
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,8 +693,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 8.439941}
+  m_SizeDelta: {x: 0, y: 0.9644}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &196956819
 MonoBehaviour:
@@ -940,6 +959,96 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2025484232}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &452194372
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 452194374}
+  - component: {fileID: 452194373}
+  m_Layer: 0
+  m_Name: SHuman-Run_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &452194373
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 452194372}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: -6357364953712480064, guid: 443d34a9317729d4983af6d61a9cc83f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.44, y: 0.61}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &452194374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 452194372}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -2000,7 +2109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &977494583
 Transform:
   m_ObjectHideFlags: 0
@@ -2508,7 +2617,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1493691545
 Transform:
   m_ObjectHideFlags: 0
@@ -2632,7 +2741,7 @@ Transform:
   m_GameObject: {fileID: 1539301136}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.02, z: 0}
+  m_LocalPosition: {x: -1.74, y: 0.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2712,7 +2821,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.24, y: 0.34}
+  m_Size: {x: 0.44, y: 0.61}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -3378,6 +3487,8 @@ MonoBehaviour:
   dashSpeed: 20
   dashDuration: 0.2
   dashCooldown: 1
+  maxJumpsHuman: 2
+  maxJumpsSlime: 1
   groundCheckDistance: 0.6
   ventCheckDistance: 0.8
   whatIsGround:
@@ -3387,20 +3498,14 @@ MonoBehaviour:
   slimeAnimator: {fileID: 1539301136}
   humanHitbox: {fileID: 977494581}
   humanAnimator: {fileID: 1493691544}
-  bulletPrefab: {fileID: 6027531330172379228, guid: cb8086bd33de96e4ab7c6014dad288e6, type: 3}
-  firePoint: {fileID: 955531139}
-  shootCooldown: 0.3
+  transformCost: 25
   slimeBuoyancy: 15
   humanWeight: 5
   waterDrag: 2
-  attackPoint: {fileID: 385320230}
-  attackRange: 0.5
-  enemyLayers:
-    serializedVersion: 2
-    m_Bits: 1536
-  attackDamage: 10
-  transformCost: 25
   knockbackForce: 10
+  dashInvulnerable: 1
+  dashThroughEnemies: 1
+  enemyLayerName: Enemy
 --- !u!50 &2025484234
 Rigidbody2D:
   serializedVersion: 5
@@ -3441,7 +3546,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   maxHealth: 100
-  healthSlider: {fileID: 852655976}
+  healthBarTotal: {fileID: 0}
+  healthBarCurrent: {fileID: 0}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
   reloadDelay: 2
@@ -3462,6 +3568,8 @@ MonoBehaviour:
   maxEnergy: 100
   currentEnergy: 0
   energyRegenRate: 5
+  energyGainOnKill: 15
+  showKillEnergyGainDebug: 1
   energySlider: {fileID: 2002402200}
 --- !u!1 &2030390968
 GameObject:
@@ -3649,3 +3757,4 @@ SceneRoots:
   - {fileID: 876041022}
   - {fileID: 1192914016}
   - {fileID: 2030390970}
+  - {fileID: 452194374}
