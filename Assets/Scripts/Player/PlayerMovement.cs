@@ -39,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimer;
     private float dashCooldownTimer;
     private int dashDirection;
+    private bool isAttackingOrCharging = false; // Track if currently attacking/charging
 
     // =========================================================
     // Jump / Ground
@@ -220,8 +221,12 @@ public class PlayerMovement : MonoBehaviour
             if (dashThroughEnemies && enemyLayer != -1)
                 Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
 
-            if (isGrounded && anim != null)
+            // Set animator parameter to allow dash transition
+            if (anim != null)
+            {
+                anim.SetBool("allowDash", true);
                 anim.SetTrigger("dash");
+            }
         }
     }
 
@@ -245,6 +250,10 @@ public class PlayerMovement : MonoBehaviour
             isDashing = false;
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
 
+            // Disable animator parameter to prevent dash from being triggered again
+            if (anim != null)
+                anim.SetBool("allowDash", false);
+
             // Disable i-frames + pass-through ONLY when dash ends
             if (dashInvulnerable)
                 IsInvulnerable = false;
@@ -266,6 +275,17 @@ public class PlayerMovement : MonoBehaviour
             Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, false);
     }
 
+    /// <summary>
+    /// Called by PlayerCombat to notify when attacking/charging state changes
+    /// </summary>
+    public void SetAttackingOrCharging(bool attacking)
+    {
+        isAttackingOrCharging = attacking;
+        
+        // Disable dash transition when attacking/charging
+        if (anim != null)
+            anim.SetBool("allowDash", false);
+    }
 
     // =========================================================
     // Collision / Ground checks

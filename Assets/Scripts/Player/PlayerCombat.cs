@@ -9,6 +9,9 @@ public class PlayerCombat : MonoBehaviour
     private Animator anim;
     private bool facingRight = true;
 
+    // Public accessor for PlayerAnimationEvents
+    public PlayerMovement PlayerMovementRef => playerMovement;
+
     [Header("Weapon System")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
@@ -156,6 +159,7 @@ void StartSwordCharging()
     isCharging = true;
     chargeTimer = 0f;
     anim.SetBool("isCharging", true);
+    playerMovement.SetAttackingOrCharging(true);
     Debug.Log("Started sword charging");
 }
 
@@ -173,6 +177,7 @@ void StartGunCharging()
     isGunCharging = true;
     chargeTimer = 0f;
     anim.SetBool("isGunCharging", true);
+    playerMovement.SetAttackingOrCharging(true);
     Debug.Log("Started gun charging");
 }
 
@@ -226,12 +231,14 @@ void ReleaseSwordCharge()
         Debug.Log("⚔️ CHARGED SWORD BLOCKED: Not enough energy! Need at least half energy bar.");
         isCharging = false;
         anim.SetBool("isCharging", false);
+        playerMovement.SetAttackingOrCharging(false);
         return;
     }
 
     isCharging = false;
     anim.SetBool("isCharging", false);
     anim.SetTrigger("chargedAttack");
+    playerMovement.SetAttackingOrCharging(true);
     
     // Store charge level for animation event
     storedChargeLevel = chargeTimer / maxChargeTime;
@@ -248,12 +255,14 @@ void ReleaseGunCharge()
         Debug.Log("⚡ CHARGED SHOT BLOCKED: Not enough energy! Need full energy bar.");
         isGunCharging = false;
         anim.SetBool("isGunCharging", false);
+        playerMovement.SetAttackingOrCharging(false);
         return;
     }
 
     isGunCharging = false;
     anim.SetBool("isGunCharging", false);
     anim.SetTrigger("chargedShot");
+    playerMovement.SetAttackingOrCharging(true);
     
     // Store charge level for animation event
     storedGunChargeLevel = chargeTimer / maxChargeTime;
@@ -357,7 +366,14 @@ public void ActivateChargedShotFromAnimation()
     ActivateChargedShot(storedGunChargeLevel);
 }
 
-
+/// <summary>
+/// Called by animation events when attack/charged attack animations finish
+/// </summary>
+public void OnAttackAnimationEnd()
+{
+    if (playerMovement != null)
+        playerMovement.SetAttackingOrCharging(false);
+}
 
 
     private void HandleCombatInput()
@@ -387,7 +403,10 @@ public void ActivateChargedShotFromAnimation()
             if (!playerMovement.IsGrounded) return;
             
             if (anim != null)
+            {
                 anim.SetTrigger("attack");
+                playerMovement.SetAttackingOrCharging(true);
+            }
         }
     }
 

@@ -11,6 +11,11 @@ public class Bullet : MonoBehaviour
     public void SetDirection(float dir)
     {
         direction = Mathf.Sign(dir);
+        
+        // Flip sprite based on direction
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * direction;
+        transform.localScale = scale;
     }
 
     public void SetDamage(float dmg)

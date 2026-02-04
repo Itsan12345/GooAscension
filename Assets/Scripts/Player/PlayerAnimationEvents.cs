@@ -35,6 +35,12 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.ActivateChargedShotFromAnimation();
     }
 
+    public void OnAttackAnimationEnd()
+    {
+        if (playerCombat != null && playerCombat.PlayerMovementRef != null)
+            playerCombat.PlayerMovementRef.SetAttackingOrCharging(false);
+    }
+
     private void DisableMovementAndJump() => player.EnableMovementAndJump(false);    
 
     private void EnableMovementAndJump() => player.EnableMovementAndJump(true);
