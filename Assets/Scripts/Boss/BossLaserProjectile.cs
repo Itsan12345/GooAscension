@@ -27,6 +27,11 @@ public class BossLaserProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // Ignore the boss and its own children
+        if (other.GetComponentInParent<MechBossAI>() != null) return;
+        // Ignore other laser projectiles
+        if (other.GetComponent<BossLaserProjectile>() != null) return;
+
         PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
         if (health != null)
         {
@@ -40,8 +45,7 @@ public class BossLaserProjectile : MonoBehaviour
             return;
         }
 
-        // Destroy on ground/walls
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (other.CompareTag("Ground") || other.gameObject.layer == LayerMask.NameToLayer("Ground"))
             Destroy(gameObject);
     }
 }

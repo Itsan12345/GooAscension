@@ -25,6 +25,11 @@ public class MechBossAI : MonoBehaviour
     [SerializeField] private float detectionRadius = 12f;
     [SerializeField] private float loseTargetRadius = 18f;
 
+    [Header("Water Avoidance")]
+    [SerializeField] private LayerMask waterLayer;
+    [SerializeField] private float waterCheckDistance = 1.2f;  // How far ahead to scan
+    [SerializeField] private float waterCheckHeightOffset = 0f; // Adjust if boss origin isn't at feet
+
     [Header("Melee Attack")]
     [SerializeField] private float meleeDamage = 20f;
     [SerializeField] private float meleeAttackRange = 2.5f;
@@ -52,6 +57,10 @@ public class MechBossAI : MonoBehaviour
     private bool isGrounded = false;
     private bool isPhase2 = false;
     private bool isEntering = true;
+    private bool isBlockedByWater = false;
+
+    // Cached player components (refreshed when player reference changes)
+    private PlayerMovement playerMovement;
 
     private float nextMeleeAttackTime = 0f;
     private float nextLaserAttackTime = 0f;
@@ -95,7 +104,53 @@ public class MechBossAI : MonoBehaviour
     private void FindTargetPlayer()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        player = playerObj != null ? playerObj.transform : null;
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+            playerMovement = playerObj.GetComponent<PlayerMovement>();
+        }
+        else
+        {
+            player = null;
+            playerMovement = null;
+        }
+    }
+
+    // Returns the best position to target — uses the active hitbox so both forms are tracked correctly
+    private Vector3 GetPlayerTargetPosition()
+    {
+        if (player == null) return Vector3.zero;
+
+        // If we have PlayerMovement, target whichever form's hitbox is currently active
+        if (playerMovement != null)
+        {
+            // Walk children and return the first active child collider's position
+            foreach (Transform child in player)
+            {
+                if (child.gameObject.activeInHierarchy)
+                {
+                    Collider2D col = child.GetComponent<Collider2D>();
+                    if (col != null) return col.bounds.center;
+                }
+            }
+        }
+        return player.position;
+    }
+
+    // Returns true when the player is currently in Slime form
+    private bool IsPlayerSlime()
+    {
+        return playerMovement != null && !playerMovement.IsHuman;
+    }
+
+    // Reliably finds PlayerHealth regardless of where it sits in the player hierarchy
+    private PlayerHealth FindPlayerHealth()
+    {
+        if (player == null) return null;
+        PlayerHealth health = player.GetComponent<PlayerHealth>();
+        if (health == null) health = player.GetComponentInParent<PlayerHealth>();
+        if (health == null) health = player.GetComponentInChildren<PlayerHealth>();
+        return health;
     }
 
     private void Update()
@@ -119,32 +174,86 @@ public class MechBossAI : MonoBehaviour
     {
         if (isAttacking) return;
 
-        float dist = Vector2.Distance(transform.position, player.position);
+        Vector3 targetPos = GetPlayerTargetPosition();
+        float dist = Vector2.Distance(transform.position, targetPos);
+
+        // If player is in slime form and in water and boss is blocked — use ranged attack if possible
+        bool playerInWater = IsPlayerSlime() && isBlockedByWater;
 
         // Priority: Stomp > Melee > Laser > Chase
-        if (isPhase2 && Time.time >= nextStompTime && dist <= stompRadius)
+        if (isPhase2 && Time.time >= nextStompTime && dist <= stompRadius && !playerInWater)
             StartCoroutine(DoStompAttack());
-        else if (Time.time >= nextMeleeAttackTime && dist <= meleeAttackRange)
+        else if (Time.time >= nextMeleeAttackTime && dist <= meleeAttackRange && !playerInWater)
             StartCoroutine(DoMeleeAttack());
         else if (isPhase2 && Time.time >= nextLaserAttackTime && dist <= laserAttackRange)
-            StartCoroutine(DoLaserAttack());
-        else
+            StartCoroutine(DoLaserAttack()); // Laser can hit player in water
+        else if (!isBlockedByWater)
             ChasePlayer();
+        else
+            StopMoving(); // Boss waits at water's edge
     }
 
     private void ChasePlayer()
     {
         if (player == null || isAttacking) return;
 
-        float dist = Vector2.Distance(transform.position, player.position);
+        Vector3 targetPos = GetPlayerTargetPosition();
+        float dist = Vector2.Distance(transform.position, targetPos);
         if (dist <= stopDistance)
         {
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             return;
         }
 
-        float dir = Mathf.Sign(player.position.x - transform.position.x);
+        float dir = Mathf.Sign(targetPos.x - transform.position.x);
+
+        // Stop at water's edge — boss cannot enter water
+        if (IsWaterAhead(dir))
+        {
+            isBlockedByWater = true;
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
+        }
+
+        isBlockedByWater = false;
         rb.linearVelocity = new Vector2(dir * currentMoveSpeed, rb.linearVelocity.y);
+    }
+
+    // Checks for water directly ahead (horizontal) and for water pits at floor level ahead
+    private bool IsWaterAhead(float direction)
+    {
+        if (waterLayer == 0) return false; // Layer not assigned, skip check
+
+        Vector2 bodyOrigin = (Vector2)transform.position + Vector2.up * waterCheckHeightOffset;
+
+        // Horizontal body-level scan
+        if (Physics2D.Raycast(bodyOrigin, new Vector2(direction, 0f), waterCheckDistance, waterLayer))
+            return true;
+
+        // Floor-level scan: check the ground one step ahead for a water surface
+        Vector2 aheadFloor = new Vector2(transform.position.x + direction * waterCheckDistance,
+                                          transform.position.y - 0.3f);
+        if (Physics2D.OverlapPoint(aheadFloor, waterLayer) != null)
+            return true;
+
+        return false;
+    }
+
+    // Called when the boss accidentally lands in water (failsafe)
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Water"))
+        {
+            // Boss is heavy — immediately push it back up and out
+            rb.linearVelocity = new Vector2(-rb.linearVelocity.x, 5f);
+            isBlockedByWater = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Water"))
+            isBlockedByWater = false;
     }
 
     private IEnumerator DoMeleeAttack()
@@ -157,8 +266,11 @@ public class MechBossAI : MonoBehaviour
         float cooldown = meleeAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextMeleeAttackTime = Time.time + cooldown;
 
-        // DamageMelee() is called via animation event at the hit frame
-        yield return new WaitForSeconds(cooldown * 0.85f);
+        // Wait for the visual hit frame then apply damage
+        yield return new WaitForSeconds(0.4f);
+        DamageMelee();
+
+        yield return new WaitForSeconds(cooldown - 0.4f);
         isAttacking = false;
     }
 
@@ -172,8 +284,11 @@ public class MechBossAI : MonoBehaviour
         float cooldown = laserAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextLaserAttackTime = Time.time + cooldown;
 
-        // FireLaser() is called via animation event at the fire frame
-        yield return new WaitForSeconds(cooldown * 0.85f);
+        // Wait for the visual fire frame then spawn the laser
+        yield return new WaitForSeconds(0.5f);
+        FireLaser();
+
+        yield return new WaitForSeconds(cooldown - 0.5f);
         isAttacking = false;
     }
 
@@ -186,25 +301,29 @@ public class MechBossAI : MonoBehaviour
 
         nextStompTime = Time.time + stompCooldown;
 
-        // DamageStomped() is called via animation event at the impact frame
+        // Wait for the visual impact frame then deal AoE damage
+        yield return new WaitForSeconds(0.5f);
+        DamageStomped();
+
         yield return new WaitForSeconds(stompCooldown * 0.5f);
         isAttacking = false;
     }
 
-    // Called by MechBossAnimationEvents at the melee hit frame
+    // Called by coroutine (and optionally by MechBossAnimationEvents)
     public void DamageMelee()
     {
         if (player == null) return;
 
-        float dist = Vector2.Distance(meleeAttackPoint != null ? meleeAttackPoint.position : transform.position, player.position);
+        Vector3 hitOrigin = meleeAttackPoint != null ? meleeAttackPoint.position : transform.position;
+        float dist = Vector2.Distance(hitOrigin, GetPlayerTargetPosition());
         if (dist > meleeAttackRadius) return;
 
-        PlayerHealth health = player.GetComponentInParent<PlayerHealth>();
+        PlayerHealth health = FindPlayerHealth();
         if (health != null)
         {
             health.TakeDamage(meleeDamage);
 
-            PlayerMovement pm = player.GetComponentInParent<PlayerMovement>();
+            PlayerMovement pm = health.GetComponent<PlayerMovement>();
             if (pm != null)
             {
                 Vector2 knockbackDir = (player.position - transform.position).normalized;
@@ -214,12 +333,13 @@ public class MechBossAI : MonoBehaviour
         }
     }
 
-    // Called by MechBossAnimationEvents at the laser fire frame
+    // Called by coroutine (and optionally by MechBossAnimationEvents)
     public void FireLaser()
     {
         if (laserFirePoint == null || laserProjectilePrefab == null || player == null) return;
 
-        Vector2 direction = (player.position - laserFirePoint.position).normalized;
+        // Aim at the active hitbox so the laser tracks both slime and human forms correctly
+        Vector2 direction = ((Vector2)GetPlayerTargetPosition() - (Vector2)laserFirePoint.position).normalized;
         GameObject laser = Instantiate(laserProjectilePrefab, laserFirePoint.position, Quaternion.identity);
 
         BossLaserProjectile projectile = laser.GetComponent<BossLaserProjectile>();
@@ -227,25 +347,23 @@ public class MechBossAI : MonoBehaviour
             projectile.Initialize(direction, laserProjectileSpeed, laserDamage);
     }
 
-    // Called by MechBossAnimationEvents at the stomp impact frame
+    // Called by coroutine (and optionally by MechBossAnimationEvents)
     public void DamageStomped()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, stompRadius);
-        foreach (var hit in hits)
-        {
-            PlayerHealth health = hit.GetComponentInParent<PlayerHealth>();
-            if (health != null)
-            {
-                health.TakeDamage(stompDamage);
+        PlayerHealth health = FindPlayerHealth();
+        if (health == null) return;
 
-                PlayerMovement pm = hit.GetComponentInParent<PlayerMovement>();
-                if (pm != null)
-                {
-                    Vector2 knockbackDir = (hit.transform.position - transform.position).normalized;
-                    knockbackDir.y += 0.5f;
-                    pm.ApplyKnockback(knockbackDir.normalized);
-                }
-            }
+        float dist = Vector2.Distance(transform.position, health.transform.position);
+        if (dist > stompRadius) return;
+
+        health.TakeDamage(stompDamage);
+
+        PlayerMovement pm = health.GetComponent<PlayerMovement>();
+        if (pm != null)
+        {
+            Vector2 knockbackDir = (health.transform.position - transform.position).normalized;
+            knockbackDir.y += 0.5f;
+            pm.ApplyKnockback(knockbackDir.normalized);
         }
     }
 
@@ -355,5 +473,11 @@ public class MechBossAI : MonoBehaviour
 
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, stompRadius);
+
+        // Water check rays
+        Gizmos.color = Color.blue;
+        Vector3 origin = transform.position + Vector3.up * waterCheckHeightOffset;
+        Gizmos.DrawRay(origin, Vector3.right * waterCheckDistance);
+        Gizmos.DrawRay(origin, Vector3.left * waterCheckDistance);
     }
 }

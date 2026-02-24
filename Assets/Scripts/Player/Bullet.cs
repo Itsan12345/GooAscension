@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
@@ -35,19 +35,15 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // ✅ Damage enemies
-        EnemyHealth eh = other.GetComponentInParent<EnemyHealth>();
-        if (eh != null)
+        IDamageable target = other.GetComponentInParent<IDamageable>();
+        if (target != null)
         {
-            eh.TakeDamage(damage);
+            target.TakeDamage(damage);
             Destroy(gameObject);
             return;
         }
 
-        // Optional: destroy bullet when hitting ground/walls
         if (other.CompareTag("Ground"))
-        {
             Destroy(gameObject);
-        }
     }
 }
