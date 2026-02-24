@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -96,13 +97,13 @@ public class PlayerCombat : MonoBehaviour
 
     void HandleChargedAttack()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             mouseWasPressed = true;
             mouseDownTimer = 0f;
         }
 
-        if (Input.GetMouseButton(0) && mouseWasPressed)
+        if (Mouse.current.leftButton.isPressed && mouseWasPressed)
         {
             mouseDownTimer += Time.deltaTime;
             
@@ -130,7 +131,7 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             if (usingGun && isGunCharging)
             {
@@ -391,7 +392,7 @@ public void OnAttackAnimationEnd()
 
     private void HandleCombatInput()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Keyboard.current.qKey.wasPressedThisFrame)
             SwitchWeapon();
 
         // Handle regular gun shooting only for quick clicks (not charging)

@@ -280,7 +280,6 @@ AnimatorState:
   - {fileID: 4133484061246127748}
   - {fileID: 4485131450090877730}
   - {fileID: 7574021303447277638}
-  - {fileID: 3616114421681420694}
   - {fileID: -8829264217316099511}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}

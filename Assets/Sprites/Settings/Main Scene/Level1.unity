@@ -591,10 +591,6 @@ GameObject:
   - component: {fileID: 242710317}
   m_Layer: 0
   m_Name: SoundEffectController
-  - component: {fileID: 219551983}
-  - component: {fileID: 219551984}
-  m_Layer: 0
-  m_Name: SunkenSpiresGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -606,7 +602,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-m_GameObject: {fileID: 242710315}
+  m_GameObject: {fileID: 242710315}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -763,25 +759,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &219551984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-m_GameObject: {fileID: 242710315}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57017edb2547ec544a309c6d8c32ba7c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoundEffectManager
-  soundEffectGroups:
-  - name: NPC
-    audioClips:
-    - clip: {fileID: 8300000, guid: 16d0b26fa682c474994e66f219568be4, type: 3}
-  - name: SwordAttack
-    audioClips:
-    - clip: {fileID: 8300000, guid: 7ceb155c2eaed6146bf55cec3961c118, type: 3}
 --- !u!114 &219551984
 MonoBehaviour:
   m_ObjectHideFlags: 0
