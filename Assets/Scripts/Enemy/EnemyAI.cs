@@ -331,7 +331,6 @@ public class EnemyAI : MonoBehaviour
                 // Reverse direction when colliding with another enemy
                 ReverseDirection();
                 lastCollisionTime = Time.time;
-                Debug.Log($"{gameObject.name} collided with {collision.gameObject.name}, reversing direction!");
             }
         }
     }

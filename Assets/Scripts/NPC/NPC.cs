@@ -21,6 +21,13 @@ public class NPC : MonoBehaviour, IInteractable
    public float slimeYOffset = 1.5f;
    public float humanYOffset = 2.0f;
    
+   [Header("Sound Effect Settings")]
+   public SoundEffectLibrary soundEffectLibrary;
+   public AudioSource soundEffectAudioSource;
+   public string npcSoundGroupName = "NPC";
+   public int npcSoundElementIndex = 0;
+   public bool playVoiceWithTyping = true;
+   
    private GameObject currentPlayer;
 
    private int dialogueIndex;
@@ -120,6 +127,24 @@ public class NPC : MonoBehaviour, IInteractable
     {
         Debug.Log($"NPC {gameObject.name}: StartDialogue() called");
         
+        // Play NPC interaction sound effect
+        if (soundEffectLibrary != null)
+        {
+            if (soundEffectAudioSource != null)
+            {
+                soundEffectLibrary.PlaySoundEffect(soundEffectAudioSource, npcSoundGroupName, npcSoundElementIndex);
+                Debug.Log($"NPC {gameObject.name}: Playing sound effect '{npcSoundGroupName}'");
+            }
+            else
+            {
+                Debug.LogWarning($"NPC {gameObject.name}: soundEffectAudioSource is not assigned! Assign the SoundEffectController's AudioSource in the inspector.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"NPC {gameObject.name}: SoundEffectLibrary not assigned!");
+        }
+        
         // Hide exclamation sprite during dialogue
         ShowExclamationSprite(false);
         
@@ -181,6 +206,13 @@ public class NPC : MonoBehaviour, IInteractable
         {
             displayText += letter;
             dialogueText.SetText(displayText);
+            
+            // Play voice sound effect for each letter to simulate talking
+            if (playVoiceWithTyping && soundEffectLibrary != null && soundEffectAudioSource != null)
+            {
+                soundEffectLibrary.PlaySoundEffect(soundEffectAudioSource, npcSoundGroupName, npcSoundElementIndex);
+            }
+            
             yield return new WaitForSecondsRealtime(dialogueData.typingSpeed);
         }   
 

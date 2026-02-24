@@ -35,6 +35,12 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.ActivateChargedShotFromAnimation();
     }
 
+    public void PlayAttackSound()
+    {
+        if (playerCombat != null)
+            playerCombat.PlayAttackSound();
+    }
+
     public void OnAttackAnimationEnd()
     {
         if (playerCombat != null && playerCombat.PlayerMovementRef != null)

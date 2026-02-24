@@ -18,6 +18,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float shootCooldown = 0.3f;
     private bool canShoot = true;
 
+    [Header("Sound Effect Settings")]
+    [SerializeField] private SoundEffectLibrary soundEffectLibrary;
+    [SerializeField] private AudioSource attackAudioSource;
+    [SerializeField] private string swordAttackSoundGroupName = "SwordAttacl";
+    [SerializeField] private int swordAttackSoundElementIndex = 0;
+
     [Header("Attack Settings")]
     [SerializeField] private Transform attackPoint;
     [SerializeField] private float attackRange = 0.5f;
@@ -285,6 +291,13 @@ public void ActivateSwordArc(float charge01)
         return;
     }
 
+    // Play sword attack sound for charged attack
+    if (soundEffectLibrary != null && attackAudioSource != null)
+    {
+        soundEffectLibrary.PlaySoundEffect(attackAudioSource, swordAttackSoundGroupName, swordAttackSoundElementIndex);
+        Debug.Log("Playing charged sword attack sound effect");
+    }
+
     // Consume energy to half
     if (playerEnergy != null)
     {
@@ -407,6 +420,16 @@ public void OnAttackAnimationEnd()
                 anim.SetTrigger("attack");
                 playerMovement.SetAttackingOrCharging(true);
             }
+        }
+    }
+
+    public void PlayAttackSound()
+    {
+        // Play sword attack sound from animation event
+        if (soundEffectLibrary != null && attackAudioSource != null)
+        {
+            soundEffectLibrary.PlaySoundEffect(attackAudioSource, swordAttackSoundGroupName, swordAttackSoundElementIndex);
+            Debug.Log("Playing sword attack sound effect from animation");
         }
     }
 
