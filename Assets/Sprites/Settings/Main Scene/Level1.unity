@@ -587,6 +587,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 219551983}
+  - component: {fileID: 219551984}
   m_Layer: 0
   m_Name: SunkenSpiresGenerator
   m_TagString: Untagged
@@ -609,6 +610,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &219551984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219551982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f430d6ce28f8c45ac472ae7550ff52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SunkenSpiresGenerator
+  groundTilemap: {fileID: 1549307600}
+  platformTilemap: {fileID: 551094699}
+  waterTilemap: {fileID: 498443162}
+  backgroundTilemap: {fileID: 517925326}
+  solidTile: {fileID: 0}
+  platformTile: {fileID: 0}
+  waterFillTile: {fileID: 0}
+  bgTile: {fileID: 0}
+  playerSpawnMarker: {fileID: 55043303}
+  npc1Prefab: {fileID: 1448640003}
+  npc2Prefab: {fileID: 0}
+  evolutionPedestalPrefab: {fileID: 0}
+  bossPrefab: {fileID: 826164664}
+  levelEntrancePrefab: {fileID: 0}
+  playerSpawnWorld: {x: 0, y: 0, z: 0}
+  bossSpawnWorld: {x: 0, y: 0, z: 0}
 --- !u!1 &324780631
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,37 +2243,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &891397179
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 891397180}
-  m_Layer: 0
-  m_Name: Grid
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &891397180
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 891397179}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.93164, y: 3.35602, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1048617951
 GameObject:
   m_ObjectHideFlags: 0
@@ -2585,6 +2583,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1448640003 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8112510953212094362, guid: 98acde82d6be3864aa15ddade2a94263, type: 3}
+  m_PrefabInstance: {fileID: 8207829143439875284}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1549307594
 GameObject:
   m_ObjectHideFlags: 0
@@ -4008,6 +4011,5 @@ SceneRoots:
   - {fileID: 8207829143439875284}
   - {fileID: 1756344033}
   - {fileID: 9179222215720118910}
-  - {fileID: 891397180}
   - {fileID: 357381643}
   - {fileID: 219551983}
