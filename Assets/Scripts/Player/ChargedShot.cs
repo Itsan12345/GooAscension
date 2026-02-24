@@ -67,34 +67,29 @@ public class ChargedShot : MonoBehaviour
         // Don't hit the same target multiple times
         if (hitTargets.Contains(other)) return;
 
-        // Check for enemy collision
-        EnemyHealth enemyHealth = other.GetComponentInParent<EnemyHealth>();
-        if (enemyHealth != null)
+        IDamageable target = other.GetComponentInParent<IDamageable>();
+        if (target != null)
         {
             hitTargets.Add(other);
             enemiesHit++;
-            
-            // Deal damage
-            enemyHealth.TakeDamage(currentDamage);
+
+            target.TakeDamage(currentDamage);
             Debug.Log($"ChargedShot dealt {currentDamage} damage to {other.name}");
-            
-            // Apply knockback
+
             Rigidbody2D enemyRb = other.GetComponentInParent<Rigidbody2D>();
             if (enemyRb != null)
             {
                 Vector2 knockbackDirection = new Vector2(direction, 0.2f).normalized;
                 enemyRb.AddForce(knockbackDirection * knockbackForce * (1f + chargeLevel));
             }
-            
-            // Destroy shot after hitting max enemies (unless fully charged - then pierce more)
+
             float maxPierce = pierceCount * (1f + chargeLevel);
             if (enemiesHit >= maxPierce)
             {
-                // Create a small explosion effect at destruction point
                 CreateImpactEffect();
                 Destroy(gameObject);
             }
-            
+
             return;
         }
 

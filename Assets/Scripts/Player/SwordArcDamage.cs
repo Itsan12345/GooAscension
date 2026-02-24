@@ -85,39 +85,31 @@ public class SwordArcDamage : MonoBehaviour
         bool isEnemyLayer = other.gameObject.layer == LayerMask.NameToLayer("Enemy");
         Debug.Log($"🗡️ Enemy layer check: {isEnemyLayer}");
         
-        // Check for enemy collision (like charged shot)
-        EnemyHealth enemyHealth = other.GetComponentInParent<EnemyHealth>();
-        if (enemyHealth != null)
+        IDamageable target = other.GetComponentInParent<IDamageable>();
+        if (target != null)
         {
             hitTargets.Add(other);
             enemiesHit++;
-            
+
             Debug.Log($"🗡️ DEALING DAMAGE: {currentDamage} to {other.name} (enemy #{enemiesHit})");
-            
-            // Deal damage
-            enemyHealth.TakeDamage(currentDamage);
-            
-            // Apply knockback if the enemy has a Rigidbody2D
+
+            target.TakeDamage(currentDamage);
+
             Rigidbody2D enemyRb = other.GetComponentInParent<Rigidbody2D>();
             if (enemyRb != null)
             {
                 Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
                 enemyRb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
-                Debug.Log($"🗡️ Applied knockback to {other.name}");
             }
-            
-            Debug.Log($"🗡️ SUCCESS: Sword arc dealt {currentDamage} damage to {other.name}");
-            
-            // Check if we've hit the maximum number of enemies (like charged shot)
+
             if (enemiesHit >= pierceCount)
             {
-                Debug.Log($"🗡️ Sword arc reached max pierce count ({pierceCount}), destroying");
                 CreateImpactEffect();
                 Destroy(gameObject);
                 return;
             }
-            
-            return; // Continue traveling after hitting enemy
+
+            return;
         }
 
         // Destroy when hitting ground (like charged shot)

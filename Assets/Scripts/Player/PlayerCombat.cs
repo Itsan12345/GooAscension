@@ -435,23 +435,22 @@ public void OnAttackAnimationEnd()
 
     public void DamageTarget()
     {
-        // Only damage when using sword (not gun) and when grounded
         if (usingGun) return;
         if (!playerMovement.IsGrounded) return;
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
-            attackPoint.position,
-            attackRange,
-            enemyLayers
-        );
+        // Use OverlapCircleAll without layer filter so it can hit both enemies and boss
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(attackPoint.position, attackRange);
 
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider2D col in hitColliders)
         {
-            EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
-            if (enemyHealth != null)
+            // Skip anything on the player's own object
+            if (col.GetComponentInParent<PlayerMovement>() != null) continue;
+
+            IDamageable target = col.GetComponentInParent<IDamageable>();
+            if (target != null)
             {
-                enemyHealth.TakeDamage(10f); // ALWAYS 10 damage for quick attacks
-                Debug.Log("Dealt 10 QUICK damage to " + enemy.name);
+                target.TakeDamage(10f);
+                Debug.Log("Dealt 10 QUICK damage to " + col.name);
             }
         }
     }
