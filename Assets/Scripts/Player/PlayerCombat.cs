@@ -22,7 +22,7 @@ public class PlayerCombat : MonoBehaviour
     [Header("Sound Effect Settings")]
     [SerializeField] private SoundEffectLibrary soundEffectLibrary;
     [SerializeField] private AudioSource attackAudioSource;
-    [SerializeField] private string swordAttackSoundGroupName = "SwordAttacl";
+    [SerializeField] private string swordAttackSoundGroupName = "SwordAttack";
     [SerializeField] private int swordAttackSoundElementIndex = 0;
 
     [Header("Attack Settings")]
@@ -48,12 +48,20 @@ public class PlayerCombat : MonoBehaviour
     private float mouseDownTimer;
     private bool mouseWasPressed;
 
+    [Header("Combo Attack Settings")]
+    [SerializeField] private float comboWindow = 1f; // Time window to complete next attack (1+ second delay before reset)
+    private int comboCounter = 0; // 0 = idle, 1 = attack1 ready, 2 = attack2 ready, 3 = attack3 ready
+    private float comboTimer = 0f; // Timer for combo window
+    private bool isAttackAnimationPlaying = false; // Track if attack animation is currently playing
+
     [Header("Weapon State")]
     [SerializeField] private bool usingGun = false;
 
     [Header("Gun Settings")]
     [SerializeField] private float gunDamage = 20f;
     [SerializeField] private GameObject chargedShotPrefab;
+    [SerializeField] private Transform chargedShotFirePoint; // Separate fire point for charged shot
+    [SerializeField] private float chargedShotForwardOffset = 1.5f; // how far in front of fire point
 
     private void Awake()
     {
@@ -71,6 +79,33 @@ public class PlayerCombat : MonoBehaviour
         // Keep these synced from movement
         anim = playerMovement.CurrentAnimator;
         facingRight = playerMovement.FacingRight;
+
+        // Check if attack animation has finished and clear attacking state
+        if (isAttackAnimationPlaying && anim != null)
+        {
+            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            // If we're back in idle/move state, clear the attacking flag
+            if (stateInfo.fullPathHash == Animator.StringToHash("Base Layer.idle/move") || stateInfo.normalizedTime >= 1f)
+            {
+                isAttackAnimationPlaying = false;
+                playerMovement.SetAttackingOrCharging(false);
+            }
+        }
+
+        // Handle combo timer decay
+        if (comboTimer > 0)
+        {
+            comboTimer -= Time.deltaTime;
+            if (comboTimer <= 0)
+            {
+                ResetCombo();
+            }
+        }
+        // Update animator with combo counter (only for human form)
+        if (anim != null && playerMovement.IsHuman)
+        {
+            anim.SetInteger("comboCounter", comboCounter);
+        }
 
         // Handle charged attack for both sword and gun when human
         if (playerMovement.IsHuman && (usingSword || usingGun))
@@ -357,11 +392,33 @@ public void ActivateChargedShot(float charge01)
         Debug.Log($"⚡ ENERGY CONSUMED: All energy spent for charged shot! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
     }
 
-    // Instantiate the charged shot at the fire point
-    GameObject shotInstance = Instantiate(chargedShotPrefab, firePoint.position, Quaternion.identity);
-    
-    // Set the direction based on facing direction
-    float dir = facingRight ? 1 : -1;
+        // Choose spawn point: prefer dedicated chargedShotFirePoint, fallback to regular firePoint
+        Transform spawnPoint = chargedShotFirePoint != null ? chargedShotFirePoint : firePoint;
+        if (spawnPoint == null)
+        {
+            Debug.LogError("No fire point assigned for charged shot (chargedShotFirePoint and firePoint are both null)!");
+            return;
+        }
+
+        // Base position from spawn point
+        Vector3 shotPos = spawnPoint.position;
+
+        // Push the whole effect further in front of the player based on facing
+        float dir = facingRight ? 1f : -1f;
+        shotPos.x += dir * chargedShotForwardOffset;
+
+        // Instantiate the charged shot at the offset position
+        GameObject shotInstance = Instantiate(chargedShotPrefab, shotPos, Quaternion.identity);
+
+        // Match bullet rendering so it appears in front of the player
+        shotPos.z = -1f; // same z as Bullet
+        shotInstance.transform.position = shotPos;
+
+        SpriteRenderer shotSprite = shotInstance.GetComponent<SpriteRenderer>();
+        if (shotSprite != null)
+        {
+            shotSprite.sortingOrder = 10; // same sorting order as Bullet
+        }
     
     // Set up the charged shot
     ChargedShot chargedShot = shotInstance.GetComponent<ChargedShot>();
@@ -386,7 +443,11 @@ public void ActivateChargedShotFromAnimation()
 public void OnAttackAnimationEnd()
 {
     if (playerMovement != null)
+    {
         playerMovement.SetAttackingOrCharging(false);
+        playerMovement.EnableMovementAndJump(true);
+    }
+    isAttackAnimationPlaying = false;
 }
 
 
@@ -416,10 +477,63 @@ public void OnAttackAnimationEnd()
             // Sword attack only when grounded
             if (!playerMovement.IsGrounded) return;
             
-            if (anim != null)
+            // Only allow attack if not already attacking and combo is valid
+            if (anim != null && comboCounter < 3)
             {
+                // Start/reset combo timer
+                comboTimer = comboWindow;
+                
+                // Mark attack animation as playing
+                isAttackAnimationPlaying = true;
+                
+                // Trigger the attack (animator will use comboCounter to choose animation)
                 anim.SetTrigger("attack");
                 playerMovement.SetAttackingOrCharging(true);
+                Debug.Log($"⚔️ ATTACK TRIGGERED: Current combo stage {comboCounter}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Called by animation events at the end of each attack animation
+    /// Increments the combo counter and resets the combo timer
+    /// </summary>
+    public void IncrementCombo()
+    {
+        comboCounter++;
+        
+        // Clamp to max 3 attacks
+        if (comboCounter > 3)
+            comboCounter = 3;
+        
+        // Reset combo timer for next attack window
+        comboTimer = comboWindow;
+        
+        // Always re-enable movement after each attack
+        if (playerMovement != null)
+        {
+            playerMovement.EnableMovementAndJump(true);
+            playerMovement.SetAttackingOrCharging(false);
+            isAttackAnimationPlaying = false;
+        }
+        
+        Debug.Log($"⚔️ COMBO INCREMENTED: Now at stage {comboCounter}");
+    }
+
+    private void ResetCombo()
+    {
+        if (comboCounter > 0)
+        {
+            Debug.Log("⚔️ COMBO RESET: Window expired!");
+            comboCounter = 0;
+            comboTimer = 0f;
+            
+            // Ensure movement is enabled when combo resets
+            if (playerMovement != null)
+            {
+                playerMovement.EnableMovementAndJump(true);
+                playerMovement.SetAttackingOrCharging(false);
+                isAttackAnimationPlaying = false;
             }
         }
     }
@@ -534,3 +648,4 @@ public void OnAttackAnimationEnd()
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
+    
