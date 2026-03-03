@@ -1,25 +1,28 @@
 fileFormatVersion: 2
-guid: 6e6a16b42bfbd08429d918d52a8b66d1
+guid: a13311de33f7a87478fe67f02e4ec539
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4689240166119133576
-    second: pixilart-sprite_0
+      213: -6390584792019027769
+    second: SlimeHumanAttack1_0
   - first:
-      213: 4521018998857404175
-    second: pixilart-sprite_1
+      213: 8476886611115200244
+    second: SlimeHumanAttack1_1
   - first:
-      213: -4621546931983276131
-    second: pixilart-sprite_2
+      213: -2895815116983649889
+    second: SlimeHumanAttack1_2
   - first:
-      213: 713319685308842295
-    second: pixilart-sprite_3
+      213: 1192521478309320399
+    second: SlimeHumanAttack1_3
   - first:
-      213: -8518763969059935731
-    second: pixilart-sprite_4
+      213: -6955474644198700217
+    second: SlimeHumanAttack1_4
   - first:
-      213: 4832274764714241032
-    second: pixilart-sprite_5
+      213: -5950674334477595672
+    second: SlimeHumanAttack1_5
+  - first:
+      213: 8969454805680754889
+    second: SlimeHumanAttack1_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -66,7 +69,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 14
+  spritePixelsToUnits: 28
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -111,150 +114,137 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pixilart-sprite_0
+      name: SlimeHumanAttack1_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 1
-        width: 12
-        height: 28
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 14
+        y: 0
+        width: 41
+        height: 57
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 88156002617831140800000000000000
-      internalID: 4689240166119133576
+      spriteID: 7c831bc8df41057a0800000000000000
+      internalID: -6390584792019027769
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixilart-sprite_1
+      name: SlimeHumanAttack1_1
       rect:
         serializedVersion: 2
-        x: 41
-        y: 1
-        width: 12
-        height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 102
+        y: 0
+        width: 44
+        height: 57
+      alignment: 9
+      pivot: {x: 0.65, y: 0.54}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f0f00b973d2edbe30800000000000000
-      internalID: 4521018998857404175
+      spriteID: 4fe49c8d573f3a570800000000000000
+      internalID: 8476886611115200244
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixilart-sprite_2
+      name: SlimeHumanAttack1_2
       rect:
         serializedVersion: 2
-        x: 73
-        y: 1
-        width: 12
-        height: 28
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 191
+        y: 0
+        width: 51
+        height: 57
+      alignment: 9
+      pivot: {x: 0.7, y: 0.54}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d9727562d87fcdfb0800000000000000
-      internalID: -4621546931983276131
+      spriteID: f99bbf86e7fffc7d0800000000000000
+      internalID: -2895815116983649889
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixilart-sprite_3
+      name: SlimeHumanAttack1_3
       rect:
         serializedVersion: 2
-        x: 105
-        y: 1
-        width: 12
-        height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 305
+        y: 0
+        width: 80
+        height: 91
+      alignment: 9
+      pivot: {x: 0.2, y: 0.34}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7318026797836e900800000000000000
-      internalID: 713319685308842295
+      spriteID: fc696ad57ffac8010800000000000000
+      internalID: 1192521478309320399
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixilart-sprite_4
+      name: SlimeHumanAttack1_4
       rect:
         serializedVersion: 2
-        x: 137
-        y: 1
-        width: 12
-        height: 28
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 401
+        y: 0
+        width: 57
+        height: 91
+      alignment: 9
+      pivot: {x: 0.28, y: 0.34}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d0a29c2fd4547c980800000000000000
-      internalID: -8518763969059935731
+      spriteID: 74bcc4ca9a0397f90800000000000000
+      internalID: -6955474644198700217
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pixilart-sprite_5
+      name: SlimeHumanAttack1_6
       rect:
         serializedVersion: 2
-        x: 169
-        y: 1
-        width: 12
-        height: 27
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 497
+        y: 0
+        width: 45
+        height: 91
+      alignment: 9
+      pivot: {x: 0.35, y: 0.34}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 80c60e7cb40bf0340800000000000000
-      internalID: 4832274764714241032
+      spriteID: 9c09581af97e97c70800000000000000
+      internalID: 8969454805680754889
       vertices: []
       indices: 
       edges: []
@@ -263,7 +253,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3ebd30f8e35fa484c8b33e15f9913bf1
+    spriteID: b1ae17dff4bc5d049b3a9262e27a0e65
     internalID: 0
     vertices: []
     indices: 
@@ -271,16 +261,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      pixilart-sprite_0: 4689240166119133576
-      pixilart-sprite_1: 4521018998857404175
-      pixilart-sprite_2: -4621546931983276131
-      pixilart-sprite_3: 713319685308842295
-      pixilart-sprite_4: -8518763969059935731
-      pixilart-sprite_5: 4832274764714241032
+      SlimeHumanAttack1_0: -6390584792019027769
+      SlimeHumanAttack1_1: 8476886611115200244
+      SlimeHumanAttack1_2: -2895815116983649889
+      SlimeHumanAttack1_3: 1192521478309320399
+      SlimeHumanAttack1_4: -6955474644198700217
+      SlimeHumanAttack1_5: -5950674334477595672
+      SlimeHumanAttack1_6: 8969454805680754889
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

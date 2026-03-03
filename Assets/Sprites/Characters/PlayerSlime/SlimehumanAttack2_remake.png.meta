@@ -1,40 +1,28 @@
 fileFormatVersion: 2
-guid: 2557d6c9c86e991428498d9b459fb8dd
+guid: a35220964be3d6545a8496ade5573965
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5194146729559630886
-    second: SlimeHumanMove_0
+      213: -8333075471097362564
+    second: SlimehumanAttack2_remake_0
   - first:
-      213: 8279217865470814181
-    second: SlimeHumanMove_1
+      213: 8013370443504804277
+    second: SlimehumanAttack2_remake_1
   - first:
-      213: -5663077242138544379
-    second: SlimeHumanMove_2
+      213: -2295893504428069779
+    second: SlimehumanAttack2_remake_2
   - first:
-      213: -6372183318976790346
-    second: SlimeHumanMove_3
+      213: 5006723933234728351
+    second: SlimehumanAttack2_remake_3
   - first:
-      213: 6945443264448184646
-    second: SlimeHumanMove_4
+      213: 9178344730067758659
+    second: SlimehumanAttack2_remake_4
   - first:
-      213: 4988668976022533005
-    second: SlimeHumanMove_5
+      213: 2023641513140741133
+    second: SlimehumanAttack2_remake_5
   - first:
-      213: -2169852088047746922
-    second: SlimeHumanMove_6
-  - first:
-      213: 7061643342648488544
-    second: SlimeHumanMove_7
-  - first:
-      213: 6144169001730601931
-    second: SlimeHumanMove_8
-  - first:
-      213: -814271240244851794
-    second: SlimeHumanMove_9
-  - first:
-      213: -4778094570359344699
-    second: SlimeHumanMove_10
+      213: -4333068992805426710
+    second: SlimehumanAttack2_remake_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -81,7 +69,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 28
+  spritePixelsToUnits: 25
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -130,101 +118,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanMove_0
+      name: SlimehumanAttack2_remake_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 0
-        width: 44
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: adb5759b11faae7b0800000000000000
-      internalID: -5194146729559630886
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_1
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 0
-        width: 38
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5e7a47198c0b5e270800000000000000
-      internalID: 8279217865470814181
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_3
-      rect:
-        serializedVersion: 2
-        x: 141
-        y: 0
-        width: 32
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6b008bc58057197a0800000000000000
-      internalID: -6372183318976790346
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_4
-      rect:
-        serializedVersion: 2
-        x: 199
-        y: 0
-        width: 41
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6414019b9db236060800000000000000
-      internalID: 6945443264448184646
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_5
-      rect:
-        serializedVersion: 2
-        x: 261
+        x: 6
         y: 0
         width: 46
-        height: 63
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -233,20 +133,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d83b5d9a0005b3540800000000000000
-      internalID: 4988668976022533005
+      spriteID: c7788b27208fa5c80800000000000000
+      internalID: -8333075471097362564
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_6
+      name: SlimehumanAttack2_remake_1
       rect:
         serializedVersion: 2
-        x: 326
+        x: 74
         y: 0
-        width: 43
-        height: 63
+        width: 54
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -255,20 +155,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69046c4b50323e1e0800000000000000
-      internalID: -2169852088047746922
+      spriteID: 5b1e7b236f5353f60800000000000000
+      internalID: 8013370443504804277
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_7
+      name: SlimehumanAttack2_remake_2
       rect:
         serializedVersion: 2
-        x: 391
+        x: 156
         y: 0
-        width: 41
-        height: 63
+        width: 66
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -277,20 +177,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 062b019b43ffff160800000000000000
-      internalID: 7061643342648488544
+      spriteID: d6c207a95095320e0800000000000000
+      internalID: -2295893504428069779
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_9
+      name: SlimehumanAttack2_remake_3
       rect:
         serializedVersion: 2
-        x: 461
+        x: 260
         y: 0
-        width: 32
-        height: 63
+        width: 82
+        height: 83
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -299,30 +199,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eab83660f9023b4f0800000000000000
-      internalID: -814271240244851794
+      spriteID: f9d07e8f3e47b7540800000000000000
+      internalID: 5006723933234728351
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_10
+      name: SlimehumanAttack2_remake_5
       rect:
         serializedVersion: 2
-        x: 524
+        x: 386
         y: 0
-        width: 38
-        height: 63
+        width: 61
+        height: 83
       alignment: 9
-      pivot: {x: 0.5, y: 0.53}
+      pivot: {x: 0.22, y: 0.3349397}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c1328ebd4cc0bdb0800000000000000
-      internalID: -4778094570359344699
+      spriteID: d04ec770c3b651c10800000000000000
+      internalID: 2023641513140741133
       vertices: []
       indices: 
       edges: []
@@ -331,7 +231,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d06a80de84a956b4bb04f0e051ca9b96
+    spriteID: 8bee6ee7c52c7d349a0f559d97747d10
     internalID: 0
     vertices: []
     indices: 
@@ -341,17 +241,13 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanMove_0: -5194146729559630886
-      SlimeHumanMove_1: 8279217865470814181
-      SlimeHumanMove_10: -4778094570359344699
-      SlimeHumanMove_2: -5663077242138544379
-      SlimeHumanMove_3: -6372183318976790346
-      SlimeHumanMove_4: 6945443264448184646
-      SlimeHumanMove_5: 4988668976022533005
-      SlimeHumanMove_6: -2169852088047746922
-      SlimeHumanMove_7: 7061643342648488544
-      SlimeHumanMove_8: 6144169001730601931
-      SlimeHumanMove_9: -814271240244851794
+      SlimehumanAttack2_remake_0: -8333075471097362564
+      SlimehumanAttack2_remake_1: 8013370443504804277
+      SlimehumanAttack2_remake_2: -2295893504428069779
+      SlimehumanAttack2_remake_3: 5006723933234728351
+      SlimehumanAttack2_remake_4: 9178344730067758659
+      SlimehumanAttack2_remake_5: 2023641513140741133
+      SlimehumanAttack2_remake_6: -4333068992805426710
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

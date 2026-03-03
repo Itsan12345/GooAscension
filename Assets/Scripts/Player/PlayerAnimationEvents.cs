@@ -35,6 +35,13 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.ActivateChargedShotFromAnimation();
     }
 
+    // Used by animation events that call "PlaySound()" for sword attacks
+    public void PlaySound()
+    {
+        if (playerCombat != null)
+            playerCombat.PlayAttackSound();
+    }
+
     public void PlayAttackSound()
     {
         if (playerCombat != null)
@@ -43,13 +50,19 @@ public class PlayerAnimationEvents : MonoBehaviour
 
     public void OnAttackAnimationEnd()
     {
-        if (playerCombat != null && playerCombat.PlayerMovementRef != null)
-            playerCombat.PlayerMovementRef.SetAttackingOrCharging(false);
+        if (playerCombat != null)
+            playerCombat.OnAttackAnimationEnd();
     }
 
-    private void DisableMovementAndJump() => player.EnableMovementAndJump(false);    
+    public void IncrementCombo()
+    {
+        if (playerCombat != null)
+            playerCombat.IncrementCombo();
+    }
 
-    private void EnableMovementAndJump() => player.EnableMovementAndJump(true);
+    public void DisableMovementAndJump() => player.EnableMovementAndJump(false);    
+
+    public void EnableMovementAndJump() => player.EnableMovementAndJump(true);
 
     
 }

@@ -6,7 +6,7 @@ public class ChargedShot : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float baseSpeed = 15f;
     [SerializeField] private float chargedSpeedMultiplier = 2f;
-    [SerializeField] private float lifeTime = 3f;
+    [SerializeField] private float lifeTime = 1f;
 
     [Header("Damage")]
     [SerializeField] private float baseDamage = 20f;
@@ -22,6 +22,13 @@ public class ChargedShot : MonoBehaviour
     private float currentSpeed;
     private int enemiesHit = 0;
     private HashSet<Collider2D> hitTargets = new HashSet<Collider2D>();
+    private Animator animator;
+    private bool animationFinished;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public void SetDirection(float dir)
     {
@@ -44,22 +51,23 @@ public class ChargedShot : MonoBehaviour
         currentSpeed = baseSpeed * (1f + (chargedSpeedMultiplier - 1f) * chargeLevel);
         
         Debug.Log($"ChargedShot created with charge: {chargeLevel:F2}, damage: {currentDamage}, speed: {currentSpeed}");
-        
-        // Scale the projectile based on charge level (visual feedback)
-        float scale = 1f + (chargeLevel * 0.5f); // 50% larger when fully charged
-        transform.localScale = new Vector3(transform.localScale.x, scale, scale);
-    }
-
-    private void Start()
-    {
-        // Destroy after lifetime
-        Destroy(gameObject, lifeTime);
     }
 
     private void Update()
     {
-        // Move the charged shot forward
-        transform.Translate(Vector2.right * (currentSpeed * direction * Time.deltaTime));
+        // Destroy automatically once the non-looping animation has finished
+        if (!animationFinished && animator != null)
+        {
+            AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+            if (state.normalizedTime >= 1f)
+            {
+                animationFinished = true;
+                Destroy(gameObject);
+                return;
+            }
+        }
+
+        // Do not move; charged shot remains static at its spawn position
     }
 
     private void OnTriggerEnter2D(Collider2D other)
