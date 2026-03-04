@@ -24,6 +24,8 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private AudioSource attackAudioSource;
     [SerializeField] private string swordAttackSoundGroupName = "SwordAttack";
     [SerializeField] private int swordAttackSoundElementIndex = 0;
+    [SerializeField] private string chargedShotSoundGroupName = "ChargedShotCannon";
+    [SerializeField] private int chargedShotSoundElementIndex = 0;
 
     [Header("Attack Settings")]
     [SerializeField] private Transform attackPoint;
@@ -49,7 +51,7 @@ public class PlayerCombat : MonoBehaviour
     private bool mouseWasPressed;
 
     [Header("Combo Attack Settings")]
-    [SerializeField] private float comboWindow = 1f; // Time window to complete next attack (1+ second delay before reset)
+    [SerializeField] private float comboWindow = 0.05f; // Time window to complete next attack (shorter delay before reset)
     private int comboCounter = 0; // 0 = idle, 1 = attack1 ready, 2 = attack2 ready, 3 = attack3 ready
     private float comboTimer = 0f; // Timer for combo window
     private bool isAttackAnimationPlaying = false; // Track if attack animation is currently playing
@@ -381,7 +383,7 @@ public void ActivateChargedShot(float charge01)
     // Double-check energy before firing (safety check)
     if (playerEnergy != null && playerEnergy.currentEnergy < playerEnergy.maxEnergy)
     {
-        Debug.LogWarning("⚡ CHARGED SHOT CANCELLED: Insufficient energy during firing!");
+        Debug.Log("⚡ CHARGED SHOT CANCELLED: Insufficient energy during firing!");
         return;
     }
 
@@ -390,6 +392,13 @@ public void ActivateChargedShot(float charge01)
     {
         playerEnergy.SpendEnergy(playerEnergy.maxEnergy);
         Debug.Log($"⚡ ENERGY CONSUMED: All energy spent for charged shot! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
+    }
+
+    // Play charged cannon sound effect
+    if (soundEffectLibrary != null && attackAudioSource != null)
+    {
+        soundEffectLibrary.PlaySoundEffect(attackAudioSource, chargedShotSoundGroupName, chargedShotSoundElementIndex);
+        Debug.Log("Playing charged cannon sound effect");
     }
 
         // Choose spawn point: prefer dedicated chargedShotFirePoint, fallback to regular firePoint

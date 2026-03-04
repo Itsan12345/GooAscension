@@ -14,14 +14,12 @@ public class ChargedShot : MonoBehaviour
 
     [Header("Effects")]
     [SerializeField] private float knockbackForce = 500f;
-    [SerializeField] private float pierceCount = 100f; // How many enemies it can pass through
 
     private float direction = 1f;
     private float chargeLevel = 0f;
     private float currentDamage;
     private float currentSpeed;
-    private int enemiesHit = 0;
-    private HashSet<Collider2D> hitTargets = new HashSet<Collider2D>();
+    
     private Animator animator;
     private bool animationFinished;
 
@@ -72,17 +70,12 @@ public class ChargedShot : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Don't hit the same target multiple times
-        if (hitTargets.Contains(other)) return;
-
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null)
         {
-            hitTargets.Add(other);
-            enemiesHit++;
-
+            // Initial burst of damage on first contact
             target.TakeDamage(currentDamage);
-            Debug.Log($"ChargedShot dealt {currentDamage} damage to {other.name}");
+            Debug.Log($"ChargedShot initial hit dealt {currentDamage} damage to {other.name}");
 
             Rigidbody2D enemyRb = other.GetComponentInParent<Rigidbody2D>();
             if (enemyRb != null)
@@ -90,14 +83,6 @@ public class ChargedShot : MonoBehaviour
                 Vector2 knockbackDirection = new Vector2(direction, 0.2f).normalized;
                 enemyRb.AddForce(knockbackDirection * knockbackForce * (1f + chargeLevel));
             }
-
-            float maxPierce = pierceCount * (1f + chargeLevel);
-            if (enemiesHit >= maxPierce)
-            {
-                CreateImpactEffect();
-                Destroy(gameObject);
-            }
-
             return;
         }
 
@@ -106,6 +91,19 @@ public class ChargedShot : MonoBehaviour
         {
             CreateImpactEffect();
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        // Continuously damage any enemies that remain inside the charged shot area.
+        // This will hit multiple enemies at once as long as they are touching
+        // the charged shot animation.
+        IDamageable target = other.GetComponentInParent<IDamageable>();
+        if (target != null)
+        {
+            float damageThisFrame = currentDamage * Time.deltaTime;
+            target.TakeDamage(damageThisFrame);
         }
     }
 

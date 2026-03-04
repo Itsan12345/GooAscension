@@ -38,6 +38,7 @@ Transform:
 --- !u!212 &9052099057356865358
 SpriteRenderer:
   serializedVersion: 2
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -83,6 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 854805773
   m_SortingLayer: 4
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2110919630084279897, guid: 6aa5d84bfa3f606448c4295595849e4b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
