@@ -35,6 +35,13 @@ public class PlayerAnimationEvents : MonoBehaviour
             playerCombat.ActivateChargedShotFromAnimation();
     }
 
+    // Optional: direct event name match for charged shot
+    public void ActivateChargedShotFromAnimation()
+    {
+        if (playerCombat != null)
+            playerCombat.ActivateChargedShotFromAnimation();
+    }
+
     // Used by animation events that call "PlaySound()" for sword attacks
     public void PlaySound()
     {

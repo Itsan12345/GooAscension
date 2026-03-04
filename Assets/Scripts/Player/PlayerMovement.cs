@@ -393,6 +393,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void SwitchForm()
     {
+        // Prevent morphing while attacking or charging (e.g., charged sword/gun)
+        if (isAttackingOrCharging)
+        {
+            Debug.Log("Cannot transform while attacking or charging.");
+            return;
+        }
+
         if (playerEnergy != null && !playerEnergy.CanAffordTransform(transformCost))
         {
             Debug.Log("Not enough energy to transform!");
