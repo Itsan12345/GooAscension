@@ -26,6 +26,9 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int swordAttackSoundElementIndex = 0;
     [SerializeField] private string chargedShotSoundGroupName = "ChargedShotCannon";
     [SerializeField] private int chargedShotSoundElementIndex = 0;
+    [SerializeField] private string gunChargeSoundGroupName = "ChargedGun";
+    [SerializeField] private int gunChargeSoundElementIndex = 0;
+    [SerializeField] private AudioSource chargeLoopAudioSource;
 
     [Header("Attack Settings")]
     [SerializeField] private Transform attackPoint;
@@ -41,6 +44,7 @@ public class PlayerCombat : MonoBehaviour
     private float chargeTimer;
     private bool isCharging;
     private bool isGunCharging; // Separate charging state for gun
+    private bool gunChargeMouseReleased; // Track if mouse was released during gun charge
     private bool usingSword = true;
     private float storedChargeLevel; // Store charge for animation event
     private float storedGunChargeLevel; // Store gun charge for animation event
@@ -51,7 +55,7 @@ public class PlayerCombat : MonoBehaviour
     private bool mouseWasPressed;
 
     [Header("Combo Attack Settings")]
-    [SerializeField] private float comboWindow = 0.05f; // Time window to complete next attack (shorter delay before reset)
+    [SerializeField] private float comboWindow = 0.5f; // Time after player stops clicking before combo resets
     private int comboCounter = 0; // 0 = idle, 1 = attack1 ready, 2 = attack2 ready, 3 = attack3 ready
     private float comboTimer = 0f; // Timer for combo window
     private bool isAttackAnimationPlaying = false; // Track if attack animation is currently playing
@@ -60,6 +64,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private bool usingGun = false;
 
     [Header("Gun Settings")]
+    [SerializeField] private float gunChargeAutoFireTime = 2.5f;
     [SerializeField] private float gunDamage = 20f;
     [SerializeField] private GameObject chargedShotPrefab;
     [SerializeField] private Transform chargedShotFirePoint; // Separate fire point for charged shot
@@ -94,8 +99,8 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        // Handle combo timer decay
-        if (comboTimer > 0)
+        // Handle combo timer decay — only count down when player is NOT clicking
+        if (comboTimer > 0 && !Mouse.current.leftButton.isPressed && !isAttackAnimationPlaying)
         {
             comboTimer -= Time.deltaTime;
             if (comboTimer <= 0)
@@ -126,6 +131,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 isGunCharging = false;
                 anim.SetBool("isGunCharging", false);
+                StopGunChargeSound();
             }
         }
 
@@ -157,14 +163,34 @@ public class PlayerCombat : MonoBehaviour
                 }
             }
             
-            // Continue charging for appropriate weapon
-            if (usingGun && isGunCharging)
-            {
-                ChargeGun();
-            }
-            else if (!usingGun && isCharging)
+            // Continue charging for sword (gun charging handled separately below)
+            if (!usingGun && isCharging)
             {
                 ChargeSword();
+            }
+        }
+
+        // Gun charge continues ticking even after mouse release — auto-fires when ready
+        if (isGunCharging)
+        {
+            ChargeGun();
+
+            // Determine max charge duration from the sound clip length (fallback to autoFireTime)
+            float maxGunCharge = gunChargeAutoFireTime;
+            if (chargeLoopAudioSource != null && chargeLoopAudioSource.clip != null)
+            {
+                maxGunCharge = chargeLoopAudioSource.clip.length;
+            }
+
+            // Auto-fire if mouse was released early and we hit the minimum charge time
+            if (gunChargeMouseReleased && chargeTimer >= gunChargeAutoFireTime)
+            {
+                ReleaseGunCharge();
+            }
+            // Auto-fire if held past the full sound clip duration
+            else if (chargeTimer >= maxGunCharge)
+            {
+                ReleaseGunCharge();
             }
         }
 
@@ -172,7 +198,13 @@ public class PlayerCombat : MonoBehaviour
         {
             if (usingGun && isGunCharging)
             {
-                ReleaseGunCharge();
+                gunChargeMouseReleased = true;
+                // If already past minimum charge time, fire immediately on release
+                if (chargeTimer >= gunChargeAutoFireTime)
+                {
+                    ReleaseGunCharge();
+                }
+                // Otherwise let it keep running until auto-fire at 2.5s
             }
             else if (!usingGun && isCharging)
             {
@@ -219,9 +251,23 @@ void StartGunCharging()
     }
 
     isGunCharging = true;
+    gunChargeMouseReleased = false;
     chargeTimer = 0f;
     anim.SetBool("isGunCharging", true);
     playerMovement.SetAttackingOrCharging(true);
+
+    // Start looping charge sound
+    if (soundEffectLibrary != null && chargeLoopAudioSource != null)
+    {
+        AudioClip chargeClip = soundEffectLibrary.GetSoundEffect(gunChargeSoundGroupName, gunChargeSoundElementIndex);
+        if (chargeClip != null)
+        {
+            chargeLoopAudioSource.clip = chargeClip;
+            chargeLoopAudioSource.loop = true;
+            chargeLoopAudioSource.Play();
+        }
+    }
+
     Debug.Log("Started gun charging");
 }
 
@@ -255,13 +301,14 @@ void ChargeGun()
         Debug.Log("⚡ GUN CHARGING STOPPED: Energy depleted during charging!");
         isGunCharging = false;
         anim.SetBool("isGunCharging", false);
+        StopGunChargeSound();
+        playerMovement.SetAttackingOrCharging(false);
         return;
     }
 
     chargeTimer += Time.deltaTime;
-    chargeTimer = Mathf.Min(chargeTimer, maxChargeTime);
 
-    float charge01 = chargeTimer / maxChargeTime;
+    float charge01 = Mathf.Clamp01(chargeTimer / gunChargeAutoFireTime);
     anim.SetFloat("chargeLevel", charge01);
 }
 
@@ -299,20 +346,32 @@ void ReleaseGunCharge()
         Debug.Log("⚡ CHARGED SHOT BLOCKED: Not enough energy! Need full energy bar.");
         isGunCharging = false;
         anim.SetBool("isGunCharging", false);
+        StopGunChargeSound();
         playerMovement.SetAttackingOrCharging(false);
         return;
     }
 
     isGunCharging = false;
     anim.SetBool("isGunCharging", false);
+    StopGunChargeSound();
     anim.SetTrigger("chargedShot");
     playerMovement.SetAttackingOrCharging(true);
     
     // Store charge level for animation event
-    storedGunChargeLevel = chargeTimer / maxChargeTime;
+    storedGunChargeLevel = Mathf.Clamp01(chargeTimer / gunChargeAutoFireTime);
     Debug.Log($"⚡ CHARGED SHOT READY: Released gun charge: {storedGunChargeLevel:F2}");
 }
 
+
+private void StopGunChargeSound()
+{
+    if (chargeLoopAudioSource != null && chargeLoopAudioSource.isPlaying)
+    {
+        chargeLoopAudioSource.Stop();
+        chargeLoopAudioSource.loop = false;
+        chargeLoopAudioSource.clip = null;
+    }
+}
 
 public void ActivateSwordArc(float charge01)
 {
@@ -486,8 +545,8 @@ public void OnAttackAnimationEnd()
             // Sword attack only when grounded
             if (!playerMovement.IsGrounded) return;
             
-            // Only allow attack if not already attacking and combo is valid
-            if (anim != null && comboCounter < 3)
+            // Only allow attack if not already attacking
+            if (anim != null)
             {
                 // Start/reset combo timer
                 comboTimer = comboWindow;
@@ -511,9 +570,9 @@ public void OnAttackAnimationEnd()
     {
         comboCounter++;
         
-        // Clamp to max 3 attacks
-        if (comboCounter > 3)
-            comboCounter = 3;
+        // Loop back to first attack after completing the 3rd
+        if (comboCounter >= 3)
+            comboCounter = 0;
         
         // Reset combo timer for next attack window
         comboTimer = comboWindow;

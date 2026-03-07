@@ -65,15 +65,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        // Enable health bar when game starts
+        // Always show health bar above enemy
         if (healthBarCanvas != null)
         {
             healthBarCanvas.gameObject.SetActive(true);
-            // Ensure proper positioning after enabling
             UpdateHealthBarPosition();
         }
         
-        // Update health bar to current state
         UpdateHealthBar();
     }
 
@@ -230,18 +228,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         if (healthBarCanvas != null)
         {
-            // Set canvas to world space and face camera
             healthBarCanvas.renderMode = RenderMode.WorldSpace;
-            healthBarCanvas.transform.localScale = Vector3.one * 0.01f; // Make it small
-            
-            // Position above enemy
+            healthBarCanvas.transform.localScale = Vector3.one * 0.01f;
             UpdateHealthBarPosition();
-            
-            // Disable by default - will be enabled in Start()
+            // Will be enabled in Start()
             healthBarCanvas.gameObject.SetActive(false);
         }
         
-        if (healthBarSlider == null)
+        if (healthBarSlider != null)
+        {
+            healthBarSlider.minValue = 0f;
+            healthBarSlider.maxValue = 1f;
+            healthBarSlider.value = 1f;
+        }
+        else
         {
             Debug.LogWarning($"No health bar slider found for {gameObject.name}! Please assign healthBarSlider in inspector or add Canvas>Slider as child.");
         }
@@ -251,14 +251,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (healthBarCanvas != null)
         {
-            Vector3 healthBarPos = transform.position + Vector3.up * healthBarOffset;
-            healthBarCanvas.transform.position = healthBarPos;
+            healthBarCanvas.transform.position = transform.position + Vector3.up * healthBarOffset;
             
-            // Make health bar face camera
             if (Camera.main != null)
             {
-                healthBarCanvas.transform.LookAt(Camera.main.transform);
-                healthBarCanvas.transform.Rotate(0, 180, 0); // Flip to face correctly
+                healthBarCanvas.transform.rotation = Camera.main.transform.rotation;
             }
         }
     }
@@ -268,13 +265,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         if (healthBarSlider != null)
         {
             healthBarSlider.value = currentHealth / maxHealth;
-            
-            // Hide health bar when at full health (optional)
-            if (healthBarCanvas != null)
-            {
-                bool showHealthBar = currentHealth < maxHealth;
-                healthBarCanvas.gameObject.SetActive(showHealthBar);
-            }
         }
     }
 

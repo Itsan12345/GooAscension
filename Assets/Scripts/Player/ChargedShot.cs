@@ -6,7 +6,6 @@ public class ChargedShot : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float baseSpeed = 15f;
     [SerializeField] private float chargedSpeedMultiplier = 2f;
-    [SerializeField] private float lifeTime = 1f;
 
     [Header("Damage")]
     [SerializeField] private float baseDamage = 20f;

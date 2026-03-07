@@ -67,6 +67,9 @@ public class MechBossHealth : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        // Always show health bars
+        if (worldHealthBarCanvas != null)
+            worldHealthBarCanvas.gameObject.SetActive(true);
         if (screenHealthBarCanvas != null)
             screenHealthBarCanvas.gameObject.SetActive(true);
 
@@ -195,8 +198,7 @@ public class MechBossHealth : MonoBehaviour, IDamageable
         worldHealthBarCanvas.transform.position = transform.position + Vector3.up * healthBarOffset;
         if (Camera.main != null)
         {
-            worldHealthBarCanvas.transform.LookAt(Camera.main.transform);
-            worldHealthBarCanvas.transform.Rotate(0, 180, 0);
+            worldHealthBarCanvas.transform.rotation = Camera.main.transform.rotation;
         }
     }
 
