@@ -110,7 +110,7 @@ MonoBehaviour:
   chargedSpeedMultiplier: 2
   lifeTime: 3
   baseDamage: 15
-  maxChargeDamage: 30
+  maxChargeDamage: 300
   knockbackForce: 500
 --- !u!95 &5020297649987139764
 Animator:

@@ -62,6 +62,8 @@ public class MechBossHealth : MonoBehaviour, IDamageable
                 originalColors[i] = spriteRenderers[i].color;
         }
 
+        Debug.Log($"[MechBossHealth] Awake on '{name}'. worldHealthBarCanvas={worldHealthBarCanvas}, screenHealthBarCanvas={screenHealthBarCanvas}");
+
         SetupWorldHealthBar();
     }
 
@@ -103,7 +105,7 @@ public class MechBossHealth : MonoBehaviour, IDamageable
 
     private void Flash()
     {
-        if (isFlashing) return;
+        // Stop any ongoing flash so a new hit always shows the color immediately
         if (flashCoroutine != null)
         {
             StopCoroutine(flashCoroutine);
@@ -176,19 +178,25 @@ public class MechBossHealth : MonoBehaviour, IDamageable
 
     private void SetupWorldHealthBar()
     {
+        // IMPORTANT: Do NOT auto-detect via GetComponentInChildren<Canvas>().
+        // If the canvas was not explicitly assigned in the Inspector, skip setup entirely.
+        // Auto-detection risks grabbing a Canvas that is a parent of the boss sprite,
+        // causing SetActive(false) or localScale = 0.01 to hide the boss on Awake.
         if (worldHealthBarCanvas == null)
-            worldHealthBarCanvas = GetComponentInChildren<Canvas>();
+        {
+            Debug.Log("[MechBossHealth] SetupWorldHealthBar: worldHealthBarCanvas is null, skipping world-space HP bar setup.");
+            return;
+        }
 
-        if (worldHealthBarSlider == null && worldHealthBarCanvas != null)
+        if (worldHealthBarSlider == null)
             worldHealthBarSlider = worldHealthBarCanvas.GetComponentInChildren<Slider>();
 
-        if (worldHealthBarCanvas != null)
-        {
-            worldHealthBarCanvas.renderMode = RenderMode.WorldSpace;
-            worldHealthBarCanvas.transform.localScale = Vector3.one * 0.01f;
-            UpdateWorldHealthBarPosition();
-            worldHealthBarCanvas.gameObject.SetActive(false);
-        }
+        Debug.Log("[MechBossHealth] SetupWorldHealthBar: configuring world-space HP bar and disabling it until the fight starts.");
+
+        worldHealthBarCanvas.renderMode = RenderMode.WorldSpace;
+        worldHealthBarCanvas.transform.localScale = Vector3.one * 0.01f;
+        UpdateWorldHealthBarPosition();
+        worldHealthBarCanvas.gameObject.SetActive(false);
     }
 
     private void UpdateWorldHealthBarPosition()
@@ -221,6 +229,13 @@ public class MechBossHealth : MonoBehaviour, IDamageable
             PlayerEnergy energy = playerObj.GetComponentInParent<PlayerEnergy>();
             if (energy != null) energy.OnEnemyKilled();
         }
+    }
+
+    public void ShowHealthBars()
+    {
+        if (worldHealthBarCanvas != null) worldHealthBarCanvas.gameObject.SetActive(true);
+        if (screenHealthBarCanvas != null) screenHealthBarCanvas.gameObject.SetActive(true);
+        UpdateHealthBars();
     }
 
     public float GetHealthPercent() => currentHealth / maxHealth;
