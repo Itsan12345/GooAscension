@@ -24,6 +24,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [SerializeField] private Color flashColor = Color.red;
     [Tooltip("How long the flash lasts in seconds.")]
     [SerializeField] private float flashDuration = 0.1f;
+    [Tooltip("How long the enemy stays red before an attack.")]
+    [SerializeField] private float preAttackFlashDuration = 0.5f;
 
     private bool dead;
     private Coroutine flashCoroutine;
@@ -93,6 +95,29 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    public void FlashPreAttack()
+    {
+        if (dead) return;
+        if (flashCoroutine != null)
+            StopCoroutine(flashCoroutine);
+        flashCoroutine = StartCoroutine(PreAttackFlashRoutine());
+    }
+
+    private IEnumerator PreAttackFlashRoutine()
+    {
+        if (spriteRenderers == null || spriteRenderers.Length == 0) yield break;
+        isFlashing = true;
+
+        for (int i = 0; i < spriteRenderers.Length; i++)
+            if (spriteRenderers[i] != null)
+                spriteRenderers[i].color = flashColor;
+
+        yield return new WaitForSeconds(preAttackFlashDuration);
+
+        RestoreOriginalColors();
+        flashCoroutine = null;
     }
 
     private void Flash()

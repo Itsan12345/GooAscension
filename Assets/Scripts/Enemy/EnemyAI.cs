@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private Transform player;
+    private EnemyHealth enemyHealth;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 3f;
@@ -50,6 +51,7 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        enemyHealth = GetComponent<EnemyHealth>();
         if (animatorObj != null)
         {
             anim = animatorObj.GetComponent<Animator>();
@@ -294,6 +296,10 @@ public class EnemyAI : MonoBehaviour
         if (player == null)
             return;
 
+        // Stop the pulsing indicator when the attack actually lands
+        if (attackTelegraph != null)
+            attackTelegraph.HideTelegraph();
+
         // Only damage if player is actually in the attack point zone
         if (attackPointTrigger != null && !attackPointTrigger.IsPlayerInZone())
             return;
@@ -364,6 +370,8 @@ public class EnemyAI : MonoBehaviour
     private void ResetAttack()
     {
         isAttacking = false;
+        if (attackTelegraph != null)
+            attackTelegraph.HideTelegraph();
     }
 
     private void OnCollisionStay2D(Collision2D collision)

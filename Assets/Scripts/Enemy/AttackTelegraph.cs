@@ -6,12 +6,13 @@ public class AttackTelegraph : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Sprite telegraphSprite;
     private Color originalColor;
+    private Vector3 originalScale;
     private Coroutine telegraphCoroutine;
 
     [Header("Telegraph Settings")]
-    [SerializeField] private float telegraphDuration = 0.5f;
-    [SerializeField] private Color telegraphColor = new Color(1f, 0.3f, 0.3f, 0.7f); // Red tint
-    [SerializeField] private float telegraphSize = 1f; // Size of the telegraph indicator
+    [SerializeField] private float pulseDuration = 0.4f; // Duration of one pulse cycle
+    [SerializeField] private Color telegraphColor = new Color(1f, 0.2f, 0.2f, 0.85f); // Bright red
+    [SerializeField] private float pulseScaleMultiplier = 1.3f; // How much to scale up per pulse
 
     private void Awake()
     {
@@ -20,6 +21,8 @@ public class AttackTelegraph : MonoBehaviour
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sortingLayerName = "UI";
+            spriteRenderer.sortingOrder = 10;
         }
 
         // Create a simple white circle sprite if none exists
@@ -33,8 +36,9 @@ public class AttackTelegraph : MonoBehaviour
             telegraphSprite = spriteRenderer.sprite;
         }
 
-        // Store original color
+        // Store original color and scale
         originalColor = spriteRenderer.color;
+        originalScale = transform.localScale;
         
         // Start invisible
         SetVisibility(false);
@@ -81,66 +85,69 @@ public class AttackTelegraph : MonoBehaviour
     }
 
     /// <summary>
-    /// Shows the telegraph warning before an attack
+    /// Starts a continuous pulsating red indicator at the attack point.
+    /// Call HideTelegraph() to stop it.
     /// </summary>
     public void ShowTelegraph()
     {
-        // Stop any existing telegraph
+        if (telegraphCoroutine != null)
+            StopCoroutine(telegraphCoroutine);
+
+        telegraphCoroutine = StartCoroutine(TelegraphPulseLoopRoutine());
+    }
+
+    /// <summary>
+    /// Stops the pulsating indicator immediately.
+    /// </summary>
+    public void HideTelegraph()
+    {
         if (telegraphCoroutine != null)
         {
             StopCoroutine(telegraphCoroutine);
+            telegraphCoroutine = null;
         }
-
-        telegraphCoroutine = StartCoroutine(TelegraphPulseRoutine());
+        transform.localScale = originalScale;
+        SetColor(originalColor);
+        SetVisibility(false);
     }
 
-    private IEnumerator TelegraphPulseRoutine()
+    private IEnumerator TelegraphPulseLoopRoutine()
     {
         SetVisibility(true);
-        SetColor(telegraphColor);
 
-        // Pulse effect - scale up and glow, then fade out
-        float elapsedTime = 0f;
-        Vector3 startScale = transform.localScale;
-        Vector3 targetScale = startScale * (1f + telegraphSize * 0.2f); // Scale based on size parameter
+        Vector3 baseScale = originalScale;
+        Vector3 bigScale  = originalScale * pulseScaleMultiplier;
 
-        // Scale up while fading in slightly
-        while (elapsedTime < telegraphDuration * 0.5f)
+        while (true)
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / (telegraphDuration * 0.5f);
-            
-            transform.localScale = Vector3.Lerp(startScale, targetScale, progress);
-            
-            Color color = telegraphColor;
-            color.a = Mathf.Lerp(telegraphColor.a, telegraphColor.a * 0.8f, progress);
-            SetColor(color);
+            float halfCycle = pulseDuration * 0.5f;
+            float elapsed = 0f;
 
-            yield return null;
+            // Expand and brighten
+            while (elapsed < halfCycle)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / halfCycle;
+                transform.localScale = Vector3.Lerp(baseScale, bigScale, t);
+                Color c = telegraphColor;
+                c.a = Mathf.Lerp(0.4f, telegraphColor.a, t);
+                SetColor(c);
+                yield return null;
+            }
+
+            // Shrink and dim
+            elapsed = 0f;
+            while (elapsed < halfCycle)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / halfCycle;
+                transform.localScale = Vector3.Lerp(bigScale, baseScale, t);
+                Color c = telegraphColor;
+                c.a = Mathf.Lerp(telegraphColor.a, 0.4f, t);
+                SetColor(c);
+                yield return null;
+            }
         }
-
-        // Fade out and shrink back
-        elapsedTime = 0f;
-        while (elapsedTime < telegraphDuration * 0.5f)
-        {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / (telegraphDuration * 0.5f);
-            
-            transform.localScale = Vector3.Lerp(targetScale, startScale, progress);
-            
-            Color color = telegraphColor;
-            color.a = Mathf.Lerp(telegraphColor.a * 0.8f, 0f, progress);
-            SetColor(color);
-
-            yield return null;
-        }
-
-        // Ensure fully invisible
-        SetVisibility(false);
-        transform.localScale = startScale;
-        
-        // Restore original appearance
-        SetColor(originalColor);
     }
 
     private void SetVisibility(bool visible)
@@ -159,8 +166,8 @@ public class AttackTelegraph : MonoBehaviour
         }
     }
 
-    public float GetTelegraphDuration()
+    public float GetPulseDuration()
     {
-        return telegraphDuration;
+        return pulseDuration;
     }
 }
