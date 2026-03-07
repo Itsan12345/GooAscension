@@ -23,7 +23,7 @@ TagManager:
   - Enemy
   - Explosion
   - PlayerAttack
-  - 
+  - BossProjectile
   - 
   - 
   - 
@@ -50,11 +50,11 @@ TagManager:
   - name: Background
     uniqueID: 20262407
     locked: 0
-  - name: Enemy
-    uniqueID: 2192585099
-    locked: 0
   - name: Ground
     uniqueID: 3884044419
+    locked: 0
+  - name: Enemy
+    uniqueID: 2192585099
     locked: 0
   - name: PlayerLayer
     uniqueID: 854805773

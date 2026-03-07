@@ -17,9 +17,18 @@ public class ParallaxEffect : MonoBehaviour
         cameraTransform = Camera.main.transform;
         lastCameraPosition = cameraTransform.position;
         startPosition = transform.position.x;
-        
-        // Find the length of the background sprite to know when to loop it
-        backgroundLength = GetComponent<SpriteRenderer>().bounds.size.x;
+
+        // Works for SpriteRenderer, TilemapRenderer, or any Renderer on this object
+        Renderer backgroundRenderer = GetComponent<Renderer>();
+        if (backgroundRenderer == null)
+        {
+            Debug.LogError($"ParallaxEffect: No Renderer found on {gameObject.name}. Add a SpriteRenderer/TilemapRenderer or move this script to the object that has one.");
+            enabled = false;
+            return;
+        }
+
+        // Find the length of the background graphic to know when to loop it
+        backgroundLength = backgroundRenderer.bounds.size.x;
     }
 
     void LateUpdate()

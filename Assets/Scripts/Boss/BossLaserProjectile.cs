@@ -8,6 +8,24 @@ public class BossLaserProjectile : MonoBehaviour
 
     [SerializeField] private float lifetime = 5f;
 
+    private void Awake()
+    {
+        // Ensure the collider is always a trigger so the laser never physically
+        // blocks or pushes the player via collision resolution.
+        foreach (Collider2D col in GetComponentsInChildren<Collider2D>(true))
+            col.isTrigger = true;
+
+        // The laser moves via Transform.Translate (not physics). Unity only fires
+        // trigger callbacks on moving objects that have a Rigidbody2D. Add one if
+        // the prefab doesn't have it so OnTriggerEnter2D fires correctly.
+        if (GetComponent<Rigidbody2D>() == null)
+        {
+            Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.gravityScale = 0f;
+        }
+    }
+
     public void Initialize(Vector2 dir, float spd, float dmg)
     {
         direction = dir.normalized;

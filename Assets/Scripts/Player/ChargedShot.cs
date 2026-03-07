@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class ChargedShot : MonoBehaviour
 {
@@ -19,7 +18,7 @@ public class ChargedShot : MonoBehaviour
     private float chargeLevel = 0f;
     private float currentDamage;
     private float currentSpeed;
-    
+
     private Animator animator;
     private bool animationFinished;
 
@@ -28,32 +27,37 @@ public class ChargedShot : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    private void Start()
+    {
+        // The charged shot must never physically block the player who fired it.
+        // We disable physics collisions with every player collider at spawn time.
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            Collider2D[] myColliders = GetComponents<Collider2D>();
+            foreach (Collider2D playerCol in player.GetComponentsInChildren<Collider2D>(true))
+                foreach (Collider2D myCol in myColliders)
+                    Physics2D.IgnoreCollision(myCol, playerCol, true);
+        }
+    }
+
     public void SetDirection(float dir)
     {
         direction = Mathf.Sign(dir);
-        // Flip sprite if moving left
         if (direction < 0)
-        {
             transform.localScale = new Vector3(-1, 1, 1);
-        }
     }
 
     public void SetCharge(float charge01)
     {
         chargeLevel = Mathf.Clamp01(charge01);
-        
-        // Calculate damage based on charge level
         currentDamage = Mathf.Lerp(baseDamage, maxChargeDamage, chargeLevel);
-        
-        // Calculate speed based on charge level
         currentSpeed = baseSpeed * (1f + (chargedSpeedMultiplier - 1f) * chargeLevel);
-        
         Debug.Log($"ChargedShot created with charge: {chargeLevel:F2}, damage: {currentDamage}, speed: {currentSpeed}");
     }
 
     private void Update()
     {
-        // Destroy automatically once the non-looping animation has finished
         if (!animationFinished && animator != null)
         {
             AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
@@ -61,32 +65,47 @@ public class ChargedShot : MonoBehaviour
             {
                 animationFinished = true;
                 Destroy(gameObject);
-                return;
             }
         }
-
-        // Do not move; charged shot remains static at its spawn position
     }
+
+    // Returns true for any collider that belongs to the player hierarchy.
+    // PlayerHealth is on the player root, so GetComponentInParent works from any child collider.
+    private bool IsPlayerCollider(Collider2D col)
+    {
+        return col.GetComponentInParent<PlayerHealth>() != null;
+    }
+
+    private void ApplyDamageAndKnockback(Collider2D col, IDamageable target)
+    {
+        target.TakeDamage(currentDamage);
+        Debug.Log($"ChargedShot hit dealt {currentDamage} damage to {col.name}");
+
+        bool isBoss = col.GetComponentInParent<MechBossAI>() != null;
+        if (!isBoss)
+        {
+            Rigidbody2D enemyRb = col.GetComponentInParent<Rigidbody2D>();
+            if (enemyRb != null)
+            {
+                Vector2 knockbackDir = new Vector2(direction, 0.2f).normalized;
+                enemyRb.AddForce(knockbackDir * knockbackForce * (1f + chargeLevel));
+            }
+        }
+    }
+
+    // --- Trigger path (mobs/boss with trigger colliders) ---
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (IsPlayerCollider(other)) return;
+
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null)
         {
-            // Initial burst of damage on first contact
-            target.TakeDamage(currentDamage);
-            Debug.Log($"ChargedShot initial hit dealt {currentDamage} damage to {other.name}");
-
-            Rigidbody2D enemyRb = other.GetComponentInParent<Rigidbody2D>();
-            if (enemyRb != null)
-            {
-                Vector2 knockbackDirection = new Vector2(direction, 0.2f).normalized;
-                enemyRb.AddForce(knockbackDirection * knockbackForce * (1f + chargeLevel));
-            }
+            ApplyDamageAndKnockback(other, target);
             return;
         }
 
-        // Destroy when hitting ground (remove Wall tag since it's not defined)
         if (other.CompareTag("Ground"))
         {
             CreateImpactEffect();
@@ -96,20 +115,51 @@ public class ChargedShot : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        // Continuously damage any enemies that remain inside the charged shot area.
-        // This will hit multiple enemies at once as long as they are touching
-        // the charged shot animation.
+        if (IsPlayerCollider(other)) return;
+
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null)
+            target.TakeDamage(currentDamage * Time.deltaTime);
+    }
+
+    // --- Collision path (boss/enemies with non-trigger colliders) ---
+    // When the ChargedShot's own non-trigger collider meets a solid enemy collider,
+    // deal damage once and then disable the blocking so the enemy is no longer stopped.
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (IsPlayerCollider(collision.collider)) return;
+
+        IDamageable target = collision.collider.GetComponentInParent<IDamageable>();
+        if (target != null)
         {
-            float damageThisFrame = currentDamage * Time.deltaTime;
-            target.TakeDamage(damageThisFrame);
+            ApplyDamageAndKnockback(collision.collider, target);
+
+            // Stop physically blocking this collider after the first hit.
+            Collider2D[] myColliders = GetComponents<Collider2D>();
+            foreach (Collider2D myCol in myColliders)
+                Physics2D.IgnoreCollision(myCol, collision.collider, true);
+            return;
         }
+
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            CreateImpactEffect();
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (IsPlayerCollider(collision.collider)) return;
+
+        IDamageable target = collision.collider.GetComponentInParent<IDamageable>();
+        if (target != null)
+            target.TakeDamage(currentDamage * Time.deltaTime);
     }
 
     private void CreateImpactEffect()
     {
-        // You can add particle effects or visual feedback here later
         Debug.Log("ChargedShot impact effect!");
     }
 }

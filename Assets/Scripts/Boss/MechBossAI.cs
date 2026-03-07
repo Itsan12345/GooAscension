@@ -84,21 +84,26 @@ public class MechBossAI : MonoBehaviour
         if (animatorObj != null)
             anim = animatorObj.GetComponent<Animator>();
 
+        Debug.Log($"[MechBossAI] Awake on '{name}'. animatorObj={(animatorObj != null ? animatorObj.name : "null")}, bossHealth={bossHealth}");
+
         FindTargetPlayer();
     }
 
     private void Start()
     {
+        Debug.Log($"[MechBossAI] Start on '{name}'. Beginning BossEntrySequence.");
         StartCoroutine(BossEntrySequence());
     }
 
     private IEnumerator BossEntrySequence()
     {
+        Debug.Log("[MechBossAI] BossEntrySequence started (intro pause).");
         isEntering = true;
         rb.linearVelocity = Vector2.zero;
         yield return new WaitForSeconds(1.5f);
         isEntering = false;
         isChasing = true;
+        Debug.Log("[MechBossAI] BossEntrySequence finished. Boss is now active and chasing.");
     }
 
     private void FindTargetPlayer()
@@ -389,6 +394,7 @@ public class MechBossAI : MonoBehaviour
 
     public void DisableAI()
     {
+        Debug.Log("[MechBossAI] DisableAI called. Stopping all coroutines and disabling AI.");
         StopAllCoroutines();
         isAttacking = true;
         rb.linearVelocity = Vector2.zero;
