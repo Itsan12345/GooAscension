@@ -13,6 +13,8 @@ public class AttackTelegraph : MonoBehaviour
     [SerializeField] private float pulseDuration = 0.4f; // Duration of one pulse cycle
     [SerializeField] private Color telegraphColor = new Color(1f, 0.2f, 0.2f, 0.85f); // Bright red
     [SerializeField] private float pulseScaleMultiplier = 1.3f; // How much to scale up per pulse
+    [SerializeField] private Color parryWindowColor = new Color(1f, 0.85f, 0f, 0.9f); // Gold during parry window
+    private Color defaultTelegraphColor;
 
     private void Awake()
     {
@@ -39,6 +41,7 @@ public class AttackTelegraph : MonoBehaviour
         // Store original color and scale
         originalColor = spriteRenderer.color;
         originalScale = transform.localScale;
+        defaultTelegraphColor = telegraphColor;
         
         // Start invisible
         SetVisibility(false);
@@ -108,6 +111,7 @@ public class AttackTelegraph : MonoBehaviour
         }
         transform.localScale = originalScale;
         SetColor(originalColor);
+        telegraphColor = defaultTelegraphColor;
         SetVisibility(false);
     }
 
@@ -164,6 +168,14 @@ public class AttackTelegraph : MonoBehaviour
         {
             spriteRenderer.color = color;
         }
+    }
+
+    /// <summary>
+    /// Switches the telegraph color to gold when the parry window is open, red otherwise.
+    /// </summary>
+    public void SetParryWindowColor(bool parryActive)
+    {
+        telegraphColor = parryActive ? parryWindowColor : defaultTelegraphColor;
     }
 
     public float GetPulseDuration()

@@ -59,6 +59,18 @@ public class MechBossAI : MonoBehaviour
     private bool isEntering = true;
     private bool isBlockedByWater = false;
 
+    // Parry / Stagger State
+    [Header("Parry Settings")]
+    [SerializeField] private float bossStaggerDuration = 1.0f;
+    [SerializeField] private float parryKnockbackForce = 12f;
+    [SerializeField] private float knockbackFreeTime = 0.2f;    // seconds physics runs freely before braking
+    [SerializeField] private float knockbackDecayRate = 5f;     // units/sec deceleration after free phase
+    private bool isParryable = false;
+    private bool isStaggered = false;
+    private float staggerTimer = 0f;
+    private Coroutine currentAttackCoroutine;
+    public bool IsParryable => isParryable;
+
     // Cached player components (refreshed when player reference changes)
     private PlayerMovement playerMovement;
 
@@ -162,6 +174,32 @@ public class MechBossAI : MonoBehaviour
     {
         if (isEntering) return;
 
+        // Handle stagger from parry
+        if (isStaggered)
+        {
+            staggerTimer -= Time.deltaTime;
+            float elapsed = bossStaggerDuration - staggerTimer;
+
+            if (elapsed < knockbackFreeTime)
+            {
+                // Free-slide phase: boss launches back under full physics — sells its mass
+            }
+            else
+            {
+                // Braking phase: heavy, gradual deceleration — boss grinds to a stop
+                float decayedX = Mathf.MoveTowards(rb.linearVelocity.x, 0f, knockbackDecayRate * Time.deltaTime);
+                rb.linearVelocity = new Vector2(decayedX, rb.linearVelocity.y);
+            }
+
+            if (staggerTimer <= 0f)
+            {
+                isStaggered = false;
+                isAttacking = false;
+            }
+            UpdateAnimations();
+            return;
+        }
+
         CheckGrounded();
         CheckPlayerDetection();
 
@@ -187,11 +225,11 @@ public class MechBossAI : MonoBehaviour
 
         // Priority: Stomp > Melee > Laser > Chase
         if (isPhase2 && Time.time >= nextStompTime && dist <= stompRadius && !playerInWater)
-            StartCoroutine(DoStompAttack());
+            currentAttackCoroutine = StartCoroutine(DoStompAttack());
         else if (Time.time >= nextMeleeAttackTime && dist <= meleeAttackRange && !playerInWater)
-            StartCoroutine(DoMeleeAttack());
+            currentAttackCoroutine = StartCoroutine(DoMeleeAttack());
         else if (isPhase2 && Time.time >= nextLaserAttackTime && dist <= laserAttackRange)
-            StartCoroutine(DoLaserAttack()); // Laser can hit player in water
+            currentAttackCoroutine = StartCoroutine(DoLaserAttack()); // Laser can hit player in water
         else if (!isBlockedByWater)
             ChasePlayer();
         else
@@ -264,6 +302,7 @@ public class MechBossAI : MonoBehaviour
     private IEnumerator DoMeleeAttack()
     {
         isAttacking = true;
+        isParryable = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
         if (anim != null) anim.SetTrigger(AnimMeleeAttack);
@@ -273,15 +312,18 @@ public class MechBossAI : MonoBehaviour
 
         // Wait for the visual hit frame then apply damage
         yield return new WaitForSeconds(0.4f);
+        isParryable = false;
         DamageMelee();
 
         yield return new WaitForSeconds(cooldown - 0.4f);
         isAttacking = false;
+        currentAttackCoroutine = null;
     }
 
     private IEnumerator DoLaserAttack()
     {
         isAttacking = true;
+        isParryable = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
         if (anim != null) anim.SetTrigger(AnimLaserAttack);
@@ -291,15 +333,18 @@ public class MechBossAI : MonoBehaviour
 
         // Wait for the visual fire frame then spawn the laser
         yield return new WaitForSeconds(0.5f);
+        isParryable = false;
         FireLaser();
 
         yield return new WaitForSeconds(cooldown - 0.5f);
         isAttacking = false;
+        currentAttackCoroutine = null;
     }
 
     private IEnumerator DoStompAttack()
     {
         isAttacking = true;
+        isParryable = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
         if (anim != null) anim.SetTrigger(AnimStomp);
@@ -308,10 +353,12 @@ public class MechBossAI : MonoBehaviour
 
         // Wait for the visual impact frame then deal AoE damage
         yield return new WaitForSeconds(0.5f);
+        isParryable = false;
         DamageStomped();
 
         yield return new WaitForSeconds(stompCooldown * 0.5f);
         isAttacking = false;
+        currentAttackCoroutine = null;
     }
 
     // Called by coroutine (and optionally by MechBossAnimationEvents)
@@ -399,6 +446,31 @@ public class MechBossAI : MonoBehaviour
         isAttacking = true;
         rb.linearVelocity = Vector2.zero;
         enabled = false;
+    }
+
+    public void GetParried(Vector2 knockbackDir)
+    {
+        if (isStaggered) return;
+
+        if (currentAttackCoroutine != null)
+        {
+            StopCoroutine(currentAttackCoroutine);
+            currentAttackCoroutine = null;
+        }
+
+        isAttacking = true;
+        isParryable = false;
+        isStaggered = true;
+        staggerTimer = bossStaggerDuration;
+
+        // Apply knockback impulse — boss lurches back from the deflection
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(knockbackDir * parryKnockbackForce, ForceMode2D.Impulse);
+
+        if (anim != null)
+            anim.SetTrigger("stagger");
+
+        Debug.Log($"[MechBossAI] Boss was parried! Knockback applied, staggering for {bossStaggerDuration}s.");
     }
 
     private void CheckPlayerDetection()

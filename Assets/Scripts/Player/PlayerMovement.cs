@@ -135,6 +135,16 @@ public class PlayerMovement : MonoBehaviour
         rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
     }
 
+    /// <summary>
+    /// Grants temporary i-frames (e.g. after a successful parry).
+    /// Safe to call while dashing — dash i-frames will not be cleared early.
+    /// </summary>
+    public void SetInvulnerable(float duration)
+    {
+        IsInvulnerable = true;
+        parryInvulnerableTimer = duration;
+    }
+
     // =========================================================
     // Input
     // =========================================================
@@ -200,6 +210,7 @@ public class PlayerMovement : MonoBehaviour
     private int playerLayer;
     private int enemyLayer;
     public bool IsInvulnerable { get; private set; }
+    private float parryInvulnerableTimer = 0f;
 
     private void TryToDash()
     {
@@ -233,6 +244,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleDash()
     {
+        // Parry i-frame countdown
+        if (parryInvulnerableTimer > 0f)
+        {
+            parryInvulnerableTimer -= Time.deltaTime;
+            if (parryInvulnerableTimer <= 0f && !isDashing)
+                IsInvulnerable = false;
+        }
+
         if (!canDash)
         {
             dashCooldownTimer -= Time.deltaTime;

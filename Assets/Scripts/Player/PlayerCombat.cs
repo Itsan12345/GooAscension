@@ -60,6 +60,14 @@ public class PlayerCombat : MonoBehaviour
     private float comboTimer = 0f; // Timer for combo window
     private bool isAttackAnimationPlaying = false; // Track if attack animation is currently playing
 
+    [Header("Parry Settings")]
+    [SerializeField] private float parryRange = 1.5f;
+    [SerializeField] private float parryCooldown = 0.8f;
+    [SerializeField] private float parryIFrameDuration = 0.3f;
+    [SerializeField] private string parrySoundGroupName = "Parry";
+    [SerializeField] private int parrySoundElementIndex = 0;
+    private bool canParry = true;
+
     [Header("Weapon State")]
     [SerializeField] private bool usingGun = false;
 
@@ -524,10 +532,9 @@ public void OnAttackAnimationEnd()
         if (Keyboard.current.qKey.wasPressedThisFrame)
             SwitchWeapon();
 
-        // Handle regular gun shooting only for quick clicks (not charging)
-        // The charging system now handles both sword and gun charged attacks
-        // Regular gun shooting is now handled by quick clicks in the charging system
-        
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+            TryParry();
+
         // Note: Both sword and gun attacks (regular and charged) are now handled in HandleChargedAttack()
     }
 
@@ -694,6 +701,67 @@ public void OnAttackAnimationEnd()
             anim.SetTrigger("switchWeapon");
 
         Debug.Log(usingGun ? "Switched to GUN" : "Switched to SWORD");
+    }
+
+    private void TryParry()
+    {
+        if (!playerMovement.IsHuman) return;
+        if (!playerMovement.IsGrounded) return;
+        if (!canParry) return;
+
+        bool parryConnected = false;
+        Collider2D[] nearby = Physics2D.OverlapCircleAll(attackPoint.position, parryRange);
+        foreach (Collider2D col in nearby)
+        {
+            if (col.GetComponentInParent<PlayerMovement>() != null) continue;
+
+            EnemyAI enemy = col.GetComponentInParent<EnemyAI>();
+            if (enemy != null && enemy.IsParryable)
+            {
+                Vector2 knockbackDir = ((Vector2)(enemy.transform.position - transform.position)).normalized;
+                knockbackDir.y += 1f;
+                knockbackDir.Normalize();
+                enemy.GetParried(knockbackDir);
+                parryConnected = true;
+                break;
+            }
+
+            MechBossAI boss = col.GetComponentInParent<MechBossAI>();
+            if (boss != null && boss.IsParryable)
+            {
+                Vector2 knockbackDir = ((Vector2)(boss.transform.position - transform.position)).normalized;
+                knockbackDir.y += 1f;
+                knockbackDir.Normalize();
+                boss.GetParried(knockbackDir);
+                parryConnected = true;
+                break;
+            }
+        }
+
+        if (parryConnected)
+        {
+            if (anim != null)
+                anim.SetTrigger("parry");
+
+            playerMovement.SetInvulnerable(parryIFrameDuration);
+
+            if (soundEffectLibrary != null && attackAudioSource != null && !string.IsNullOrEmpty(parrySoundGroupName))
+                soundEffectLibrary.PlaySoundEffect(attackAudioSource, parrySoundGroupName, parrySoundElementIndex);
+
+            Debug.Log("✅ PARRY SUCCESS: Enemy staggered!");
+        }
+        else
+        {
+            Debug.Log("❌ PARRY MISS: No parryable enemy in range.");
+        }
+
+        canParry = false;
+        Invoke(nameof(ResetParry), parryCooldown);
+    }
+
+    private void ResetParry()
+    {
+        canParry = true;
     }
 
     // ---------- Damage API ----------
