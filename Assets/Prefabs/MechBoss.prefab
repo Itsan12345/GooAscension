@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9105625350545766252}
   - component: {fileID: 853782197863115917}
-  - component: {fileID: 4075865816868313908}
   - component: {fileID: 6088811353553307948}
   - component: {fileID: 3733502671583585235}
   m_Layer: 0
@@ -65,42 +64,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &4075865816868313908
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064138601145762832}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
 --- !u!114 &6088811353553307948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +89,11 @@ MonoBehaviour:
   stopDistance: 1.8
   detectionRadius: 12
   loseTargetRadius: 18
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  waterCheckDistance: 1.2
+  waterCheckHeightOffset: 0
   meleeDamage: 20
   meleeAttackRange: 2.5
   meleeAttackCooldown: 2
@@ -138,6 +106,10 @@ MonoBehaviour:
   stompRadius: 3
   stompCooldown: 6
   phase2AttackSpeedMultiplier: 1.4
+  bossStaggerDuration: 1
+  parryKnockbackForce: 12
+  knockbackFreeTime: 0.2
+  knockbackDecayRate: 5
 --- !u!114 &3733502671583585235
 MonoBehaviour:
   m_ObjectHideFlags: 0
