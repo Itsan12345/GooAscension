@@ -16,7 +16,13 @@ public class MechBossAnimationEvents : MonoBehaviour
             Debug.LogError("[MechBossAnimationEvents] MechBossAI not found! Make sure this script is on the animator child object.");
     }
 
-    // Call this at the melee hit frame in the melee attack animation
+    // Primary animation event — wire this in the melee attack clip at the hit frame
+    public void DamageTarget()
+    {
+        if (bossAI != null) bossAI.DamageMelee();
+    }
+
+    // Legacy alias — keeps any existing wired DamageMelee events working
     public void DamageMelee()
     {
         if (bossAI != null) bossAI.DamageMelee();
@@ -28,9 +34,4 @@ public class MechBossAnimationEvents : MonoBehaviour
         if (bossAI != null) bossAI.FireLaser();
     }
 
-    // Call this at the impact frame in the stomp animation
-    public void DamageStomped()
-    {
-        if (bossAI != null) bossAI.DamageStomped();
-    }
 }

@@ -68,6 +68,13 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private int parrySoundElementIndex = 0;
     private bool canParry = true;
 
+    [Header("Block Settings")]
+    [Tooltip("Energy drained per successfully blocked ranged attack.")]
+    [SerializeField] private float blockEnergyCost = 20f;
+    // True while the player holds RMB in human form. Read by BossLaserProjectile to intercept hits.
+    private bool isBlocking = false;
+    public bool IsBlocking => isBlocking;
+
     [Header("Weapon State")]
     [SerializeField] private bool usingGun = false;
 
@@ -534,6 +541,20 @@ public void OnAttackAnimationEnd()
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
             TryParry();
+
+        // Block: hold RMB while grounded in human form to intercept boss ranged attacks.
+        // Disabled in slime form, in the air, and while attacking or charging — those states
+        // override block so the animations don't conflict.
+        bool canBlock = playerMovement.IsHuman
+                     && playerMovement.IsGrounded
+                     && !isAttackAnimationPlaying
+                     && !isCharging
+                     && !isGunCharging;
+
+        isBlocking = canBlock && Mouse.current.rightButton.isPressed;
+
+        if (anim != null && playerMovement.IsHuman)
+            anim.SetBool("isBlocking", isBlocking);
 
         // Note: Both sword and gun attacks (regular and charged) are now handled in HandleChargedAttack()
     }

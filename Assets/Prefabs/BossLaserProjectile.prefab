@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 3014654221620794297}
   - component: {fileID: 4345842796267634851}
   - component: {fileID: 7014107835646263650}
+  - component: {fileID: 256862300578776858}
   m_Layer: 12
   m_Name: BossLaserProjectile
   m_TagString: Untagged
@@ -110,8 +111,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 155372963
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3359756910814477947, guid: 802d9fb8484f157438b3f69518f056fb, type: 3}
@@ -161,3 +162,16 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!114 &256862300578776858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6617745500354700537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126415d6ee692104fbc69ef592b0f16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossLaserProjectile
+  lifetime: 5
