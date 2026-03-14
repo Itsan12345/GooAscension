@@ -1,37 +1,64 @@
 fileFormatVersion: 2
-guid: 9f649883659054249b54346a5d9c5b1c
+guid: 53eda617f9f3ba34882289827ad38217
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3539206777040749834
-    second: SlimeHumanJumpFall_0
+      213: -432699977981432848
+    second: SlimeHumanDashIdle_0
   - first:
-      213: 1834273334912793165
-    second: SlimeHumanJumpFall_1
+      213: 4233722920985955640
+    second: SlimeHumanDashIdle_1
   - first:
-      213: 389596950205044928
-    second: SlimeHumanJumpFall_2
+      213: -6178993456219093293
+    second: SlimeHumanDashIdle_2
   - first:
-      213: -84369801522897305
-    second: SlimeHumanJumpFall_3
+      213: 9121898875657969190
+    second: SlimeHumanDashIdle_3
   - first:
-      213: 3677383927354591053
-    second: SlimeHumanJumpFall_4
+      213: -3415657287099737488
+    second: SlimeHumanDashIdle_4
   - first:
-      213: -3840691333205939406
-    second: SlimeHumanJumpFall_5
+      213: 4736241379743542316
+    second: SlimeHumanDashIdle_5
   - first:
-      213: 2767344003737298688
-    second: SlimeHumanJumpFall_6
+      213: 8956845655247717574
+    second: SlimeHumanDashIdle_6
   - first:
-      213: 3332901530507739180
-    second: SlimeHumanJumpFall_7
+      213: -7541805625562391130
+    second: SlimeHumanDashIdle_7
   - first:
-      213: -6582242482337430606
-    second: SlimeHumanJumpFall_8
+      213: 7517847187472471639
+    second: SlimeHumanDashIdle_8
   - first:
-      213: -6453966251096165337
-    second: SlimeHumanJumpFall_9
+      213: 6541570701763976631
+    second: SlimeHumanDashIdle_9
+  - first:
+      213: 1556434096690983532
+    second: SlimeHumanDashIdle_10
+  - first:
+      213: 5813430884665129376
+    second: SlimeHumanDashIdle_11
+  - first:
+      213: -7951882091345203957
+    second: SlimeHumanDashIdle_12
+  - first:
+      213: -8823097210402174024
+    second: SlimeHumanDashIdle_13
+  - first:
+      213: -9191883257349819539
+    second: SlimeHumanDashIdle_14
+  - first:
+      213: 3193479393390708180
+    second: SlimeHumanDashIdle_15
+  - first:
+      213: 6770927892884853459
+    second: SlimeHumanDashIdle_16
+  - first:
+      213: -8778148712599983497
+    second: SlimeHumanDashIdle_17
+  - first:
+      213: 1019636413522387805
+    second: SlimeHumanDashIdle_18
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -78,7 +105,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 26
+  spritePixelsToUnits: 25
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -127,13 +154,123 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanJumpFall_0
+      name: SlimeHumanDashIdle_0
       rect:
         serializedVersion: 2
-        x: 14
+        x: 26
+        y: 500
+        width: 38
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fbe81e99adbef9f0800000000000000
+      internalID: -432699977981432848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeHumanDashIdle_2
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 400
+        width: 97
+        height: 55
+      alignment: 9
+      pivot: {x: 0.79, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d60994703ecf3aa0800000000000000
+      internalID: -6178993456219093293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeHumanDashIdle_4
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 300
+        width: 97
+        height: 55
+      alignment: 9
+      pivot: {x: 0.79, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07a12f75bc52990d0800000000000000
+      internalID: -3415657287099737488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeHumanDashIdle_11
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 200
+        width: 87
+        height: 55
+      alignment: 9
+      pivot: {x: 0.52, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a9ffb6b6947da050800000000000000
+      internalID: 5813430884665129376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeHumanDashIdle_16
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 100
+        width: 78
+        height: 55
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d29f2f6b0b27fd50800000000000000
+      internalID: 6770927892884853459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeHumanDashIdle_18
+      rect:
+        serializedVersion: 2
+        x: 133
         y: 0
-        width: 31
-        height: 66
+        width: 38
+        height: 55
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,140 +279,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a054b2cefc9cd1130800000000000000
-      internalID: 3539206777040749834
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_2
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 7
-        width: 34
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0c81c8eac50286500800000000000000
-      internalID: 389596950205044928
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_3
-      rect:
-        serializedVersion: 2
-        x: 139
-        y: 21
-        width: 39
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 76e157ecc1244def0800000000000000
-      internalID: -84369801522897305
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_4
-      rect:
-        serializedVersion: 2
-        x: 204
-        y: 30
-        width: 43
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d4783b4c231b80330800000000000000
-      internalID: 3677383927354591053
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_5
-      rect:
-        serializedVersion: 2
-        x: 269
-        y: 21
-        width: 42
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 23ba650d49f13bac0800000000000000
-      internalID: -3840691333205939406
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_6
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 6
-        width: 39
-        height: 80
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 007a11a95b4976620800000000000000
-      internalID: 2767344003737298688
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_7
-      rect:
-        serializedVersion: 2
-        x: 398
-        y: 0
-        width: 31
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c2005459848d04e20800000000000000
-      internalID: 3332901530507739180
+      spriteID: d532e047ae9762e00800000000000000
+      internalID: 1019636413522387805
       vertices: []
       indices: 
       edges: []
@@ -284,7 +289,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 26289098dcd0b55459bcaec547a6e3b3
+    spriteID: 0ac0e713833f3144784797325d963a14
     internalID: 0
     vertices: []
     indices: 
@@ -294,16 +299,26 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanJumpFall_0: 3539206777040749834
-      SlimeHumanJumpFall_1: 1834273334912793165
-      SlimeHumanJumpFall_2: 389596950205044928
-      SlimeHumanJumpFall_3: -84369801522897305
-      SlimeHumanJumpFall_4: 3677383927354591053
-      SlimeHumanJumpFall_5: -3840691333205939406
-      SlimeHumanJumpFall_6: 2767344003737298688
-      SlimeHumanJumpFall_7: 3332901530507739180
-      SlimeHumanJumpFall_8: -6582242482337430606
-      SlimeHumanJumpFall_9: -6453966251096165337
+      SlimeHumanDashIdle_0: -432699977981432848
+      SlimeHumanDashIdle_1: 4233722920985955640
+      SlimeHumanDashIdle_10: 1556434096690983532
+      SlimeHumanDashIdle_11: 5813430884665129376
+      SlimeHumanDashIdle_12: -7951882091345203957
+      SlimeHumanDashIdle_13: -8823097210402174024
+      SlimeHumanDashIdle_14: -9191883257349819539
+      SlimeHumanDashIdle_15: 3193479393390708180
+      SlimeHumanDashIdle_16: 6770927892884853459
+      SlimeHumanDashIdle_17: -8778148712599983497
+      SlimeHumanDashIdle_18: 1019636413522387805
+      SlimeHumanDashIdle_19: -426600879
+      SlimeHumanDashIdle_2: -6178993456219093293
+      SlimeHumanDashIdle_3: 9121898875657969190
+      SlimeHumanDashIdle_4: -3415657287099737488
+      SlimeHumanDashIdle_5: 4736241379743542316
+      SlimeHumanDashIdle_6: 8956845655247717574
+      SlimeHumanDashIdle_7: -7541805625562391130
+      SlimeHumanDashIdle_8: 7517847187472471639
+      SlimeHumanDashIdle_9: 6541570701763976631
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

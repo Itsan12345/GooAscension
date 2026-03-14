@@ -1,37 +1,25 @@
 fileFormatVersion: 2
-guid: 9f649883659054249b54346a5d9c5b1c
+guid: 9742718233e8f284a8cd95087ebccd91
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3539206777040749834
-    second: SlimeHumanJumpFall_0
+      213: -4377004163984195276
+    second: SlimeJumpFall_0
   - first:
-      213: 1834273334912793165
-    second: SlimeHumanJumpFall_1
+      213: -5502013450661856799
+    second: SlimeJumpFall_1
   - first:
-      213: 389596950205044928
-    second: SlimeHumanJumpFall_2
+      213: -7163762698435875051
+    second: SlimeJumpFall_2
   - first:
-      213: -84369801522897305
-    second: SlimeHumanJumpFall_3
+      213: -6139040834754560016
+    second: SlimeJumpFall_3
   - first:
-      213: 3677383927354591053
-    second: SlimeHumanJumpFall_4
+      213: 4239999921487580364
+    second: SlimeJumpFall_4
   - first:
-      213: -3840691333205939406
-    second: SlimeHumanJumpFall_5
-  - first:
-      213: 2767344003737298688
-    second: SlimeHumanJumpFall_6
-  - first:
-      213: 3332901530507739180
-    second: SlimeHumanJumpFall_7
-  - first:
-      213: -6582242482337430606
-    second: SlimeHumanJumpFall_8
-  - first:
-      213: -6453966251096165337
-    second: SlimeHumanJumpFall_9
+      213: -2651196916670924386
+    second: SlimeJumpFall_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -78,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 26
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -127,13 +115,79 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanJumpFall_0
+      name: SlimeJumpFall_0
       rect:
         serializedVersion: 2
-        x: 14
+        x: 8
+        y: 308
+        width: 26
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.13}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431015937e1c143c0800000000000000
+      internalID: -4377004163984195276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeJumpFall_3
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 188
+        width: 26
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5, y: 0.13}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ff36d603eebdcaa0800000000000000
+      internalID: -6139040834754560016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeJumpFall_4
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 87
+        width: 28
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5, y: 0.13}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccc83ffc67187da30800000000000000
+      internalID: 4239999921487580364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SlimeJumpFall_5
+      rect:
+        serializedVersion: 2
+        x: 7
         y: 0
-        width: 31
-        height: 66
+        width: 26
+        height: 54
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -142,140 +196,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a054b2cefc9cd1130800000000000000
-      internalID: 3539206777040749834
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_2
-      rect:
-        serializedVersion: 2
-        x: 76
-        y: 7
-        width: 34
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0c81c8eac50286500800000000000000
-      internalID: 389596950205044928
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_3
-      rect:
-        serializedVersion: 2
-        x: 139
-        y: 21
-        width: 39
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 76e157ecc1244def0800000000000000
-      internalID: -84369801522897305
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_4
-      rect:
-        serializedVersion: 2
-        x: 204
-        y: 30
-        width: 43
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d4783b4c231b80330800000000000000
-      internalID: 3677383927354591053
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_5
-      rect:
-        serializedVersion: 2
-        x: 269
-        y: 21
-        width: 42
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 23ba650d49f13bac0800000000000000
-      internalID: -3840691333205939406
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_6
-      rect:
-        serializedVersion: 2
-        x: 336
-        y: 6
-        width: 39
-        height: 80
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 007a11a95b4976620800000000000000
-      internalID: 2767344003737298688
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanJumpFall_7
-      rect:
-        serializedVersion: 2
-        x: 398
-        y: 0
-        width: 31
-        height: 66
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c2005459848d04e20800000000000000
-      internalID: 3332901530507739180
+      spriteID: e99f730737e053bd0800000000000000
+      internalID: -2651196916670924386
       vertices: []
       indices: 
       edges: []
@@ -284,7 +206,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 26289098dcd0b55459bcaec547a6e3b3
+    spriteID: b92df9492e72946458ae13f290619d06
     internalID: 0
     vertices: []
     indices: 
@@ -294,16 +216,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanJumpFall_0: 3539206777040749834
-      SlimeHumanJumpFall_1: 1834273334912793165
-      SlimeHumanJumpFall_2: 389596950205044928
-      SlimeHumanJumpFall_3: -84369801522897305
-      SlimeHumanJumpFall_4: 3677383927354591053
-      SlimeHumanJumpFall_5: -3840691333205939406
-      SlimeHumanJumpFall_6: 2767344003737298688
-      SlimeHumanJumpFall_7: 3332901530507739180
-      SlimeHumanJumpFall_8: -6582242482337430606
-      SlimeHumanJumpFall_9: -6453966251096165337
+      SlimeJumpFall_0: -4377004163984195276
+      SlimeJumpFall_1: -5502013450661856799
+      SlimeJumpFall_2: -7163762698435875051
+      SlimeJumpFall_3: -6139040834754560016
+      SlimeJumpFall_4: 4239999921487580364
+      SlimeJumpFall_5: -2651196916670924386
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

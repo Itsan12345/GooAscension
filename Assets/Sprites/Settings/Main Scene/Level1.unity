@@ -24378,15 +24378,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 931343883141053404, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_Size.y
-      value: 1.9461129
-      objectReference: {fileID: 0}
-    - target: {fileID: 931343883141053404, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
-      propertyPath: m_Offset.x
-      value: 0.03945875
+      value: 1.9464793
       objectReference: {fileID: 0}
     - target: {fileID: 931343883141053404, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_Offset.y
-      value: -0.013141036
+      value: -0.013324261
       objectReference: {fileID: 0}
     - target: {fileID: 1483244952815803274, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: energySlider
@@ -24504,9 +24500,13 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0.151
       objectReference: {fileID: 0}
-    - target: {fileID: 7536233232438984211, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
-      propertyPath: jumpForce
-      value: 10
+    - target: {fileID: 6546942354735160581, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 6546942354735160581, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.39
       objectReference: {fileID: 0}
     - target: {fileID: 7564694622445109610, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_Size.x

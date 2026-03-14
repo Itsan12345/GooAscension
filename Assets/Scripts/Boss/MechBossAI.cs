@@ -9,6 +9,7 @@ public class MechBossAI : MonoBehaviour
     [SerializeField] private Transform meleeAttackPoint;
     [SerializeField] private float meleeAttackPointOffset = 1.8f;
     [SerializeField] private Transform laserFirePoint;
+    private Vector3 laserFirePointLocalPos;
     [SerializeField] private GameObject laserProjectilePrefab;
 
     private Rigidbody2D rb;
@@ -35,20 +36,27 @@ public class MechBossAI : MonoBehaviour
     [SerializeField] private float meleeAttackRange = 2.5f;
     [SerializeField] private float meleeAttackCooldown = 2f;
     [SerializeField] private float meleeAttackRadius = 2f;
+    [SerializeField] private AttackTelegraph meleeTelegraph;         // Assign via Inspector (AttackTelegraph on MeleeAttackPoint)
+    [SerializeField] private float meleeTelegraphDuration = 0.8f;   // Parry window — gold pulse before swing
 
-    [Header("Laser Attack (Phase 2)")]
+    [Header("Laser Attack")]
     [SerializeField] private float laserDamage = 15f;
     [SerializeField] private float laserAttackRange = 10f;
     [SerializeField] private float laserAttackCooldown = 3f;
     [SerializeField] private float laserProjectileSpeed = 9f;
 
-    [Header("Stomp Attack (Phase 2)")]
-    [SerializeField] private float stompDamage = 25f;
-    [SerializeField] private float stompRadius = 3f;
-    [SerializeField] private float stompCooldown = 6f;
-
     [Header("Phase 2 Settings")]
     [SerializeField] private float phase2AttackSpeedMultiplier = 1.4f;
+
+    [Header("Boss Glow Settings")]
+    [SerializeField] private float glowDuration = 5f;           // total immunity window
+    [SerializeField] private float glowWindupDuration = 0.8f;   // freeze while charge-up anim plays
+    [SerializeField] private float glowCooldown = 18f;          // seconds between periodic glow cycles
+    [SerializeField] private Color glowTintColor = new Color(1f, 0.85f, 0.3f, 1f); // golden tint
+    private float nextGlowTime = 0f;
+    private bool isGlowing = false;
+    private SpriteRenderer[] bossSpriteRenderers;
+    private Color[] bossOriginalColors;
 
     // State
     private bool isChasing = false;
@@ -56,7 +64,6 @@ public class MechBossAI : MonoBehaviour
     private bool facingRight = true;
     private bool isGrounded = false;
     private bool isPhase2 = false;
-    private bool isEntering = true;
     private bool isBlockedByWater = false;
 
     // Parry / Stagger State
@@ -76,16 +83,15 @@ public class MechBossAI : MonoBehaviour
 
     private float nextMeleeAttackTime = 0f;
     private float nextLaserAttackTime = 0f;
-    private float nextStompTime = 0f;
     private float currentMoveSpeed;
 
     // Animator parameter hashes (must match your Animator Controller parameter names)
-    private static readonly int AnimXVelocity = Animator.StringToHash("xVelocity");
-    private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
-    private static readonly int AnimMeleeAttack = Animator.StringToHash("meleeAttack");
-    private static readonly int AnimLaserAttack = Animator.StringToHash("laserAttack");
-    private static readonly int AnimStomp = Animator.StringToHash("stomp");
-    private static readonly int AnimPhase2 = Animator.StringToHash("phase2");
+    private static readonly int AnimXVelocity   = Animator.StringToHash("xVelocity");
+    private static readonly int AnimIsGrounded   = Animator.StringToHash("isGrounded");
+    private static readonly int AnimMeleeAttack  = Animator.StringToHash("meleeAttack");
+    private static readonly int AnimLaserAttack  = Animator.StringToHash("laserAttack");
+    private static readonly int AnimPhase2       = Animator.StringToHash("phase2");
+    private static readonly int AnimBossGlow     = Animator.StringToHash("bossGlow");
 
     private void Awake()
     {
@@ -96,26 +102,27 @@ public class MechBossAI : MonoBehaviour
         if (animatorObj != null)
             anim = animatorObj.GetComponent<Animator>();
 
-        Debug.Log($"[MechBossAI] Awake on '{name}'. animatorObj={(animatorObj != null ? animatorObj.name : "null")}, bossHealth={bossHealth}");
+        // Cache all sprite renderers for glow tinting
+        bossSpriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        bossOriginalColors  = new Color[bossSpriteRenderers.Length];
+        for (int i = 0; i < bossSpriteRenderers.Length; i++)
+            bossOriginalColors[i] = bossSpriteRenderers[i].color;
+
+        if (laserFirePoint != null)
+            laserFirePointLocalPos = laserFirePoint.localPosition;
 
         FindTargetPlayer();
     }
 
     private void Start()
     {
-        Debug.Log($"[MechBossAI] Start on '{name}'. Beginning BossEntrySequence.");
-        StartCoroutine(BossEntrySequence());
-    }
+        // Ensure the boss visual (animator child) is active when the scene starts.
+        // Prevents a hidden state caused by mis-assigned worldHealthBarCanvas in MechBossHealth.
+        if (animatorObj != null)
+            animatorObj.gameObject.SetActive(true);
 
-    private IEnumerator BossEntrySequence()
-    {
-        Debug.Log("[MechBossAI] BossEntrySequence started (intro pause).");
-        isEntering = true;
-        rb.linearVelocity = Vector2.zero;
-        yield return new WaitForSeconds(1.5f);
-        isEntering = false;
+        // Boss appears and attacks immediately — no entry delay
         isChasing = true;
-        Debug.Log("[MechBossAI] BossEntrySequence finished. Boss is now active and chasing.");
     }
 
     private void FindTargetPlayer()
@@ -172,8 +179,6 @@ public class MechBossAI : MonoBehaviour
 
     private void Update()
     {
-        if (isEntering) return;
-
         // Handle stagger from parry
         if (isStaggered)
         {
@@ -223,13 +228,18 @@ public class MechBossAI : MonoBehaviour
         // If player is in slime form and in water and boss is blocked — use ranged attack if possible
         bool playerInWater = IsPlayerSlime() && isBlockedByWater;
 
-        // Priority: Stomp > Melee > Laser > Chase
-        if (isPhase2 && Time.time >= nextStompTime && dist <= stompRadius && !playerInWater)
-            currentAttackCoroutine = StartCoroutine(DoStompAttack());
-        else if (Time.time >= nextMeleeAttackTime && dist <= meleeAttackRange && !playerInWater)
+        // Phase 2 Glow check — highest priority in Phase 2 (but doesn't stop for attacks; fires inline)
+        if (isPhase2 && !isGlowing && Time.time >= nextGlowTime)
+        {
+            currentAttackCoroutine = StartCoroutine(DoGlowingPhase());
+            return;
+        }
+
+        // Priority: Melee > Laser > Chase
+        if (Time.time >= nextMeleeAttackTime && dist <= meleeAttackRange && !playerInWater)
             currentAttackCoroutine = StartCoroutine(DoMeleeAttack());
-        else if (isPhase2 && Time.time >= nextLaserAttackTime && dist <= laserAttackRange)
-            currentAttackCoroutine = StartCoroutine(DoLaserAttack()); // Laser can hit player in water
+        else if (Time.time >= nextLaserAttackTime && dist <= laserAttackRange)
+            currentAttackCoroutine = StartCoroutine(DoLaserAttack());
         else if (!isBlockedByWater)
             ChasePlayer();
         else
@@ -302,20 +312,49 @@ public class MechBossAI : MonoBehaviour
     private IEnumerator DoMeleeAttack()
     {
         isAttacking = true;
-        isParryable = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
+        // Face the player before the telegraph so the indicator appears on the correct side.
+        if (player != null)
+        {
+            float dir = GetPlayerTargetPosition().x - transform.position.x;
+            if (dir > 0.1f && !facingRight) Flip();
+            else if (dir < -0.1f && facingRight) Flip();
+        }
+
+        // ── Telegraph phase ─────────────────────────────────────────────────────────
+        // Open the parry window and show the gold pulsing indicator at the attack point.
+        isParryable = true;
+        if (meleeTelegraph != null)
+        {
+            meleeTelegraph.SetParryWindowColor(true);
+            meleeTelegraph.ShowTelegraph();
+        }
+
+        yield return new WaitForSeconds(meleeTelegraphDuration);
+
+        // Close the parry window and hide the indicator.
+        isParryable = false;
+        if (meleeTelegraph != null)
+            meleeTelegraph.HideTelegraph();
+
+        // If GetParried() was called during the telegraph window it already stopped this
+        // coroutine via StopCoroutine, so this guard is a belt-and-suspenders safety check.
+        if (isStaggered)
+        {
+            isAttacking = false;
+            currentAttackCoroutine = null;
+            yield break;
+        }
+        // ────────────────────────────────────────────────────────────────────────────
+
+        // Trigger the melee animation — DamageTarget animation event handles the hit.
         if (anim != null) anim.SetTrigger(AnimMeleeAttack);
 
         float cooldown = meleeAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextMeleeAttackTime = Time.time + cooldown;
 
-        // Wait for the visual hit frame then apply damage
-        yield return new WaitForSeconds(0.4f);
-        isParryable = false;
-        DamageMelee();
-
-        yield return new WaitForSeconds(cooldown - 0.4f);
+        yield return new WaitForSeconds(cooldown);
         isAttacking = false;
         currentAttackCoroutine = null;
     }
@@ -331,34 +370,100 @@ public class MechBossAI : MonoBehaviour
         float cooldown = laserAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextLaserAttackTime = Time.time + cooldown;
 
-        // Wait for the visual fire frame then spawn the laser
-        yield return new WaitForSeconds(0.5f);
-        isParryable = false;
-        FireLaser();
+        // Lock-on phase: boss tracks and faces the player while charging up
+        float windupTime = 0.5f;
+        float elapsed    = 0f;
+        while (elapsed < windupTime)
+        {
+            if (player != null)
+            {
+                float dir = GetPlayerTargetPosition().x - transform.position.x;
+                if (dir > 0.1f && !facingRight) Flip();
+                else if (dir < -0.1f && facingRight) Flip();
+            }
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-        yield return new WaitForSeconds(cooldown - 0.5f);
+        isParryable = false;
+
+        if (isPhase2)
+        {
+            // Phase 2 burst — center shot, then two angled follow-ups
+            FireLaser();
+            yield return new WaitForSeconds(0.12f);
+            FireLaserWithAngleOffset(10f);
+            yield return new WaitForSeconds(0.12f);
+            FireLaserWithAngleOffset(-10f);
+        }
+        else
+        {
+            FireLaser();
+        }
+
+        // Brief recovery so the attack has weight before the boss resumes chasing
+        yield return new WaitForSeconds(0.4f);
         isAttacking = false;
         currentAttackCoroutine = null;
     }
 
-    private IEnumerator DoStompAttack()
+    private IEnumerator DoGlowingPhase()
     {
-        isAttacking = true;
-        isParryable = true;
-        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        isGlowing = true;
+        isAttacking = true; // Freeze movement during windup
+        rb.linearVelocity = Vector2.zero;
 
-        if (anim != null) anim.SetTrigger(AnimStomp);
+        // Trigger the charge-up animation
+        if (anim != null) anim.SetTrigger(AnimBossGlow);
 
-        nextStompTime = Time.time + stompCooldown;
+        // Apply golden tint immediately so the visual sells the buildup
+        ApplyGlowTint();
 
-        // Wait for the visual impact frame then deal AoE damage
-        yield return new WaitForSeconds(0.5f);
-        isParryable = false;
-        DamageStomped();
+        // Tell health component the boss is now immune
+        if (bossHealth != null) bossHealth.SetImmune(true);
 
-        yield return new WaitForSeconds(stompCooldown * 0.5f);
+        // Windup freeze — plays charge-up animation
+        yield return new WaitForSeconds(glowWindupDuration);
+
+        // Boss is now free to move and attack while immune for the remaining duration
         isAttacking = false;
+        float immunityRemaining = glowDuration - glowWindupDuration;
+        yield return new WaitForSeconds(immunityRemaining);
+
+        // Glow ends — restore tint and lift immunity
+        ClearGlowTint();
+        if (bossHealth != null) bossHealth.SetImmune(false);
+
+        isGlowing = false;
+        nextGlowTime = Time.time + glowCooldown;
         currentAttackCoroutine = null;
+
+        Debug.Log("[MechBossAI] BossGlowing phase ended. Boss is now vulnerable.");
+    }
+
+    /// <summary>
+    /// Called externally (e.g. from MechBossHealth at 25% HP) to force an immediate glow cycle.
+    /// Bypasses the cooldown timer.
+    /// </summary>
+    public void TriggerGlow()
+    {
+        if (isGlowing || !isPhase2) return;
+        nextGlowTime = 0f; // Let DecideAction pick it up on the next frame
+    }
+
+    private void ApplyGlowTint()
+    {
+        if (bossSpriteRenderers == null) return;
+        foreach (SpriteRenderer sr in bossSpriteRenderers)
+            if (sr != null) sr.color = glowTintColor;
+    }
+
+    private void ClearGlowTint()
+    {
+        if (bossSpriteRenderers == null || bossOriginalColors == null) return;
+        for (int i = 0; i < bossSpriteRenderers.Length; i++)
+            if (bossSpriteRenderers[i] != null && i < bossOriginalColors.Length)
+                bossSpriteRenderers[i].color = bossOriginalColors[i];
     }
 
     // Called by coroutine (and optionally by MechBossAnimationEvents)
@@ -390,33 +495,39 @@ public class MechBossAI : MonoBehaviour
     {
         if (laserFirePoint == null || laserProjectilePrefab == null || player == null) return;
 
-        // Aim at the active hitbox so the laser tracks both slime and human forms correctly
         Vector2 direction = ((Vector2)GetPlayerTargetPosition() - (Vector2)laserFirePoint.position).normalized;
-        GameObject laser = Instantiate(laserProjectilePrefab, laserFirePoint.position, Quaternion.identity);
-
-        BossLaserProjectile projectile = laser.GetComponent<BossLaserProjectile>();
-        if (projectile != null)
-            projectile.Initialize(direction, laserProjectileSpeed, laserDamage);
+        SpawnLaser(direction);
     }
 
-    // Called by coroutine (and optionally by MechBossAnimationEvents)
-    public void DamageStomped()
+    // Fires a laser rotated by 'degrees' relative to the direct aim direction.
+    // Used for Phase 2 spread bursts.
+    private void FireLaserWithAngleOffset(float degrees)
     {
-        PlayerHealth health = FindPlayerHealth();
-        if (health == null) return;
+        if (laserFirePoint == null || laserProjectilePrefab == null || player == null) return;
 
-        float dist = Vector2.Distance(transform.position, health.transform.position);
-        if (dist > stompRadius) return;
+        Vector2 baseDir = ((Vector2)GetPlayerTargetPosition() - (Vector2)laserFirePoint.position).normalized;
+        float   rad     = degrees * Mathf.Deg2Rad;
+        Vector2 rotated = new Vector2(
+            baseDir.x * Mathf.Cos(rad) - baseDir.y * Mathf.Sin(rad),
+            baseDir.x * Mathf.Sin(rad) + baseDir.y * Mathf.Cos(rad)
+        );
+        SpawnLaser(rotated.normalized);
+    }
 
-        health.TakeDamage(stompDamage);
+    private void SpawnLaser(Vector2 direction)
+    {
+        GameObject laser = Instantiate(laserProjectilePrefab, laserFirePoint.position, Quaternion.identity);
 
-        PlayerMovement pm = health.GetComponent<PlayerMovement>();
-        if (pm != null)
-        {
-            Vector2 knockbackDir = (health.transform.position - transform.position).normalized;
-            knockbackDir.y += 0.5f;
-            pm.ApplyKnockback(knockbackDir.normalized);
-        }
+        // Support prefabs where BossLaserProjectile is on the root or a child object
+        BossLaserProjectile projectile = laser.GetComponent<BossLaserProjectile>();
+        if (projectile == null)
+            projectile = laser.GetComponentInChildren<BossLaserProjectile>(true);
+
+        if (projectile != null)
+            projectile.Initialize(direction, laserProjectileSpeed, laserDamage);
+        else
+            Debug.LogError("[MechBossAI] Laser prefab is missing a BossLaserProjectile component! " +
+                           "Add BossLaserProjectile to the prefab root.");
     }
 
     // Called by MechBossHealth when health crosses 50%
@@ -443,6 +554,9 @@ public class MechBossAI : MonoBehaviour
     {
         Debug.Log("[MechBossAI] DisableAI called. Stopping all coroutines and disabling AI.");
         StopAllCoroutines();
+        ClearGlowTint();
+        if (bossHealth != null) bossHealth.SetImmune(false);
+        isGlowing = false;
         isAttacking = true;
         rb.linearVelocity = Vector2.zero;
         enabled = false;
@@ -457,6 +571,10 @@ public class MechBossAI : MonoBehaviour
             StopCoroutine(currentAttackCoroutine);
             currentAttackCoroutine = null;
         }
+
+        // Immediately hide the telegraph indicator so it doesn't linger after the parry.
+        if (meleeTelegraph != null)
+            meleeTelegraph.HideTelegraph();
 
         isAttacking = true;
         isParryable = false;
@@ -518,6 +636,16 @@ public class MechBossAI : MonoBehaviour
         facingRight = !facingRight;
         if (animatorObj != null)
             animatorObj.localRotation = facingRight ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+
+        if (laserFirePoint != null)
+        {
+            laserFirePoint.localPosition = new Vector3(
+                facingRight ? Mathf.Abs(laserFirePointLocalPos.x) : -Mathf.Abs(laserFirePointLocalPos.x),
+                laserFirePointLocalPos.y,
+                laserFirePointLocalPos.z
+            );
+        }
+
         UpdateAttackPointPosition();
     }
 
@@ -548,9 +676,6 @@ public class MechBossAI : MonoBehaviour
 
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, laserAttackRange);
-
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, stompRadius);
 
         // Water check rays
         Gizmos.color = Color.blue;

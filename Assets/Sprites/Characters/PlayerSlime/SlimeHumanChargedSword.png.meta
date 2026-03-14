@@ -1,64 +1,34 @@
 fileFormatVersion: 2
-guid: 68dece17759f4434b888395cc7850812
+guid: bd837b350b5438a4686f7b8612084dd6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7519840802094321373
-    second: SlimeHumanDash_0
+      213: -2711354050631921950
+    second: SlimeHumanChargedSword_0
   - first:
-      213: -5522858047693165394
-    second: SlimeHumanDash_1
+      213: -276092716238375716
+    second: SlimeHumanChargedSword_1
   - first:
-      213: 4117939151146566054
-    second: SlimeHumanDash_2
+      213: -8196877062660473930
+    second: SlimeHumanChargedSword_2
   - first:
-      213: 7202491339820577278
-    second: SlimeHumanDash_3
+      213: -459627211489239009
+    second: SlimeHumanChargedSword_3
   - first:
-      213: 9126349162747225580
-    second: SlimeHumanDash_4
+      213: -683708577457201021
+    second: SlimeHumanChargedSword_4
   - first:
-      213: 8496286415445885583
-    second: SlimeHumanDash_5
+      213: -716175295989198570
+    second: SlimeHumanChargedSword_5
   - first:
-      213: 2822285564657337705
-    second: SlimeHumanDash_6
+      213: -1440276779852234847
+    second: SlimeHumanChargedSword_6
   - first:
-      213: -2371053298172452221
-    second: SlimeHumanDash_7
+      213: 409132950656307639
+    second: SlimeHumanChargedSword_7
   - first:
-      213: -6306452857014154917
-    second: SlimeHumanDash_8
-  - first:
-      213: -7346689489253657904
-    second: SlimeHumanDash_9
-  - first:
-      213: 8561823672168386975
-    second: SlimeHumanDash_10
-  - first:
-      213: -3202785279046839952
-    second: SlimeHumanDash_11
-  - first:
-      213: -2951451859586221002
-    second: SlimeHumanDash_12
-  - first:
-      213: 1767870377529609808
-    second: SlimeHumanDash_13
-  - first:
-      213: 8647115121684522406
-    second: SlimeHumanDash_14
-  - first:
-      213: -1991171908814786580
-    second: SlimeHumanDash_15
-  - first:
-      213: -8320234375109523090
-    second: SlimeHumanDash_16
-  - first:
-      213: -528943002259101661
-    second: SlimeHumanDash_17
-  - first:
-      213: 7343531304622758430
-    second: SlimeHumanDash_18
+      213: -4670491162095239822
+    second: SlimeHumanChargedSword_8
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -105,7 +75,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 21
+  spritePixelsToUnits: 26
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -154,13 +124,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanDash_0
+      name: SlimeHumanChargedSword_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 27
-        height: 51
+        x: 80
+        y: 1217
+        width: 41
+        height: 113
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,130 +139,130 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 321fdafd1a824a790800000000000000
-      internalID: -7519840802094321373
+      spriteID: 2ee84c73bd55f5ad0800000000000000
+      internalID: -2711354050631921950
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_1
+      name: SlimeHumanChargedSword_1
       rect:
         serializedVersion: 2
-        x: 211
-        y: 0
-        width: 34
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 73
+        y: 1043
+        width: 46
+        height: 113
+      alignment: 9
+      pivot: {x: 0.53, y: 0.26460177}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eac6752fdddda53b0800000000000000
-      internalID: -5522858047693165394
+      spriteID: cd4f98b232f1b2cf0800000000000000
+      internalID: -276092716238375716
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_2
+      name: SlimeHumanChargedSword_2
       rect:
         serializedVersion: 2
-        x: 422
-        y: 0
-        width: 34
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 50
+        y: 869
+        width: 70
+        height: 113
+      alignment: 9
+      pivot: {x: 0.7, y: 0.2646018}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6a1c3c617dbd52930800000000000000
-      internalID: 4117939151146566054
+      spriteID: 6bb339c8db7de3e80800000000000000
+      internalID: -8196877062660473930
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_3
+      name: SlimeHumanChargedSword_3
       rect:
         serializedVersion: 2
-        x: 650
-        y: 0
-        width: 40
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 28
+        y: 695
+        width: 92
+        height: 113
+      alignment: 9
+      pivot: {x: 0.78, y: 0.2646018}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef135df86b364f360800000000000000
-      internalID: 7202491339820577278
+      spriteID: f10a4128c731f99f0800000000000000
+      internalID: -459627211489239009
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_5
+      name: SlimeHumanChargedSword_4
       rect:
         serializedVersion: 2
-        x: 1084
-        y: 0
-        width: 65
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 61
+        y: 521
+        width: 103
+        height: 113
+      alignment: 9
+      pivot: {x: 0.39, y: 0.2646018}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f8201a6ca7fd8e570800000000000000
-      internalID: 8496286415445885583
+      spriteID: 380a6c6dbaaf286f0800000000000000
+      internalID: -683708577457201021
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_6
+      name: SlimeHumanChargedSword_6
       rect:
         serializedVersion: 2
-        x: 1311
-        y: 0
-        width: 54
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 88
+        y: 347
+        width: 115
+        height: 113
+      alignment: 9
+      pivot: {x: 0.13, y: 0.2646018}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9650d1894c5ca2720800000000000000
-      internalID: 2822285564657337705
+      spriteID: 1aff9ae46eb130ce0800000000000000
+      internalID: -1440276779852234847
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_7
+      name: SlimeHumanChargedSword_7
       rect:
         serializedVersion: 2
-        x: 1502
-        y: 0
-        width: 85
-        height: 51
+        x: 79
+        y: 172
+        width: 42
+        height: 113
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -301,20 +271,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 382a9e27693581fd0800000000000000
-      internalID: -2371053298172452221
+      spriteID: 7b1d6cd30488da500800000000000000
+      internalID: 409132950656307639
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanDash_8
+      name: SlimeHumanChargedSword_8
       rect:
         serializedVersion: 2
-        x: 1778
+        x: 80
         y: 0
-        width: 34
-        height: 51
+        width: 41
+        height: 113
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -323,52 +293,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b598ce02a8afa78a0800000000000000
-      internalID: -6306452857014154917
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanDash_9
-      rect:
-        serializedVersion: 2
-        x: 2018
-        y: 0
-        width: 30
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0d290fd75d05b0a90800000000000000
-      internalID: -7346689489253657904
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanDash_10
-      rect:
-        serializedVersion: 2
-        x: 873
-        y: 0
-        width: 56
-        height: 51
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f9190217445b1d670800000000000000
-      internalID: 8561823672168386975
+      spriteID: 27d36bc88051f2fb0800000000000000
+      internalID: -4670491162095239822
       vertices: []
       indices: 
       edges: []
@@ -377,7 +303,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 31ae658c5faee844086fbe4c4c75c8ce
+    spriteID: a71acdeb410926f4f81e58c49e61e207
     internalID: 0
     vertices: []
     indices: 
@@ -387,25 +313,15 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanDash_0: -7519840802094321373
-      SlimeHumanDash_1: -5522858047693165394
-      SlimeHumanDash_10: 8561823672168386975
-      SlimeHumanDash_11: -3202785279046839952
-      SlimeHumanDash_12: -2951451859586221002
-      SlimeHumanDash_13: 1767870377529609808
-      SlimeHumanDash_14: 8647115121684522406
-      SlimeHumanDash_15: -1991171908814786580
-      SlimeHumanDash_16: -8320234375109523090
-      SlimeHumanDash_17: -528943002259101661
-      SlimeHumanDash_18: 7343531304622758430
-      SlimeHumanDash_2: 4117939151146566054
-      SlimeHumanDash_3: 7202491339820577278
-      SlimeHumanDash_4: 9126349162747225580
-      SlimeHumanDash_5: 8496286415445885583
-      SlimeHumanDash_6: 2822285564657337705
-      SlimeHumanDash_7: -2371053298172452221
-      SlimeHumanDash_8: -6306452857014154917
-      SlimeHumanDash_9: -7346689489253657904
+      SlimeHumanChargedSword_0: -2711354050631921950
+      SlimeHumanChargedSword_1: -276092716238375716
+      SlimeHumanChargedSword_2: -8196877062660473930
+      SlimeHumanChargedSword_3: -459627211489239009
+      SlimeHumanChargedSword_4: -683708577457201021
+      SlimeHumanChargedSword_5: -716175295989198570
+      SlimeHumanChargedSword_6: -1440276779852234847
+      SlimeHumanChargedSword_7: 409132950656307639
+      SlimeHumanChargedSword_8: -4670491162095239822
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -32,8 +32,17 @@ public class MechBossHealth : MonoBehaviour, IDamageable
     [SerializeField] private Color flashColor = Color.red;
     [SerializeField] private float flashDuration = 0.12f;
 
+    [Header("Immunity (Glow Phase)")]
+    [SerializeField] private AudioSource blockedAudioSource;
+    [SerializeField] private AudioClip blockedSoundClip;
+    [SerializeField] private float blockedShakeDuration  = 0.15f;
+    [SerializeField] private float blockedShakeMagnitude = 0.1f;
+
     private bool dead = false;
     private bool phase2Triggered = false;
+    private bool glow25Triggered  = false;
+    private bool isImmune = false;
+    public bool IsImmune => isImmune;
     private Coroutine flashCoroutine;
     private bool isFlashing = false;
 
@@ -87,6 +96,17 @@ public class MechBossHealth : MonoBehaviour, IDamageable
     {
         if (dead) return;
 
+        // Boss is immune during the Glow phase — play blocked feedback and bail
+        if (isImmune)
+        {
+            if (blockedAudioSource != null && blockedSoundClip != null)
+                blockedAudioSource.PlayOneShot(blockedSoundClip);
+
+            ScreenShake.Trigger(blockedShakeDuration, blockedShakeMagnitude);
+            Debug.Log("[MechBoss] Hit blocked — boss is immune during Glow phase.");
+            return;
+        }
+
         currentHealth -= damage;
         UpdateHealthBars();
         Flash();
@@ -99,8 +119,24 @@ public class MechBossHealth : MonoBehaviour, IDamageable
             if (bossAI != null) bossAI.EnterPhase2();
         }
 
+        // Force a glow cycle at 25% HP (Phase 2 only — TriggerGlow guards this internally)
+        if (!glow25Triggered && currentHealth / maxHealth <= 0.25f)
+        {
+            glow25Triggered = true;
+            if (bossAI != null) bossAI.TriggerGlow();
+        }
+
         if (currentHealth <= 0f)
             Die();
+    }
+
+    /// <summary>
+    /// Called by MechBossAI to toggle immunity on/off during the Glow phase.
+    /// </summary>
+    public void SetImmune(bool immune)
+    {
+        isImmune = immune;
+        Debug.Log($"[MechBoss] Immunity set to {immune}.");
     }
 
     private void Flash()
@@ -178,20 +214,33 @@ public class MechBossHealth : MonoBehaviour, IDamageable
 
     private void SetupWorldHealthBar()
     {
-        // IMPORTANT: Do NOT auto-detect via GetComponentInChildren<Canvas>().
-        // If the canvas was not explicitly assigned in the Inspector, skip setup entirely.
-        // Auto-detection risks grabbing a Canvas that is a parent of the boss sprite,
-        // causing SetActive(false) or localScale = 0.01 to hide the boss on Awake.
         if (worldHealthBarCanvas == null)
         {
             Debug.Log("[MechBossHealth] SetupWorldHealthBar: worldHealthBarCanvas is null, skipping world-space HP bar setup.");
             return;
         }
 
+        // Safety: if the canvas is a parent (ancestor) of any boss sprite, applying
+        // localScale = 0.01 or SetActive(false) would hide/shrink the entire boss.
+        // Detect this misconfiguration and bail out with a clear error.
+        if (spriteRenderers != null)
+        {
+            foreach (SpriteRenderer sr in spriteRenderers)
+            {
+                if (sr != null && sr.transform.IsChildOf(worldHealthBarCanvas.transform))
+                {
+                    Debug.LogError(
+                        "[MechBossHealth] worldHealthBarCanvas is a PARENT of the boss sprites — " +
+                        "this is why the boss is invisible! " +
+                        "FIX: in the Prefab, make the health bar canvas a CHILD of the boss root (not the root itself). " +
+                        "Health bar setup skipped to prevent shrinking/hiding the boss.");
+                    return;
+                }
+            }
+        }
+
         if (worldHealthBarSlider == null)
             worldHealthBarSlider = worldHealthBarCanvas.GetComponentInChildren<Slider>();
-
-        Debug.Log("[MechBossHealth] SetupWorldHealthBar: configuring world-space HP bar and disabling it until the fight starts.");
 
         worldHealthBarCanvas.renderMode = RenderMode.WorldSpace;
         worldHealthBarCanvas.transform.localScale = Vector3.one * 0.01f;
