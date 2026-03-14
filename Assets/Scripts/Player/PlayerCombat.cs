@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerCombat : MonoBehaviour
 {
+    private const string AttackParam = "attack";
+
     [Header("References")]
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private PlayerEnergy playerEnergy;
@@ -114,11 +116,11 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        // Handle combo timer decay — only count down when player is NOT clicking
-        if (comboTimer > 0 && !Mouse.current.leftButton.isPressed && !isAttackAnimationPlaying)
+        // Handle combo timer decay whenever we're not in an active attack animation
+        if (comboTimer > 0f && !isAttackAnimationPlaying)
         {
             comboTimer -= Time.deltaTime;
-            if (comboTimer <= 0)
+            if (comboTimer <= 0f)
             {
                 ResetCombo();
             }
@@ -127,6 +129,10 @@ public class PlayerCombat : MonoBehaviour
         if (anim != null && playerMovement.IsHuman)
         {
             anim.SetInteger("comboCounter", comboCounter);
+
+            // Run&Shoot is now bool-driven: hold true while in gun stance.
+            bool holdGunStance = usingGun && !isGunCharging;
+            anim.SetBool("shoot", holdGunStance);
         }
 
         // Handle charged attack for both sword and gun when human
@@ -530,6 +536,10 @@ public void OnAttackAnimationEnd()
         playerMovement.SetAttackingOrCharging(false);
         playerMovement.EnableMovementAndJump(true);
     }
+
+    if (anim != null)
+        anim.SetBool(AttackParam, false);
+
     isAttackAnimationPlaying = false;
 }
 
@@ -572,10 +582,39 @@ public void OnAttackAnimationEnd()
         {
             // Sword attack only when grounded
             if (!playerMovement.IsGrounded) return;
+
+            // If combo window expired, always restart from attack1.
+            if (comboCounter > 0 && comboTimer <= 0f)
+                ResetCombo();
             
             // Only allow attack if not already attacking
             if (anim != null)
             {
+                // Allow chaining from idle/move to next combo stage within combo window.
+                // This avoids needing to press during the exact transition frame.
+                if (!isAttackAnimationPlaying && comboTimer > 0f)
+                {
+                    if (comboCounter == 1)
+                    {
+                        isAttackAnimationPlaying = true;
+                        comboTimer = comboWindow;
+                        anim.Play("humanAttack2", 0, 0f);
+                        playerMovement.SetAttackingOrCharging(true);
+                        Debug.Log("⚔️ ATTACK CHAINED: Playing humanAttack2 from combo window");
+                        return;
+                    }
+
+                    if (comboCounter == 2)
+                    {
+                        isAttackAnimationPlaying = true;
+                        comboTimer = comboWindow;
+                        anim.Play("humanAttack3", 0, 0f);
+                        playerMovement.SetAttackingOrCharging(true);
+                        Debug.Log("⚔️ ATTACK CHAINED: Playing humanAttack3 from combo window");
+                        return;
+                    }
+                }
+
                 // Start/reset combo timer
                 comboTimer = comboWindow;
                 
@@ -583,7 +622,7 @@ public void OnAttackAnimationEnd()
                 isAttackAnimationPlaying = true;
                 
                 // Trigger the attack (animator will use comboCounter to choose animation)
-                anim.SetTrigger("attack");
+                anim.SetBool(AttackParam, true);
                 playerMovement.SetAttackingOrCharging(true);
                 Debug.Log($"⚔️ ATTACK TRIGGERED: Current combo stage {comboCounter}");
             }
@@ -612,6 +651,9 @@ public void OnAttackAnimationEnd()
             playerMovement.SetAttackingOrCharging(false);
             isAttackAnimationPlaying = false;
         }
+
+        if (anim != null)
+            anim.SetBool(AttackParam, false);
         
         Debug.Log($"⚔️ COMBO INCREMENTED: Now at stage {comboCounter}");
     }
@@ -631,6 +673,9 @@ public void OnAttackAnimationEnd()
                 playerMovement.SetAttackingOrCharging(false);
                 isAttackAnimationPlaying = false;
             }
+
+            if (anim != null)
+                anim.SetBool(AttackParam, false);
         }
     }
 
@@ -680,7 +725,7 @@ public void OnAttackAnimationEnd()
         canShoot = false;
 
         if (anim != null)
-            anim.SetTrigger("shoot");
+            anim.SetBool("shoot", true);
 
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
@@ -717,6 +762,10 @@ public void OnAttackAnimationEnd()
 
         usingGun = !usingGun;
         usingSword = !usingGun; // Keep these in sync
+
+        // Avoid stale melee request when switching away from sword.
+        if (anim != null && usingGun)
+            anim.SetBool(AttackParam, false);
 
         if (anim != null)
             anim.SetTrigger("switchWeapon");
@@ -805,4 +854,3 @@ public void OnAttackAnimationEnd()
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
-    
