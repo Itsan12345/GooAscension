@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class ParallaxEffect : MonoBehaviour
 {
-    [Tooltip("How much the background moves relative to the camera (0 = still, 1 = follows perfectly)")]
+    [Header("Parallax Settings")]
+    [Tooltip("How much the background moves left/right (0 = still, 1 = follows perfectly)")]
     public float parallaxEffect;
+    
+    [Tooltip("How much the background moves up/down. Keep this very low! (e.g., 0.05 to 0.2)")]
+    public float parallaxEffectY = 0.1f; // <-- NEW VARIABLE FOR VERTICAL
 
     private Transform cameraTransform;
     private Vector3 lastCameraPosition;
@@ -36,8 +40,8 @@ public class ParallaxEffect : MonoBehaviour
         // 1. Calculate how much the camera has moved
         Vector3 deltaMovement = cameraTransform.position - lastCameraPosition;
         
-        // 2. Move background with parallax effect
-        transform.position += new Vector3(deltaMovement.x * parallaxEffect, deltaMovement.y * parallaxEffect, 0);
+        // 2. Move background with parallax effect (Notice we use parallaxEffectY for the Y axis now!)
+        transform.position += new Vector3(deltaMovement.x * parallaxEffect, deltaMovement.y * parallaxEffectY, 0);
 
         // 3. Keep track of how far the camera has moved *relative* to the start point of this background layer
         float cameraRelativePosition = cameraTransform.position.x * (1 - parallaxEffect);
@@ -55,7 +59,7 @@ public class ParallaxEffect : MonoBehaviour
             startPosition -= backgroundLength;
         }
 
-        // Apply the new position. It needs its original startPosition PLUS the movement offset
+        // Apply the new horizontal position. (Y and Z stay as they are)
         transform.position = new Vector3(startPosition + (cameraTransform.position.x * parallaxEffect), transform.position.y, transform.position.z);
 
         lastCameraPosition = cameraTransform.position;
