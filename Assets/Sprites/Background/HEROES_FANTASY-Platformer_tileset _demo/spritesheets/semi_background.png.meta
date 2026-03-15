@@ -1,13 +1,22 @@
 fileFormatVersion: 2
-guid: d3d5746055939fd4a8f2227764175154
+guid: 05a509f670910324dbb5667e8fe6661e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8667466294985060184
-    second: tree_0
+      213: 6858284079795228536
+    second: semi_background_0
   - first:
-      213: 5281997702118322174
-    second: tree_1
+      213: -6413449571518772503
+    second: semi_background_1
+  - first:
+      213: 2904385301427110598
+    second: semi_background_2
+  - first:
+      213: 5741035714405623971
+    second: semi_background_3
+  - first:
+      213: 8389000421664909165
+    second: semi_background_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -50,11 +59,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 0
+  spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 12
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -78,7 +87,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -103,45 +112,111 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tree_0
+      name: semi_background_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 0
-        width: 85
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5, y: 0.07133595}
+        x: 1
+        y: 33
+        width: 62
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8a09eb0b359f6b780800000000000000
-      internalID: -8667466294985060184
+      spriteID: 87f49e8a8058d2f50800000000000000
+      internalID: 6858284079795228536
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree_1
+      name: semi_background_1
       rect:
         serializedVersion: 2
-        x: 108
-        y: 0
-        width: 64
-        height: 73
-      alignment: 9
-      pivot: {x: 0.4967575, y: 0.09096888}
+        x: 66
+        y: 34
+        width: 61
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eff2133ccec6d4940800000000000000
-      internalID: 5281997702118322174
+      spriteID: 9ea0eb83899def6a0800000000000000
+      internalID: -6413449571518772503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: semi_background_2
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 0
+        width: 17
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c2cd662b037e4820800000000000000
+      internalID: 2904385301427110598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: semi_background_3
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 2
+        width: 30
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a86aff90914caf40800000000000000
+      internalID: 5741035714405623971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: semi_background_4
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 0
+        width: 66
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6760f9cf67bb6470800000000000000
+      internalID: 8389000421664909165
       vertices: []
       indices: 
       edges: []
@@ -150,7 +225,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 7f88dc592f2c9664d99e531104d5cab2
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -160,8 +235,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tree_0: -8667466294985060184
-      tree_1: 5281997702118322174
+      semi_background_0: 6858284079795228536
+      semi_background_1: -6413449571518772503
+      semi_background_2: 2904385301427110598
+      semi_background_3: 5741035714405623971
+      semi_background_4: 8389000421664909165
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: d3d5746055939fd4a8f2227764175154
+guid: 01f042b450906324bbfe122362b91850
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8667466294985060184
-    second: tree_0
+      213: 8509550459451208454
+    second: water_0
   - first:
-      213: 5281997702118322174
-    second: tree_1
+      213: 3559705528278350927
+    second: water_1
+  - first:
+      213: -4124057691748712743
+    second: water_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +43,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -50,11 +53,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 0
+  spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 12
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -78,7 +81,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -103,45 +106,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tree_0
+      name: water_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 0
-        width: 85
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5, y: 0.07133595}
+        x: 0
+        y: 111
+        width: 193
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8a09eb0b359f6b780800000000000000
-      internalID: -8667466294985060184
+      spriteID: 603f9ddae0ff71670800000000000000
+      internalID: 8509550459451208454
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tree_1
+      name: water_1
       rect:
         serializedVersion: 2
-        x: 108
-        y: 0
-        width: 64
-        height: 73
-      alignment: 9
-      pivot: {x: 0.4967575, y: 0.09096888}
+        x: 192
+        y: 111
+        width: 192
+        height: 273
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eff2133ccec6d4940800000000000000
-      internalID: 5281997702118322174
+      spriteID: f4c760e515d966130800000000000000
+      internalID: 3559705528278350927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: water_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 321
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9deb91a216764c6c0800000000000000
+      internalID: -4124057691748712743
       vertices: []
       indices: 
       edges: []
@@ -150,7 +175,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 7f88dc592f2c9664d99e531104d5cab2
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -160,8 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      tree_0: -8667466294985060184
-      tree_1: 5281997702118322174
+      water_0: 8509550459451208454
+      water_1: 3559705528278350927
+      water_2: -4124057691748712743
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
