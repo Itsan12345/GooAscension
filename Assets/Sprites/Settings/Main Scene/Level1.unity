@@ -763,6 +763,19 @@ MonoBehaviour:
   - name: ChargedGun
     audioClips:
     - clip: {fileID: 8300000, guid: 567d13925786bb14a94fe94b5b5e3a0a, type: 3}
+  - name: MissedParry
+    audioClips:
+    - clip: {fileID: 8300000, guid: bc01ad3648909ee41a69940b78be3fe8, type: 3}
+    - clip: {fileID: 8300000, guid: 4fe22f9f929f44f4883bcd22f5639df1, type: 3}
+  - name: YouDead
+    audioClips:
+    - clip: {fileID: 8300000, guid: ba0b7afd987da1e488159b7eaf479e64, type: 3}
+  - name: SuccessfulParry
+    audioClips:
+    - clip: {fileID: 8300000, guid: 65fdee670a55e4649b9d638160150ae3, type: 3}
+  - name: MissedParry
+    audioClips:
+    - clip: {fileID: 8300000, guid: 567d13925786bb14a94fe94b5b5e3a0a, type: 3}
 --- !u!1 &262413965
 GameObject:
   m_ObjectHideFlags: 0
@@ -13091,6 +13104,7 @@ Transform:
   - {fileID: 1231026526}
   - {fileID: 435820372}
   - {fileID: 528046044}
+  - {fileID: 897480751}
   m_Father: {fileID: 519420032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
@@ -13863,6 +13877,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 856133746}
   m_CullTransparentMesh: 1
+--- !u!4 &897480751 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+  m_PrefabInstance: {fileID: 8771738736408972515}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &958986532
 GameObject:
   m_ObjectHideFlags: 0
@@ -14202,11 +14221,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: dbcc12c78c1cf58488c9b3dcec6856cf, type: 2}
     - target: {fileID: 2490092856267437318, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2490092856267437318, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3077739856123821889, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_LocalScale.y
@@ -19536,7 +19555,7 @@ SortingGroup:
   m_GameObject: {fileID: 1305327381}
   m_Enabled: 1
   m_SortingLayerID: 155372963
-  m_SortingLayer: 5
+  m_SortingLayer: 4
   m_SortingOrder: 2
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
@@ -20000,7 +20019,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 155372963
-  m_SortingLayer: 5
+  m_SortingLayer: 4
   m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5217025926233733535, guid: 1df4f44c9f8c26d4eaedcae3ecc67d90, type: 3}
@@ -23874,7 +23893,7 @@ RectTransform:
   m_Father: {fileID: 334480723}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -23931,7 +23950,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1894403463
 Transform:
   m_ObjectHideFlags: 0
@@ -24275,9 +24294,9 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 55043303}
   m_Enabled: 1
-  m_SortingLayerID: 854805773
+  m_SortingLayerID: 155372963
   m_SortingLayer: 4
-  m_SortingOrder: 5
+  m_SortingOrder: 6
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
 --- !u!1 &2041305227
@@ -24424,9 +24443,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2611806241255021467, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: d541e9305a60744409b37b93079b260f, type: 2}
     - target: {fileID: 3080396581939309907, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_SortingLayer
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3080396581939309907, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_SortingOrder
@@ -24493,9 +24516,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1807957164}
     - target: {fileID: 5977684648631349572, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
+      propertyPath: deathAudioSource
+      value: 
+      objectReference: {fileID: 242710317}
+    - target: {fileID: 5977684648631349572, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: healthBarCurrent
       value: 
       objectReference: {fileID: 533919234}
+    - target: {fileID: 5977684648631349572, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
+      propertyPath: soundEffectLibrary
+      value: 
+      objectReference: {fileID: 242710318}
     - target: {fileID: 6287535385389323569, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.151
@@ -24522,7 +24553,7 @@ PrefabInstance:
       objectReference: {fileID: -3026955190575856408, guid: 272d876a5aaf1914a970db1e086fdf88, type: 3}
     - target: {fileID: 7564694622445109610, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_SortingLayer
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7564694622445109610, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_SortingOrder
@@ -24530,7 +24561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7564694622445109610, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_SortingLayerID
-      value: 854805773
+      value: -2125941275
       objectReference: {fileID: 0}
     - target: {fileID: 8003643533943882393, guid: 317c6e757dce5bd48b7ed845eeebc882, type: 3}
       propertyPath: m_Layer
@@ -24671,11 +24702,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2490092856267437318, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2490092856267437318, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3077739856123821889, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_LocalScale.y
@@ -24701,6 +24732,10 @@ PrefabInstance:
       propertyPath: healthBarOffset
       value: 1.3
       objectReference: {fileID: 0}
+    - target: {fileID: 7896458979338503859, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
+      propertyPath: bloodImpactPrefab
+      value: 
+      objectReference: {fileID: 3590350275946401847, guid: d650186cd14ca92499256a6a2068099e, type: 3}
     - target: {fileID: 8017643231737877559, guid: fbfa8683489a79448952caf90e4e79d3, type: 3}
       propertyPath: m_Name
       value: SentinelMinion
@@ -24822,6 +24857,75 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1305327385}
   m_SourcePrefab: {fileID: 100100000, guid: 98acde82d6be3864aa15ddade2a94263, type: 3}
+--- !u!1001 &8771738736408972515
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 582293686}
+    m_Modifications:
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1429034924994949884, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3590350275946401847, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_Name
+      value: BloodImpact_Medium
+      objectReference: {fileID: 0}
+    - target: {fileID: 5327297783777640313, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500823374802677058, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500823374802677058, guid: d650186cd14ca92499256a6a2068099e, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 155372963
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d650186cd14ca92499256a6a2068099e, type: 3}
 --- !u!1001 &9179222215720118910
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24852,15 +24956,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2479729896560480249, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.78
+      value: 1.81
       objectReference: {fileID: 0}
     - target: {fileID: 2479729896560480249, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.82
+      value: -0.22
       objectReference: {fileID: 0}
     - target: {fileID: 2700579329267460422, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.44
+      value: 2.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 2700579329267460422, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.29
       objectReference: {fileID: 0}
     - target: {fileID: 3158602397636785859, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
       propertyPath: m_Layer
@@ -24882,6 +24990,10 @@ PrefabInstance:
       propertyPath: healthBarOffset
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3733502671583585235, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
+      propertyPath: bloodImpactPrefab
+      value: 
+      objectReference: {fileID: 3590350275946401847, guid: d650186cd14ca92499256a6a2068099e, type: 3}
     - target: {fileID: 3733502671583585235, guid: be972970a1f162e4fb470ddaea50afc6, type: 3}
       propertyPath: worldHealthBarCanvas
       value: 

@@ -68,6 +68,10 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float parryIFrameDuration = 0.3f;
     [SerializeField] private string parrySoundGroupName = "Parry";
     [SerializeField] private int parrySoundElementIndex = 0;
+    [SerializeField] private string missedParrySoundGroupName = "MissedParry";
+    [SerializeField] private int missedParrySoundElementIndex = 0;
+    [SerializeField] private string successfulParrySoundGroupName = "SuccessfulParry";
+    [SerializeField] private int successfulParrySoundElementIndex = 0;
     private bool canParry = true;
 
     [Header("Block Settings")]
@@ -75,6 +79,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float blockEnergyCost = 20f;
     // True while the player holds RMB in human form. Read by BossLaserProjectile to intercept hits.
     private bool isBlocking = false;
+    private bool movementLockedByBlock = false;
     public bool IsBlocking => isBlocking;
 
     [Header("Weapon State")]
@@ -131,7 +136,7 @@ public class PlayerCombat : MonoBehaviour
             anim.SetInteger("comboCounter", comboCounter);
 
             // Run&Shoot is now bool-driven: hold true while in gun stance.
-            bool holdGunStance = usingGun && !isGunCharging;
+            bool holdGunStance = usingGun && !isGunCharging && !isBlocking;
             anim.SetBool("shoot", holdGunStance);
         }
 
@@ -563,8 +568,34 @@ public void OnAttackAnimationEnd()
 
         isBlocking = canBlock && Mouse.current.rightButton.isPressed;
 
+        // Freeze movement while actively blocking.
+        if (isBlocking)
+        {
+            if (!movementLockedByBlock)
+            {
+                playerMovement.EnableMovementAndJump(false);
+                movementLockedByBlock = true;
+            }
+        }
+        // Restore movement when block ends, but do not override attack/charge locks.
+        else if (movementLockedByBlock)
+        {
+            bool canRestoreMovement = !isAttackAnimationPlaying && !isCharging && !isGunCharging;
+            if (canRestoreMovement)
+            {
+                playerMovement.EnableMovementAndJump(true);
+            }
+            movementLockedByBlock = false;
+        }
+
         if (anim != null && playerMovement.IsHuman)
+        {
             anim.SetBool("isBlocking", isBlocking);
+
+            // Ensure gun stance does not override block while RMB is held.
+            if (isBlocking && usingGun)
+                anim.SetBool("shoot", false);
+        }
 
         // Note: Both sword and gun attacks (regular and charged) are now handled in HandleChargedAttack()
     }
@@ -777,7 +808,11 @@ public void OnAttackAnimationEnd()
     {
         if (!playerMovement.IsHuman) return;
         if (!playerMovement.IsGrounded) return;
+        if (usingGun) return;
         if (!canParry) return;
+
+        if (attackPoint == null)
+            return;
 
         bool parryConnected = false;
         Collider2D[] nearby = Physics2D.OverlapCircleAll(attackPoint.position, parryRange);
@@ -815,13 +850,19 @@ public void OnAttackAnimationEnd()
 
             playerMovement.SetInvulnerable(parryIFrameDuration);
 
-            if (soundEffectLibrary != null && attackAudioSource != null && !string.IsNullOrEmpty(parrySoundGroupName))
-                soundEffectLibrary.PlaySoundEffect(attackAudioSource, parrySoundGroupName, parrySoundElementIndex);
+            if (soundEffectLibrary != null && attackAudioSource != null && !string.IsNullOrEmpty(successfulParrySoundGroupName))
+                soundEffectLibrary.PlaySoundEffect(attackAudioSource, successfulParrySoundGroupName, successfulParrySoundElementIndex);
 
             Debug.Log("✅ PARRY SUCCESS: Enemy staggered!");
         }
         else
         {
+            if (soundEffectLibrary != null && attackAudioSource != null && !string.IsNullOrEmpty(missedParrySoundGroupName))
+            {
+                int randomIndex = Random.Range(0, 2);
+                soundEffectLibrary.PlaySoundEffect(attackAudioSource, missedParrySoundGroupName, randomIndex);
+            }
+
             Debug.Log("❌ PARRY MISS: No parryable enemy in range.");
         }
 

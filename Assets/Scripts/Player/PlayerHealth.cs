@@ -2,6 +2,7 @@ using System.Collections; // Needed for the flash coroutine
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement; // Needed to restart the game
+using UnityEngine.Audio; // Needed for the audio source
 
 
 public class PlayerHealth : MonoBehaviour
@@ -100,6 +101,12 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private GameObject gameOverText; // Drag your Text object here
 
+    [Header("Sound Effect Settings")]
+    [SerializeField] private SoundEffectLibrary soundEffectLibrary;
+    [SerializeField] private AudioSource deathAudioSource;
+    [SerializeField] private string youDeadSoundGroupName = "YouDead";
+    [SerializeField] private int youDeadSoundElementIndex = 0;
+
     public void Die()
     {
         Debug.Log("Player has died!");
@@ -133,6 +140,12 @@ public class PlayerHealth : MonoBehaviour
         // IMPORTANT: Do NOT deactivate the whole player object,
         // because you want UI / Invokes / logic to continue.
         Invoke(nameof(ReloadLevel), reloadDelay);
+
+        // Play death sound
+        if (soundEffectLibrary != null && deathAudioSource != null && !string.IsNullOrEmpty(youDeadSoundGroupName))
+        {
+            soundEffectLibrary.PlaySoundEffect(deathAudioSource, youDeadSoundGroupName, youDeadSoundElementIndex);
+        }
     }
 
 

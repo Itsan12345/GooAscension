@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -73,8 +74,12 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Transformation")]
     [SerializeField] private float transformCost = 25f;
+    [SerializeField] private int transformBlinkCount = 8;
+    [SerializeField] private float transformBlinkInterval = 0.07f;
 
-   
+    private bool isTransforming = false;
+
+
 
     // =========================================================
     // Water Physics
@@ -176,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canMove)
             rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);
-        else
+        else if (!isTransforming)
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
@@ -412,6 +417,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void SwitchForm()
     {
+        if (isTransforming) return;
+
         // Prevent morphing while attacking or charging (e.g., charged sword/gun)
         if (isAttackingOrCharging)
         {
@@ -439,28 +446,77 @@ public class PlayerMovement : MonoBehaviour
 
         preservedVelocity = rb.linearVelocity;
 
-        // Sync hitbox positions
+        // Sync hitbox positions before animation starts
         Vector3 pos = rb.transform.position;
         if (isHuman) slimeHitbox.transform.position = pos;
         else humanHitbox.transform.position = pos;
 
-        isHuman = !isHuman;
+        StartCoroutine(TransformCoroutine(!isHuman));
+    }
 
-        slimeHitbox.SetActive(!isHuman);
-        humanHitbox.SetActive(isHuman);
+    private IEnumerator TransformCoroutine(bool toHuman)
+    {
+        isTransforming = true;
+        bool lockedMovement = isGrounded;
+        if (lockedMovement)
+        {
+            canMove = false;
+            canJump = false;
+        }
 
-        slimeAnimator.SetActive(!isHuman);
-        humanAnimator.SetActive(isHuman);
+        // Cache both animators up front
+        Animator humanAnim = humanAnimator.GetComponent<Animator>();
+        Animator slimeAnim = slimeAnimator.GetComponent<Animator>();
+
+        // --- Rapid blink: alternate between slime and human animators ---
+        for (int i = 0; i < transformBlinkCount; i++)
+        {
+            bool showHuman = (i % 2 == 0) ? toHuman : !toHuman;
+            slimeAnimator.SetActive(!showHuman);
+            humanAnimator.SetActive(showHuman);
+            anim = showHuman ? humanAnim : slimeAnim;
+            yield return new WaitForSeconds(transformBlinkInterval);
+        }
+
+        // --- Scale punch (Super Mario "pop" effect) ---
+        float baseAbsX = Mathf.Abs(transform.localScale.x);
+        float baseScaleY = transform.localScale.y;
+        float baseScaleZ = transform.localScale.z;
+
+        float punchDuration = 0.15f;
+        float elapsed = 0f;
+        while (elapsed < punchDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / punchDuration;
+            float scaleMult = 1f + Mathf.Sin(t * Mathf.PI) * 0.3f;
+            float signX = facingRight ? 1f : -1f;
+            transform.localScale = new Vector3(signX * baseAbsX * scaleMult, baseScaleY * scaleMult, baseScaleZ);
+            yield return null;
+        }
+        transform.localScale = new Vector3((facingRight ? 1f : -1f) * baseAbsX, baseScaleY, baseScaleZ);
+
+        // --- Commit final form ---
+        isHuman = toHuman;
+        slimeHitbox.SetActive(!toHuman);
+        humanHitbox.SetActive(toHuman);
+        slimeAnimator.SetActive(!toHuman);
+        humanAnimator.SetActive(toHuman);
 
         rb = GetComponent<Rigidbody2D>();
-        anim = isHuman ? humanAnimator.GetComponent<Animator>() : slimeAnimator.GetComponent<Animator>();
+        anim = toHuman ? humanAnim : slimeAnim;
 
-        jumpsRemaining = isHuman ? maxJumpsHuman : maxJumpsSlime;
+        jumpsRemaining = toHuman ? maxJumpsHuman : maxJumpsSlime;
         canDash = true;
 
-        rb.linearVelocity = preservedVelocity;
+        if (lockedMovement)
+        {
+            canMove = true;
+            canJump = true;
+        }
+        isTransforming = false;
 
-        Debug.Log("Transformed to " + (isHuman ? "Human" : "Slime"));
+        Debug.Log("Transformed to " + (toHuman ? "Human" : "Slime"));
 
         if (playerEnergy != null)
             playerEnergy.SpendEnergy(transformCost);

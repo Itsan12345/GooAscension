@@ -111,6 +111,8 @@ public class MechBossAI : MonoBehaviour
         if (laserFirePoint != null)
             laserFirePointLocalPos = laserFirePoint.localPosition;
 
+        ResolveMeleeTelegraphReference();
+
         FindTargetPlayer();
     }
 
@@ -123,6 +125,33 @@ public class MechBossAI : MonoBehaviour
 
         // Boss appears and attacks immediately — no entry delay
         isChasing = true;
+
+        // Start hidden so the telegraph only appears during attack windups.
+        if (meleeTelegraph != null)
+            meleeTelegraph.HideTelegraph();
+    }
+
+    private void ResolveMeleeTelegraphReference()
+    {
+        if (meleeTelegraph != null)
+            return;
+
+        if (meleeAttackPoint == null)
+        {
+            Debug.LogWarning("[MechBossAI] meleeAttackPoint is not assigned, cannot resolve melee telegraph.");
+            return;
+        }
+
+        meleeTelegraph = meleeAttackPoint.GetComponent<AttackTelegraph>();
+        if (meleeTelegraph == null)
+            meleeTelegraph = meleeAttackPoint.GetComponentInChildren<AttackTelegraph>(true);
+
+        if (meleeTelegraph == null)
+        {
+            // Match Sentinel Minion behavior by ensuring the telegraph component exists on attack point.
+            meleeTelegraph = meleeAttackPoint.gameObject.AddComponent<AttackTelegraph>();
+            Debug.Log("[MechBossAI] Added missing AttackTelegraph to meleeAttackPoint at runtime.");
+        }
     }
 
     private void FindTargetPlayer()
@@ -313,6 +342,7 @@ public class MechBossAI : MonoBehaviour
     {
         isAttacking = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        ResolveMeleeTelegraphReference();
 
         // Face the player before the telegraph so the indicator appears on the correct side.
         if (player != null)
@@ -336,7 +366,10 @@ public class MechBossAI : MonoBehaviour
         // Close the parry window and hide the indicator.
         isParryable = false;
         if (meleeTelegraph != null)
+        {
+            meleeTelegraph.SetParryWindowColor(false);
             meleeTelegraph.HideTelegraph();
+        }
 
         // If GetParried() was called during the telegraph window it already stopped this
         // coroutine via StopCoroutine, so this guard is a belt-and-suspenders safety check.

@@ -27,9 +27,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     [Tooltip("How long the enemy stays red before an attack.")]
     [SerializeField] private float preAttackFlashDuration = 0.5f;
 
+    [Header("Hit Blood FX")]
+    [SerializeField] private GameObject bloodImpactPrefab;
+    [SerializeField] private string bloodImpactTemplateName = "BloodImpact_Medium";
+    [SerializeField] private Vector2 bloodSpawnOffset = new Vector2(0f, 0.35f);
+    [SerializeField] private float bloodSpawnZ = -0.5f;
+    [SerializeField] private float bloodSpawnJitter = 0.18f;
+    [SerializeField] private float bloodSpawnMinInterval = 0.08f;
+
     private bool dead;
     private Coroutine flashCoroutine;
     private bool isFlashing = false;
+    private float nextBloodSpawnTime = 0f;
+    private GameObject resolvedBloodImpactTemplate;
+    private bool missingBloodTemplateWarned;
 
     private Rigidbody2D rb;
     private Collider2D[] colliders;
@@ -63,6 +74,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         // Initialize health bar but keep it disabled by default
         SetupHealthBar();
+
+        ResolveBloodImpactTemplate();
     }
 
     private void Start()
@@ -88,6 +101,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         // Trigger flash effect when damaged
         Flash();
+        SpawnBloodImpact();
         
         Debug.Log($"💥 ENEMY HEALTH: {gameObject.name} took {damage} damage! Health: {currentHealth}/{maxHealth}");
         
@@ -95,6 +109,150 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    private void SpawnBloodImpact()
+    {
+        GameObject bloodTemplate = ResolveBloodImpactTemplate();
+        if (bloodTemplate == null) return;
+        if (Time.time < nextBloodSpawnTime) return;
+        if (!gameObject.activeInHierarchy) return;
+
+        Vector3 spawnPos = transform.position + (Vector3)bloodSpawnOffset;
+        spawnPos.x += Random.Range(-bloodSpawnJitter, bloodSpawnJitter);
+        spawnPos.y += Random.Range(-bloodSpawnJitter * 0.5f, bloodSpawnJitter * 0.5f);
+        spawnPos.z = bloodSpawnZ;
+
+        GameObject bloodInstance = Instantiate(
+            bloodTemplate,
+            spawnPos,
+            Quaternion.Euler(0f, 0f, Random.Range(0f, 360f))
+        );
+
+        bloodInstance.SetActive(true);
+        ForcePlayBloodParticles(bloodInstance);
+        ApplyBloodSortingBehindTarget(bloodInstance);
+        ScheduleBloodImpactDestroy(bloodInstance);
+        nextBloodSpawnTime = Time.time + bloodSpawnMinInterval;
+    }
+
+    private GameObject ResolveBloodImpactTemplate()
+    {
+        if (bloodImpactPrefab != null)
+            return bloodImpactPrefab;
+
+        if (resolvedBloodImpactTemplate != null)
+            return resolvedBloodImpactTemplate;
+
+        GameObject fromPath = GameObject.Find("Particles/FX/" + bloodImpactTemplateName);
+        if (fromPath != null)
+        {
+            resolvedBloodImpactTemplate = fromPath;
+            return resolvedBloodImpactTemplate;
+        }
+
+        GameObject fromName = GameObject.Find(bloodImpactTemplateName);
+        if (fromName != null)
+        {
+            resolvedBloodImpactTemplate = fromName;
+            return resolvedBloodImpactTemplate;
+        }
+
+        ParticleSystem[] particles = Object.FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < particles.Length; i++)
+        {
+            if (particles[i] == null) continue;
+
+            if (particles[i].name == bloodImpactTemplateName || particles[i].name.Contains("BloodImpact"))
+            {
+                resolvedBloodImpactTemplate = particles[i].gameObject;
+                return resolvedBloodImpactTemplate;
+            }
+        }
+
+        if (!missingBloodTemplateWarned)
+        {
+            Debug.LogWarning($"[EnemyHealth] No blood impact template found. Assign bloodImpactPrefab or place an object named '{bloodImpactTemplateName}' in the scene.");
+            missingBloodTemplateWarned = true;
+        }
+
+        return null;
+    }
+
+    private void ForcePlayBloodParticles(GameObject bloodInstance)
+    {
+        if (bloodInstance == null) return;
+
+        ParticleSystem[] systems = bloodInstance.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < systems.Length; i++)
+        {
+            if (systems[i] == null) continue;
+            systems[i].Clear(true);
+            systems[i].Play(true);
+        }
+    }
+
+    private void ApplyBloodSortingBehindTarget(GameObject bloodInstance)
+    {
+        if (bloodInstance == null || spriteRenderers == null || spriteRenderers.Length == 0) return;
+
+        SpriteRenderer targetRenderer = null;
+        for (int i = 0; i < spriteRenderers.Length; i++)
+        {
+            if (spriteRenderers[i] != null)
+            {
+                targetRenderer = spriteRenderers[i];
+                break;
+            }
+        }
+
+        if (targetRenderer == null) return;
+
+        var particleRenderers = bloodInstance.GetComponentsInChildren<ParticleSystemRenderer>(true);
+        for (int i = 0; i < particleRenderers.Length; i++)
+        {
+            particleRenderers[i].sortingLayerID = targetRenderer.sortingLayerID;
+            particleRenderers[i].sortingOrder = targetRenderer.sortingOrder - 1;
+        }
+    }
+
+    private void ScheduleBloodImpactDestroy(GameObject bloodInstance)
+    {
+        if (bloodInstance == null) return;
+        StartCoroutine(DestroyBloodImpactWhenFinished(bloodInstance));
+    }
+
+    private IEnumerator DestroyBloodImpactWhenFinished(GameObject bloodInstance)
+    {
+        if (bloodInstance == null) yield break;
+
+        ParticleSystem[] systems = bloodInstance.GetComponentsInChildren<ParticleSystem>(true);
+        if (systems == null || systems.Length == 0)
+        {
+            Destroy(bloodInstance);
+            yield break;
+        }
+
+        while (bloodInstance != null)
+        {
+            bool anyAlive = false;
+            for (int i = 0; i < systems.Length; i++)
+            {
+                if (systems[i] != null && systems[i].IsAlive(true))
+                {
+                    anyAlive = true;
+                    break;
+                }
+            }
+
+            if (!anyAlive)
+                break;
+
+            yield return null;
+        }
+
+        if (bloodInstance != null)
+            Destroy(bloodInstance);
     }
 
     public void FlashPreAttack()
