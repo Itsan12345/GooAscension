@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 37a63fa069c79cd409f132dcad87e314
+guid: c19103331c9fbdc43bda042dac42b5c6
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -70,7 +70,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +84,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 13
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +108,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -133,7 +133,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: props2_0
+      name: Tree
       rect:
         serializedVersion: 2
         x: 68
@@ -155,7 +155,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_1
+      name: Tree2
       rect:
         serializedVersion: 2
         x: 390
@@ -177,7 +177,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_2
+      name: Bush1
       rect:
         serializedVersion: 2
         x: 689
@@ -199,7 +199,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_3
+      name: Bush2
       rect:
         serializedVersion: 2
         x: 854
@@ -221,7 +221,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_8
+      name: Cave1
       rect:
         serializedVersion: 2
         x: 35
@@ -243,7 +243,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_9
+      name: Cave2
       rect:
         serializedVersion: 2
         x: 608
@@ -265,7 +265,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_10
+      name: Cave3
       rect:
         serializedVersion: 2
         x: 22
@@ -287,7 +287,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: props2_11
+      name: Cave4
       rect:
         serializedVersion: 2
         x: 434
@@ -322,18 +322,19 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      props2_0: -4102053741745128473
-      props2_1: -4626629481093528791
-      props2_10: -5983254158707168010
-      props2_11: 3208814172725209784
-      props2_2: -7162581360508713234
-      props2_3: -343670490556062560
+      1: -7162581360508713234
+      Bush1: -7162581360508713234
+      Bush2: -343670490556062560
+      Cave1: 1735295921621649778
+      Cave2: 8825606568693691115
+      Cave3: -5983254158707168010
+      Cave4: 3208814172725209784
+      Tree: -4102053741745128473
+      Tree2: -4626629481093528791
       props2_4: 9053654171888588517
       props2_5: 8586403320487308855
       props2_6: 7738582929367405631
       props2_7: -958013830598002463
-      props2_8: 1735295921621649778
-      props2_9: 8825606568693691115
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
