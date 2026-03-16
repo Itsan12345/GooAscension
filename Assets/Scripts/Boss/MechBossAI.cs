@@ -36,6 +36,7 @@ public class MechBossAI : MonoBehaviour
     [SerializeField] private float meleeAttackRange = 2.5f;
     [SerializeField] private float meleeAttackCooldown = 2f;
     [SerializeField] private float meleeAttackRadius = 2f;
+    [SerializeField] private float meleeHitDelay = 0.12f;        // Fallback hit frame if animation event is missing
     [SerializeField] private AttackTelegraph meleeTelegraph;         // Assign via Inspector (AttackTelegraph on MeleeAttackPoint)
     [SerializeField] private float meleeTelegraphDuration = 0.8f;   // Parry window — gold pulse before swing
 
@@ -84,6 +85,7 @@ public class MechBossAI : MonoBehaviour
     private float nextMeleeAttackTime = 0f;
     private float nextLaserAttackTime = 0f;
     private float currentMoveSpeed;
+    private bool meleeDamageResolvedThisAttack = false;
 
     // Animator parameter hashes (must match your Animator Controller parameter names)
     private static readonly int AnimXVelocity   = Animator.StringToHash("xVelocity");
@@ -111,6 +113,8 @@ public class MechBossAI : MonoBehaviour
         if (laserFirePoint != null)
             laserFirePointLocalPos = laserFirePoint.localPosition;
 
+        ResolveMeleeTelegraphReference();
+
         FindTargetPlayer();
     }
 
@@ -123,6 +127,33 @@ public class MechBossAI : MonoBehaviour
 
         // Boss appears and attacks immediately — no entry delay
         isChasing = true;
+
+        // Start hidden so the telegraph only appears during attack windups.
+        if (meleeTelegraph != null)
+            meleeTelegraph.HideTelegraph();
+    }
+
+    private void ResolveMeleeTelegraphReference()
+    {
+        if (meleeTelegraph != null)
+            return;
+
+        if (meleeAttackPoint == null)
+        {
+            Debug.LogWarning("[MechBossAI] meleeAttackPoint is not assigned, cannot resolve melee telegraph.");
+            return;
+        }
+
+        meleeTelegraph = meleeAttackPoint.GetComponent<AttackTelegraph>();
+        if (meleeTelegraph == null)
+            meleeTelegraph = meleeAttackPoint.GetComponentInChildren<AttackTelegraph>(true);
+
+        if (meleeTelegraph == null)
+        {
+            // Match Sentinel Minion behavior by ensuring the telegraph component exists on attack point.
+            meleeTelegraph = meleeAttackPoint.gameObject.AddComponent<AttackTelegraph>();
+            Debug.Log("[MechBossAI] Added missing AttackTelegraph to meleeAttackPoint at runtime.");
+        }
     }
 
     private void FindTargetPlayer()
@@ -312,7 +343,9 @@ public class MechBossAI : MonoBehaviour
     private IEnumerator DoMeleeAttack()
     {
         isAttacking = true;
+        meleeDamageResolvedThisAttack = false;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+        ResolveMeleeTelegraphReference();
 
         // Face the player before the telegraph so the indicator appears on the correct side.
         if (player != null)
@@ -336,7 +369,10 @@ public class MechBossAI : MonoBehaviour
         // Close the parry window and hide the indicator.
         isParryable = false;
         if (meleeTelegraph != null)
+        {
+            meleeTelegraph.SetParryWindowColor(false);
             meleeTelegraph.HideTelegraph();
+        }
 
         // If GetParried() was called during the telegraph window it already stopped this
         // coroutine via StopCoroutine, so this guard is a belt-and-suspenders safety check.
@@ -348,8 +384,11 @@ public class MechBossAI : MonoBehaviour
         }
         // ────────────────────────────────────────────────────────────────────────────
 
-        // Trigger the melee animation — DamageTarget animation event handles the hit.
+        // Trigger the melee animation.
+        // If the animation event is missing/mis-timed, apply a fallback hit from code.
         if (anim != null) anim.SetTrigger(AnimMeleeAttack);
+        yield return new WaitForSeconds(meleeHitDelay);
+        DamageMelee();
 
         float cooldown = meleeAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextMeleeAttackTime = Time.time + cooldown;
@@ -469,6 +508,11 @@ public class MechBossAI : MonoBehaviour
     // Called by coroutine (and optionally by MechBossAnimationEvents)
     public void DamageMelee()
     {
+        // Allow only one melee hit resolution per swing.
+        if (meleeDamageResolvedThisAttack)
+            return;
+        meleeDamageResolvedThisAttack = true;
+
         if (player == null) return;
 
         Vector3 hitOrigin = meleeAttackPoint != null ? meleeAttackPoint.position : transform.position;

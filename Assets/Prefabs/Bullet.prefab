@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4567977669663903444}
   - component: {fileID: 505806952443641375}
   - component: {fileID: 1941945558302316969}
+  - component: {fileID: -7520350583857093103}
   m_Layer: 7
   m_Name: Bullet
   m_TagString: PlayerProjectile
@@ -37,7 +38,6 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &9052099057356865358
 SpriteRenderer:
-  serializedVersion: 2
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -81,10 +81,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 854805773
+  m_SortingLayerID: 155372963
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_MaskInteraction: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2110919630084279897, guid: 6aa5d84bfa3f606448c4295595849e4b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -168,3 +167,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!210 &-7520350583857093103
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6027531330172379228}
+  m_Enabled: 1
+  m_SortingLayerID: 155372963
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
