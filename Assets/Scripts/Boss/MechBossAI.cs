@@ -36,6 +36,7 @@ public class MechBossAI : MonoBehaviour
     [SerializeField] private float meleeAttackRange = 2.5f;
     [SerializeField] private float meleeAttackCooldown = 2f;
     [SerializeField] private float meleeAttackRadius = 2f;
+    [SerializeField] private float meleeHitDelay = 0.12f;        // Fallback hit frame if animation event is missing
     [SerializeField] private AttackTelegraph meleeTelegraph;         // Assign via Inspector (AttackTelegraph on MeleeAttackPoint)
     [SerializeField] private float meleeTelegraphDuration = 0.8f;   // Parry window — gold pulse before swing
 
@@ -84,6 +85,7 @@ public class MechBossAI : MonoBehaviour
     private float nextMeleeAttackTime = 0f;
     private float nextLaserAttackTime = 0f;
     private float currentMoveSpeed;
+    private bool meleeDamageResolvedThisAttack = false;
 
     // Animator parameter hashes (must match your Animator Controller parameter names)
     private static readonly int AnimXVelocity   = Animator.StringToHash("xVelocity");
@@ -341,6 +343,7 @@ public class MechBossAI : MonoBehaviour
     private IEnumerator DoMeleeAttack()
     {
         isAttacking = true;
+        meleeDamageResolvedThisAttack = false;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         ResolveMeleeTelegraphReference();
 
@@ -381,8 +384,11 @@ public class MechBossAI : MonoBehaviour
         }
         // ────────────────────────────────────────────────────────────────────────────
 
-        // Trigger the melee animation — DamageTarget animation event handles the hit.
+        // Trigger the melee animation.
+        // If the animation event is missing/mis-timed, apply a fallback hit from code.
         if (anim != null) anim.SetTrigger(AnimMeleeAttack);
+        yield return new WaitForSeconds(meleeHitDelay);
+        DamageMelee();
 
         float cooldown = meleeAttackCooldown / (isPhase2 ? phase2AttackSpeedMultiplier : 1f);
         nextMeleeAttackTime = Time.time + cooldown;
@@ -502,6 +508,11 @@ public class MechBossAI : MonoBehaviour
     // Called by coroutine (and optionally by MechBossAnimationEvents)
     public void DamageMelee()
     {
+        // Allow only one melee hit resolution per swing.
+        if (meleeDamageResolvedThisAttack)
+            return;
+        meleeDamageResolvedThisAttack = true;
+
         if (player == null) return;
 
         Vector3 hitOrigin = meleeAttackPoint != null ? meleeAttackPoint.position : transform.position;
