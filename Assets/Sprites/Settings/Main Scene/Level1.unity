@@ -1321,7 +1321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
-  CameraDistance: 10
+  CameraDistance: 16.8
   DeadZoneDepth: 0
   Composition:
     ScreenPosition: {x: 0, y: 0.29}
@@ -1367,7 +1367,7 @@ MonoBehaviour:
     FieldOfView: 40
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1000
+    FarClipPlane: 33.2
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -1392,7 +1392,7 @@ Transform:
   m_GameObject: {fileID: 324780631}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.99, y: -0.22000003, z: -20}
+  m_LocalPosition: {x: -9.99, y: -0.22000003, z: -26.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1412,7 +1412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollowController
   playerRb: {fileID: 7211074898359712316}
   normalDamping: 10
-  fallingDamping: 1
+  fallingDamping: 0.59
   dampingTransitionSpeed: 8
   fallThreshold: -0.5
 --- !u!1 &357381641
@@ -1657,7 +1657,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 0.3
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
   m_ApplyToSortingLayers: 072e3501
@@ -6996,7 +6996,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 6
-  far clip plane: 1000
+  far clip plane: 520.5
   field of view: 60
   orthographic: 1
   orthographic size: 23.41
@@ -7317,7 +7317,7 @@ Camera:
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 4
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -7340,7 +7340,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 33.2
   field of view: 40
   orthographic: 1
   orthographic size: 5
@@ -7368,7 +7368,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.99, y: -0.22000003, z: -20}
+  m_LocalPosition: {x: -9.99, y: -0.22000003, z: -26.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7414,7 +7414,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!4 &521892899 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6052198189779463975, guid: 98acde82d6be3864aa15ddade2a94263, type: 3}
