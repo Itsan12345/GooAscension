@@ -126,6 +126,8 @@ public class NPC : MonoBehaviour, IInteractable
     void StartDialogue()
     {
         Debug.Log($"NPC {gameObject.name}: StartDialogue() called");
+        EnsureDialogueUIHierarchyEnabled();
+        EnsureDialoguePanelVisibleScale();
         
         // Play NPC interaction sound effect
         if (soundEffectLibrary != null)
@@ -239,6 +241,68 @@ public class NPC : MonoBehaviour, IInteractable
         if (playerNearby && CanInteract() && currentPlayer != null)
         {
             ShowExclamationSprite(true);
+        }
+    }
+
+    private void EnsureDialoguePanelVisibleScale()
+    {
+        if (dialoguePanel == null) return;
+
+        Transform current = dialoguePanel.transform;
+        while (current != null)
+        {
+            Vector3 localScale = current.localScale;
+            if (Mathf.Approximately(localScale.x, 0f) || Mathf.Approximately(localScale.y, 0f) || Mathf.Approximately(localScale.z, 0f))
+            {
+                current.localScale = Vector3.one;
+                Debug.LogWarning($"NPC {gameObject.name}: Corrected zero scale on '{current.name}' so dialogue UI is visible.");
+            }
+
+            current = current.parent;
+        }
+    }
+
+    private void EnsureDialogueUIHierarchyEnabled()
+    {
+        if (dialoguePanel == null) return;
+
+        // Ensure the dialogue panel and all parents up to this NPC are active.
+        Transform current = dialoguePanel.transform;
+        while (current != null)
+        {
+            if (!current.gameObject.activeSelf)
+            {
+                current.gameObject.SetActive(true);
+                Debug.LogWarning($"NPC {gameObject.name}: Activated inactive UI object '{current.name}' to display dialogue.");
+            }
+
+            if (current == transform)
+            {
+                break;
+            }
+
+            current = current.parent;
+        }
+
+        Canvas canvas = dialoguePanel.GetComponentInParent<Canvas>(true);
+        if (canvas != null && !canvas.enabled)
+        {
+            canvas.enabled = true;
+            Debug.LogWarning($"NPC {gameObject.name}: Re-enabled Canvas '{canvas.name}' for dialogue UI.");
+        }
+
+        CanvasScaler canvasScaler = dialoguePanel.GetComponentInParent<CanvasScaler>(true);
+        if (canvasScaler != null && !canvasScaler.enabled)
+        {
+            canvasScaler.enabled = true;
+            Debug.LogWarning($"NPC {gameObject.name}: Re-enabled CanvasScaler '{canvasScaler.name}' for dialogue UI.");
+        }
+
+        GraphicRaycaster graphicRaycaster = dialoguePanel.GetComponentInParent<GraphicRaycaster>(true);
+        if (graphicRaycaster != null && !graphicRaycaster.enabled)
+        {
+            graphicRaycaster.enabled = true;
+            Debug.LogWarning($"NPC {gameObject.name}: Re-enabled GraphicRaycaster '{graphicRaycaster.name}' for dialogue UI.");
         }
     }
     

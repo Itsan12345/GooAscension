@@ -181,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canMove)
             rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);
-        else if (!isTransforming)
+        else if (!isTransforming || isGrounded)
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
@@ -462,6 +462,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canMove = false;
             canJump = false;
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         }
 
         // Cache both animators up front

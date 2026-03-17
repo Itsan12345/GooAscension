@@ -298,7 +298,7 @@ RectTransform:
   m_GameObject: {fileID: 1860998416440987529}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2110724479324198138}
@@ -835,6 +835,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7620722200868093128
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -880,6 +881,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 4252368679466890567, guid: 14b7195a6a60f0f4c9ac60ff5dd98a3f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -889,7 +891,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &5770997350428060666
 Animator:
@@ -952,6 +953,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!212 &6283202775075591721
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -994,9 +996,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 854805773
-  m_SortingLayer: 3
+  m_SortingLayerID: 155372963
+  m_SortingLayer: 7
   m_SortingOrder: 1
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -855298285791758126, guid: 90eb10822bf351a4c90801e70300d82d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1006,7 +1009,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &7652471908232755409
 BoxCollider2D:
@@ -1076,6 +1078,11 @@ MonoBehaviour:
   exclamationSprite: {fileID: 8022875158022095469}
   slimeYOffset: 1.5
   humanYOffset: 2
+  soundEffectLibrary: {fileID: 0}
+  soundEffectAudioSource: {fileID: 0}
+  npcSoundGroupName: NPC
+  npcSoundElementIndex: 0
+  playVoiceWithTyping: 1
 --- !u!95 &409230016311265308
 Animator:
   serializedVersion: 7

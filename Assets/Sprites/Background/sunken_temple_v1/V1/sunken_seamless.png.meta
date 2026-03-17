@@ -2752,7 +2752,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_120
+      name: sunken_seamles-TL
       rect:
         serializedVersion: 2
         x: 32
@@ -2774,7 +2774,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_121
+      name: sunken_seamles-TC
       rect:
         serializedVersion: 2
         x: 64
@@ -2796,7 +2796,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_122
+      name: sunken_seamles-TR
       rect:
         serializedVersion: 2
         x: 96
@@ -3082,7 +3082,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_135
+      name: sunken_seamles-CL
       rect:
         serializedVersion: 2
         x: 32
@@ -3104,7 +3104,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_136
+      name: sunken_seamles-C
       rect:
         serializedVersion: 2
         x: 64
@@ -3126,7 +3126,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_137
+      name: sunken_seamles-CR
       rect:
         serializedVersion: 2
         x: 96
@@ -3412,7 +3412,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_150
+      name: sunken_seamles-BL
       rect:
         serializedVersion: 2
         x: 32
@@ -3434,7 +3434,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_151
+      name: sunken_seamles-B
       rect:
         serializedVersion: 2
         x: 64
@@ -3456,7 +3456,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_152
+      name: sunken_seamles-BR
       rect:
         serializedVersion: 2
         x: 96
@@ -8355,6 +8355,15 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":15.0,"y":25.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":1,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
+      sunken_seamles-B: 2105769364
+      sunken_seamles-BL: 1094587264
+      sunken_seamles-BR: 833649246
+      sunken_seamles-C: 437256292
+      sunken_seamles-CL: 1723002636
+      sunken_seamles-CR: -393266887
+      sunken_seamles-TC: -1001270657
+      sunken_seamles-TL: -1405162598
+      sunken_seamles-TR: 839540579
       sunken_seamless_0: -4977929668910206904
       sunken_seamless_1: 4368950407450329729
       sunken_seamless_10: -784610331
@@ -8380,9 +8389,6 @@ TextureImporter:
       sunken_seamless_118: -1341783926
       sunken_seamless_119: 2075064282
       sunken_seamless_12: 1614652423
-      sunken_seamless_120: -1405162598
-      sunken_seamless_121: -1001270657
-      sunken_seamless_122: 839540579
       sunken_seamless_123: 853055917
       sunken_seamless_124: -1448482510
       sunken_seamless_125: 1402895007
@@ -8396,9 +8402,6 @@ TextureImporter:
       sunken_seamless_132: -1384813602
       sunken_seamless_133: -1756970469
       sunken_seamless_134: -193766707
-      sunken_seamless_135: 1723002636
-      sunken_seamless_136: 437256292
-      sunken_seamless_137: -393266887
       sunken_seamless_138: 1739858884
       sunken_seamless_139: -1558218699
       sunken_seamless_14: -83428104
@@ -8413,9 +8416,6 @@ TextureImporter:
       sunken_seamless_148: 1575059549
       sunken_seamless_149: 648681552
       sunken_seamless_15: 960027574
-      sunken_seamless_150: 1094587264
-      sunken_seamless_151: 2105769364
-      sunken_seamless_152: 833649246
       sunken_seamless_153: -1777215960
       sunken_seamless_154: -639335120
       sunken_seamless_155: 1184737018
