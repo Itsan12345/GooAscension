@@ -92,6 +92,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Transform chargedShotFirePoint; // Separate fire point for charged shot
     [SerializeField] private float chargedShotForwardOffset = 1.5f; // how far in front of fire point
 
+    [Header("Charged Skill Cooldowns")]
+    [SerializeField] private float chargedSwordCooldown = 1f;
+    [SerializeField] private float chargedShotCooldown = 2f;
+    private float chargedSwordCooldownTimer;
+    private float chargedShotCooldownTimer;
+
     private void Awake()
     {
         if (playerMovement == null)
@@ -104,6 +110,8 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         if (playerMovement == null) return;
+
+        TickChargedSkillCooldowns();
 
         // Keep these synced from movement
         anim = playerMovement.CurrentAnimator;
@@ -162,6 +170,15 @@ public class PlayerCombat : MonoBehaviour
         }
 
         HandleCombatInput();
+    }
+
+    private void TickChargedSkillCooldowns()
+    {
+        if (chargedSwordCooldownTimer > 0f)
+            chargedSwordCooldownTimer = Mathf.Max(0f, chargedSwordCooldownTimer - Time.deltaTime);
+
+        if (chargedShotCooldownTimer > 0f)
+            chargedShotCooldownTimer = Mathf.Max(0f, chargedShotCooldownTimer - Time.deltaTime);
     }
 
     void HandleChargedAttack()
@@ -251,6 +268,12 @@ void StartSwordCharging()
 {
     if (isCharging) return;
 
+    if (chargedSwordCooldownTimer > 0f)
+    {
+        Debug.Log("Charged sword is on cooldown.");
+        return;
+    }
+
     // Check if player has at least half energy before allowing sword charging
     if (playerEnergy == null || playerEnergy.currentEnergy < (playerEnergy.maxEnergy * 0.5f))
     {
@@ -268,6 +291,12 @@ void StartSwordCharging()
 void StartGunCharging()
 {
     if (isGunCharging) return;
+
+    if (chargedShotCooldownTimer > 0f)
+    {
+        Debug.Log("Charged shot is on cooldown.");
+        return;
+    }
 
     // Check if player has full energy before allowing gun charging
     if (playerEnergy == null || playerEnergy.currentEnergy < playerEnergy.maxEnergy)
@@ -429,6 +458,8 @@ public void ActivateSwordArc(float charge01)
         Debug.Log($"⚔️ ENERGY CONSUMED: Energy reduced to half for charged sword! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
     }
 
+    chargedSwordCooldownTimer = chargedSwordCooldown;
+
     // Instantiate the sword arc at the attack point
     GameObject arcInstance = Instantiate(swordArcPrefab, attackPoint.position, Quaternion.identity);
     
@@ -478,6 +509,8 @@ public void ActivateChargedShot(float charge01)
         playerEnergy.SpendEnergy(playerEnergy.maxEnergy);
         Debug.Log($"⚡ ENERGY CONSUMED: All energy spent for charged shot! Energy: {playerEnergy.currentEnergy}/{playerEnergy.maxEnergy}");
     }
+
+    chargedShotCooldownTimer = chargedShotCooldown;
 
     // Play charged cannon sound effect
     if (soundEffectLibrary != null && attackAudioSource != null)
@@ -887,6 +920,16 @@ public void OnAttackAnimationEnd()
     {
         attackDamage = Mathf.Max(0f, attackDamage + amount);
     }
+
+    // ---------- Cooldown API ----------
+    public float GetChargedSwordCooldownRemaining() => Mathf.Max(0f, chargedSwordCooldownTimer);
+    public float GetChargedSwordCooldownDuration() => chargedSwordCooldown;
+    public float GetChargedShotCooldownRemaining() => Mathf.Max(0f, chargedShotCooldownTimer);
+    public float GetChargedShotCooldownDuration() => chargedShotCooldown;
+
+    // ---------- Weapon State API ----------
+    public bool IsUsingGun => usingGun;
+    public bool IsUsingSword => usingSword;
 
     // ---------- Gizmos ----------
     private void OnDrawGizmosSelected()

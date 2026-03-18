@@ -132,6 +132,16 @@ public class PlayerMovement : MonoBehaviour
         canMove = enable;
     }
 
+    public float GetDashCooldownRemaining()
+    {
+        return canDash ? 0f : Mathf.Max(0f, dashCooldownTimer);
+    }
+
+    public float GetDashCooldownDuration()
+    {
+        return dashCooldown;
+    }
+
    
 
     public void ApplyKnockback(Vector2 direction)
