@@ -108,11 +108,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sunken_seamless_0
+      name: waterfall_front_1
       rect:
         serializedVersion: 2
         x: 0
@@ -134,7 +147,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_1
+      name: waterfall_front_2
       rect:
         serializedVersion: 2
         x: 32
@@ -156,7 +169,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_2
+      name: waterfall_front_3
       rect:
         serializedVersion: 2
         x: 64
@@ -442,7 +455,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_15
+      name: waterfall_side_1
       rect:
         serializedVersion: 2
         x: 0
@@ -464,7 +477,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_16
+      name: waterfall_side_2
       rect:
         serializedVersion: 2
         x: 32
@@ -486,7 +499,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_17
+      name: waterfall_side_3
       rect:
         serializedVersion: 2
         x: 64
@@ -8364,8 +8377,6 @@ TextureImporter:
       sunken_seamles-TC: -1001270657
       sunken_seamles-TL: -1405162598
       sunken_seamles-TR: 839540579
-      sunken_seamless_0: -4977929668910206904
-      sunken_seamless_1: 4368950407450329729
       sunken_seamless_10: -784610331
       sunken_seamless_100: 1457153500
       sunken_seamless_101: 1740454590
@@ -8415,7 +8426,6 @@ TextureImporter:
       sunken_seamless_147: 1964374174
       sunken_seamless_148: 1575059549
       sunken_seamless_149: 648681552
-      sunken_seamless_15: 960027574
       sunken_seamless_153: -1777215960
       sunken_seamless_154: -639335120
       sunken_seamless_155: 1184737018
@@ -8423,7 +8433,6 @@ TextureImporter:
       sunken_seamless_157: 1691781991
       sunken_seamless_158: 565044292
       sunken_seamless_159: 850027542
-      sunken_seamless_16: -2137137043
       sunken_seamless_160: -940901411
       sunken_seamless_161: 474430342
       sunken_seamless_162: -1890203299
@@ -8434,7 +8443,6 @@ TextureImporter:
       sunken_seamless_167: -213196303
       sunken_seamless_168: -2025922873
       sunken_seamless_169: -1923415807
-      sunken_seamless_17: -431222528
       sunken_seamless_170: 1430964056
       sunken_seamless_171: 1433592293
       sunken_seamless_172: 633847258
@@ -8467,7 +8475,6 @@ TextureImporter:
       sunken_seamless_197: -125742934
       sunken_seamless_198: -2038454431
       sunken_seamless_199: -1646052789
-      sunken_seamless_2: -8769235485718702812
       sunken_seamless_20: -1707417033
       sunken_seamless_200: -1310838126
       sunken_seamless_201: -1919244890
@@ -8729,6 +8736,12 @@ TextureImporter:
       sunken_seamless_97: -739016906
       sunken_seamless_98: -82781261
       sunken_seamless_99: 382943421
+      waterfall_front_1: -4977929668910206904
+      waterfall_front_2: 4368950407450329729
+      waterfall_front_3: -8769235485718702812
+      waterfall_side_1: 960027574
+      waterfall_side_2: -2137137043
+      waterfall_side_3: -431222528
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
