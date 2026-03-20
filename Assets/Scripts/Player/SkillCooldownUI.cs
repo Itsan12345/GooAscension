@@ -132,18 +132,7 @@ public class SkillCooldownUI : MonoBehaviour
             // Weapon switch cooldown
             if (weaponSwitchCooldownFill != null)
             {
-                float switchRemain = 0f;
-                float switchDur = 1f;
-                var pc = playerCombat;
-                var type = pc.GetType();
-                var remainProp = type.GetField("weaponSwitchCooldownTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                var durProp = type.GetField("weaponSwitchCooldown", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                if (remainProp != null && durProp != null)
-                {
-                    switchRemain = (float)remainProp.GetValue(pc);
-                    switchDur = (float)durProp.GetValue(pc);
-                }
-                SetFill(weaponSwitchCooldownFill, switchRemain, switchDur);
+                SetFill(weaponSwitchCooldownFill, playerCombat.GetWeaponSwitchCooldownRemaining(), playerCombat.GetWeaponSwitchCooldownDuration());
             }
         }
 
@@ -295,13 +284,7 @@ public class SkillCooldownUI : MonoBehaviour
             // Weapon switch cooldown
             if (weaponSwitchCooldownFill != null)
             {
-                float switchRemain = 0f;
-                var pc = playerCombat;
-                var type = pc.GetType();
-                var remainProp = type.GetField("weaponSwitchCooldownTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (remainProp != null)
-                    switchRemain = (float)remainProp.GetValue(pc);
-                bool switchingCoolingDown = switchRemain > 0.001f;
+                bool switchingCoolingDown = playerCombat.GetWeaponSwitchCooldownRemaining() > 0.001f;
                 UpdateCooldownOverlayVisual(weaponSwitchCooldownFill, null, switchingCoolingDown);
             }
         }

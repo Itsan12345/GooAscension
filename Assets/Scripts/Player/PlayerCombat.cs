@@ -948,6 +948,10 @@ public void OnAttackAnimationEnd()
     public float GetChargedShotCooldownRemaining() => Mathf.Max(0f, chargedShotCooldownTimer);
     public float GetChargedShotCooldownDuration() => chargedShotCooldown;
 
+    // Weapon switch cooldown accessors
+    public float GetWeaponSwitchCooldownRemaining() => Mathf.Max(0f, weaponSwitchCooldownTimer);
+    public float GetWeaponSwitchCooldownDuration() => weaponSwitchCooldown;
+
     // ---------- Weapon State API ----------
     public bool IsUsingGun => usingGun;
     public bool IsUsingSword => usingSword;
