@@ -6,62 +6,55 @@ public class ParallaxEffect : MonoBehaviour
     [Tooltip("How much the background moves left/right (0 = still, 1 = follows perfectly)")]
     public float parallaxEffect;
     
-    [Tooltip("How much the background moves up/down. Keep this very low! (e.g., 0.05 to 0.2)")]
-    public float parallaxEffectY = 0.1f; // <-- NEW VARIABLE FOR VERTICAL
+    [Tooltip("How much the background moves up/down (1 = follows perfectly)")]
+    public float parallaxEffectY = 1f;
 
     private Transform cameraTransform;
-    private Vector3 lastCameraPosition;
     
-    // Variables for looping
+    // Track our absolute starting points
+    private float startPositionX;
+    private float startPositionY;
     private float backgroundLength;
-    private float startPosition;
 
     void Start()
     {
         cameraTransform = Camera.main.transform;
-        lastCameraPosition = cameraTransform.position;
-        startPosition = transform.position.x;
+        
+        // Save the exact spawn position of this background
+        startPositionX = transform.position.x;
+        startPositionY = transform.position.y; 
 
-        // Works for SpriteRenderer, TilemapRenderer, or any Renderer on this object
         Renderer backgroundRenderer = GetComponent<Renderer>();
         if (backgroundRenderer == null)
         {
-            Debug.LogError($"ParallaxEffect: No Renderer found on {gameObject.name}. Add a SpriteRenderer/TilemapRenderer or move this script to the object that has one.");
+            Debug.LogError($"ParallaxEffect: No Renderer found on {gameObject.name}. Add a SpriteRenderer/TilemapRenderer.");
             enabled = false;
             return;
         }
 
-        // Find the length of the background graphic to know when to loop it
         backgroundLength = backgroundRenderer.bounds.size.x;
     }
 
     void LateUpdate()
     {
-        // 1. Calculate how much the camera has moved
-        Vector3 deltaMovement = cameraTransform.position - lastCameraPosition;
-        
-        // 2. Move background with parallax effect (Notice we use parallaxEffectY for the Y axis now!)
-        transform.position += new Vector3(deltaMovement.x * parallaxEffect, deltaMovement.y * parallaxEffectY, 0);
+        // 1. Calculate the absolute distance the background SHOULD move based on camera position
+        float distX = (cameraTransform.position.x * parallaxEffect);
+        float distY = (cameraTransform.position.y * parallaxEffectY);
 
-        // 3. Keep track of how far the camera has moved *relative* to the start point of this background layer
+        // 2. Set the exact position (This instantly fixes the jitter!)
+        transform.position = new Vector3(startPositionX + distX, startPositionY + distY, transform.position.z);
+
+        // 3. Keep track of how far the camera has moved relative to the loop
         float cameraRelativePosition = cameraTransform.position.x * (1 - parallaxEffect);
 
-        // 4. If the camera has moved completely past this sprite (to the right)...
-        if (cameraRelativePosition > startPosition + backgroundLength)
+        // 4. Looping logic for the X axis
+        if (cameraRelativePosition > startPositionX + backgroundLength)
         {
-            // Shift our start point a full length to the right
-            startPosition += backgroundLength; 
+            startPositionX += backgroundLength; 
         }
-        // If the camera has moved completely past this sprite (to the left)...
-        else if (cameraRelativePosition < startPosition - backgroundLength)
+        else if (cameraRelativePosition < startPositionX - backgroundLength)
         {
-             // Shift our start point a full length to the left
-            startPosition -= backgroundLength;
+            startPositionX -= backgroundLength;
         }
-
-        // Apply the new horizontal position. (Y and Z stay as they are)
-        transform.position = new Vector3(startPosition + (cameraTransform.position.x * parallaxEffect), transform.position.y, transform.position.z);
-
-        lastCameraPosition = cameraTransform.position;
     }
 }

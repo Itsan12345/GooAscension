@@ -103,14 +103,22 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerEnergy = GetComponent<PlayerEnergy>();
-        SetForm(false); // Start as Slime
+
+        // Restore transformation ability and last-used form from previous scene
+        bool transformUnlocked = PlayerPrefs.GetInt("TransformUnlocked", 0) == 1;
+        bool wasHuman          = PlayerPrefs.GetInt("PlayerIsHuman", 0) == 1;
+
+        // Only restore human form if the ability was already unlocked
+        SetForm(transformUnlocked && wasHuman);
+
+        if (transformUnlocked)
+            canTransform = true;
 
         playerLayer = gameObject.layer;
         enemyLayer = LayerMask.NameToLayer(enemyLayerName);
 
         if (enemyLayer == -1)
             Debug.LogError($"Enemy layer '{enemyLayerName}' does not exist. Create it in Layers.");
-
     }
 
     private void Update()
@@ -365,17 +373,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFlip()
     {
-        if (rb.linearVelocity.x > 0 && !facingRight) Flip();
-        else if (rb.linearVelocity.x < 0 && facingRight) Flip();
+        if (xInput > 0 && !facingRight) Flip();
+        else if (xInput < 0 && facingRight) Flip();
     }
 
     private void Flip()
     {
         facingRight = !facingRight;
 
-        Vector3 scale = transform.localScale;
-        scale.x *= -1f;
-        transform.localScale = scale;
+        // Use rotation instead of scale so your 2D lights and UI don't break!
+        if (facingRight)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     
@@ -422,6 +436,8 @@ public class PlayerMovement : MonoBehaviour
     public void EnableHumanTransformation()
     {
         canTransform = true;
+        PlayerPrefs.SetInt("TransformUnlocked", 1);
+        PlayerPrefs.Save();
         Debug.Log("Human transformation unlocked! Press E to transform.");
     }
 
@@ -501,11 +517,10 @@ public class PlayerMovement : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / punchDuration;
             float scaleMult = 1f + Mathf.Sin(t * Mathf.PI) * 0.3f;
-            float signX = facingRight ? 1f : -1f;
-            transform.localScale = new Vector3(signX * baseAbsX * scaleMult, baseScaleY * scaleMult, baseScaleZ);
+            transform.localScale = new Vector3(baseAbsX * scaleMult, baseScaleY * scaleMult, baseScaleZ);
             yield return null;
         }
-        transform.localScale = new Vector3((facingRight ? 1f : -1f) * baseAbsX, baseScaleY, baseScaleZ);
+        transform.localScale = new Vector3(baseAbsX, baseScaleY, baseScaleZ);
 
         // --- Commit final form ---
         isHuman = toHuman;
@@ -513,6 +528,10 @@ public class PlayerMovement : MonoBehaviour
         humanHitbox.SetActive(toHuman);
         slimeAnimator.SetActive(!toHuman);
         humanAnimator.SetActive(toHuman);
+
+        // Save current form so the next scene restores it correctly
+        PlayerPrefs.SetInt("PlayerIsHuman", toHuman ? 1 : 0);
+        PlayerPrefs.Save();
 
         rb = GetComponent<Rigidbody2D>();
         anim = toHuman ? humanAnim : slimeAnim;
@@ -543,10 +562,25 @@ public class PlayerMovement : MonoBehaviour
         humanHitbox.SetActive(human);
         humanAnimator.SetActive(human);
 
-        rb = GetComponent<Rigidbody2D>();
+        rb   = GetComponent<Rigidbody2D>();
         anim = human ? humanAnimator.GetComponent<Animator>() : slimeAnimator.GetComponent<Animator>();
 
         jumpsRemaining = human ? maxJumpsHuman : maxJumpsSlime;
+
+        // Re-apply facing direction so the new form looks the correct way
+        ApplyFacingDirection();
+    }
+
+    private void ApplyFacingDirection()
+    {
+        Transform animObj = isHuman
+            ? (humanAnimator != null ? humanAnimator.transform : null)
+            : (slimeAnimator  != null ? slimeAnimator.transform  : null);
+
+        if (animObj != null)
+            animObj.localRotation = facingRight
+                ? Quaternion.Euler(0, 0, 0)
+                : Quaternion.Euler(0, 180, 0);
     }
 
     // =========================================================

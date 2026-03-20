@@ -197,7 +197,10 @@ public class LevelEntrance : MonoBehaviour
 
     private void OnConfirmYes()
     {
+        HideAll();
         PauseController.SetPause(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible   = false;
 
         if (SceneController.instance != null)
             SceneController.instance.ChangeLevelTo(nextLevelName);

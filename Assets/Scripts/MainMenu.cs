@@ -15,7 +15,11 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        // Assuming the next level is index + 1
+        // Reset all cross-scene PlayerPrefs so every new game starts fresh
+        PlayerPrefs.DeleteKey("TransformUnlocked");
+        PlayerPrefs.DeleteKey("PlayerIsHuman");
+        PlayerPrefs.Save();
+
         StartCoroutine(LoadLevelAsync(SceneManager.GetActiveScene().buildIndex + 1));
     }
 

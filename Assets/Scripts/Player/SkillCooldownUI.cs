@@ -44,11 +44,19 @@ public class SkillCooldownUI : MonoBehaviour
 
     private void Awake()
     {
-        if (playerCombat == null)
-            playerCombat = FindFirstObjectByType<PlayerCombat>();
+        RefreshPlayerReferences();
+    }
 
-        if (playerMovement == null)
-            playerMovement = FindFirstObjectByType<PlayerMovement>();
+    /// <summary>
+    /// Called by UIConnector after each scene load to re-bind to the new Player.
+    /// </summary>
+    public void RefreshPlayerReferences()
+    {
+        playerCombat   = FindFirstObjectByType<PlayerCombat>();
+        playerMovement = FindFirstObjectByType<PlayerMovement>();
+
+        initializedWeaponState = false;
+        initializedFormState   = false;
     }
 
     private void Start()
