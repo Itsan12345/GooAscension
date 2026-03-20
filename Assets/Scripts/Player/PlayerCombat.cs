@@ -82,8 +82,14 @@ public class PlayerCombat : MonoBehaviour
     private bool movementLockedByBlock = false;
     public bool IsBlocking => isBlocking;
 
+
     [Header("Weapon State")]
     [SerializeField] private bool usingGun = false;
+
+    [Header("Weapon Switch Cooldown")]
+    [Tooltip("Cooldown in seconds after switching weapons before you can switch again or attack.")]
+    [SerializeField] private float weaponSwitchCooldown = 1.5f;
+    private float weaponSwitchCooldownTimer = 0f;
 
     [Header("Gun Settings")]
     [SerializeField] private float gunChargeAutoFireTime = 2.5f;
@@ -110,6 +116,10 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         if (playerMovement == null) return;
+
+        // Tick weapon switch cooldown
+        if (weaponSwitchCooldownTimer > 0f)
+            weaponSwitchCooldownTimer = Mathf.Max(0f, weaponSwitchCooldownTimer - Time.deltaTime);
 
         TickChargedSkillCooldowns();
 
@@ -476,7 +486,11 @@ public void ActivateSwordArc(float charge01)
 
     // Destroy the arc after a short duration
     Destroy(arcInstance, 1f);
-    
+
+    // Allow transformation after charged sword
+    if (playerMovement != null)
+        playerMovement.SetAttackingOrCharging(false);
+
     Debug.Log($"⚔️ CHARGED SWORD FIRED: Charge level: {charge01:F2}, Energy reduced to half!");
 }
 
@@ -556,6 +570,10 @@ public void ActivateChargedShot(float charge01)
     }
 
     Debug.Log($"🔥 CHARGED SHOT FIRED: Charge level: {charge01:F2}, Energy depleted!");
+
+    // Allow transformation after charged shot
+    if (playerMovement != null)
+        playerMovement.SetAttackingOrCharging(false);
 }
 
 // Method to be called from animation events
@@ -584,7 +602,7 @@ public void OnAttackAnimationEnd()
 
     private void HandleCombatInput()
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame)
+        if (Keyboard.current.qKey.wasPressedThisFrame && weaponSwitchCooldownTimer <= 0f)
             SwitchWeapon();
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
@@ -810,7 +828,6 @@ public void OnAttackAnimationEnd()
             bulletScript.SetDamage(gunDamage);
         }
 
-
         Invoke(nameof(ResetShoot), shootCooldown);
     }
 
@@ -823,6 +840,8 @@ public void OnAttackAnimationEnd()
     {
         if (!playerMovement.IsHuman)
             return;
+        if (weaponSwitchCooldownTimer > 0f)
+            return;
 
         usingGun = !usingGun;
         usingSword = !usingGun; // Keep these in sync
@@ -833,6 +852,8 @@ public void OnAttackAnimationEnd()
 
         if (anim != null)
             anim.SetTrigger("switchWeapon");
+
+        weaponSwitchCooldownTimer = weaponSwitchCooldown;
 
         Debug.Log(usingGun ? "Switched to GUN" : "Switched to SWORD");
     }

@@ -7,6 +7,11 @@ public class SkillCooldownUI : MonoBehaviour
     [SerializeField] private PlayerCombat playerCombat;
     [SerializeField] private PlayerMovement playerMovement;
 
+    [Header("Skill Icons")]
+    [SerializeField] private Image slashSkillIcon;
+    [SerializeField] private Image chargedShotSkillIcon;
+    [SerializeField] private Image dashSkillIcon;
+
     [Header("Cooldown Fill Overlays")]
     [Tooltip("Overlay image for sword slash cooldown (filled while cooling down).")]
     [SerializeField] private Image slashCooldownFill;
@@ -14,6 +19,8 @@ public class SkillCooldownUI : MonoBehaviour
     [SerializeField] private Image chargedShotCooldownFill;
     [Tooltip("Overlay image for dash cooldown (filled while cooling down).")]
     [SerializeField] private Image dashCooldownFill;
+    [Tooltip("Overlay image for weapon switch cooldown (filled while cooling down).")]
+    [SerializeField] private Image weaponSwitchCooldownFill;
 
     [Header("Weapon Swap Icons")]
     [Tooltip("Gun icon image for switch/swap UI state.")]
@@ -34,6 +41,17 @@ public class SkillCooldownUI : MonoBehaviour
     [SerializeField] private float swapPulseDuration = 0.18f;
     [SerializeField] private float swapPulseScale = 1.2f;
 
+    [Header("Skill Availability")]
+    [SerializeField] private Color humanSkillTint = Color.white;
+    [SerializeField] private Color slimeDisabledSkillTint = new Color(0.45f, 0.45f, 0.45f, 1f);
+
+    [Header("Weapon Skill Visibility")]
+    [SerializeField] private bool hideInactiveWeaponSkillIcon = true;
+    [SerializeField] private float inactiveWeaponSkillAlpha = 0f;
+
+    [Header("Cooldown Overlay Setup")]
+    [SerializeField] private bool forceFilledCooldownImages = true;
+
     private bool initializedWeaponState;
     private bool initializedFormState;
     private bool previousUsingGun;
@@ -41,6 +59,11 @@ public class SkillCooldownUI : MonoBehaviour
 
     private Coroutine weaponPulseRoutine;
     private Coroutine formPulseRoutine;
+
+    private Color slashCooldownBaseColor = Color.white;
+    private Color chargedShotCooldownBaseColor = Color.white;
+    private Color dashCooldownBaseColor = Color.white;
+    private Color weaponSwitchCooldownBaseColor = Color.white;
 
     private void Awake()
     {
@@ -53,15 +76,24 @@ public class SkillCooldownUI : MonoBehaviour
 
     private void Start()
     {
+        CacheCooldownBaseColors();
+
+        ConfigureCooldownOverlay(slashCooldownFill);
+        ConfigureCooldownOverlay(chargedShotCooldownFill);
+        ConfigureCooldownOverlay(dashCooldownFill);
+        ConfigureCooldownOverlay(weaponSwitchCooldownFill);
+
         SetFill(slashCooldownFill, 0f, 1f);
         SetFill(chargedShotCooldownFill, 0f, 1f);
         SetFill(dashCooldownFill, 0f, 1f);
+        SetFill(weaponSwitchCooldownFill, 0f, 1f);
 
         if (playerCombat != null)
         {
             previousUsingGun = playerCombat.IsUsingGun;
             initializedWeaponState = true;
             ApplyWeaponState(previousUsingGun, false);
+            ApplyWeaponSkillVisibility(previousUsingGun);
         }
 
         if (playerMovement != null)
@@ -69,7 +101,10 @@ public class SkillCooldownUI : MonoBehaviour
             previousIsHuman = playerMovement.IsHuman;
             initializedFormState = true;
             ApplyFormState(previousIsHuman, false);
+            ApplySkillAvailability(previousIsHuman);
         }
+
+        UpdateSkillCooldownOverlays();
     }
 
     private void Update()
@@ -85,6 +120,23 @@ public class SkillCooldownUI : MonoBehaviour
                 chargedShotCooldownFill,
                 playerCombat.GetChargedShotCooldownRemaining(),
                 playerCombat.GetChargedShotCooldownDuration());
+
+            // Weapon switch cooldown
+            if (weaponSwitchCooldownFill != null)
+            {
+                float switchRemain = 0f;
+                float switchDur = 1f;
+                var pc = playerCombat;
+                var type = pc.GetType();
+                var remainProp = type.GetField("weaponSwitchCooldownTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var durProp = type.GetField("weaponSwitchCooldown", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                if (remainProp != null && durProp != null)
+                {
+                    switchRemain = (float)remainProp.GetValue(pc);
+                    switchDur = (float)durProp.GetValue(pc);
+                }
+                SetFill(weaponSwitchCooldownFill, switchRemain, switchDur);
+            }
         }
 
         if (playerMovement != null)
@@ -94,6 +146,8 @@ public class SkillCooldownUI : MonoBehaviour
                 playerMovement.GetDashCooldownRemaining(),
                 playerMovement.GetDashCooldownDuration());
         }
+
+        UpdateSkillCooldownOverlays();
 
         UpdateSwapStateVisuals();
     }
@@ -120,6 +174,7 @@ public class SkillCooldownUI : MonoBehaviour
             if (!initializedWeaponState || usingGun != previousUsingGun)
             {
                 ApplyWeaponState(usingGun, initializedWeaponState);
+                ApplyWeaponSkillVisibility(usingGun);
                 previousUsingGun = usingGun;
                 initializedWeaponState = true;
             }
@@ -131,9 +186,36 @@ public class SkillCooldownUI : MonoBehaviour
             if (!initializedFormState || isHuman != previousIsHuman)
             {
                 ApplyFormState(isHuman, initializedFormState);
+                ApplySkillAvailability(isHuman);
                 previousIsHuman = isHuman;
                 initializedFormState = true;
             }
+
+            // Gray out switch weapon and transformation icons if not human
+            Color unavailable = new Color(0.45f, 0.45f, 0.45f, 1f);
+            Color available = Color.white;
+            bool grayOut = !isHuman;
+
+            // Switch weapon icons
+            if (switchToGunIcon != null)
+                SetTintPreserveAlpha(switchToGunIcon, grayOut ? unavailable : available);
+            if (switchToSwordIcon != null)
+                SetTintPreserveAlpha(switchToSwordIcon, grayOut ? unavailable : available);
+
+            // Transformation icons: only gray out if code fragment not collected
+            bool canTransform = false;
+            if (playerMovement != null)
+            {
+                var type = playerMovement.GetType();
+                var canTransformField = type.GetField("canTransform", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (canTransformField != null)
+                    canTransform = (bool)canTransformField.GetValue(playerMovement);
+            }
+            bool grayOutTransform = !canTransform;
+            if (transformToHumanIcon != null)
+                SetTintPreserveAlpha(transformToHumanIcon, grayOutTransform ? unavailable : available);
+            if (transformToSlimeIcon != null)
+                SetTintPreserveAlpha(transformToSlimeIcon, grayOutTransform ? unavailable : available);
         }
     }
 
@@ -169,6 +251,132 @@ public class SkillCooldownUI : MonoBehaviour
         }
     }
 
+    private void ApplyWeaponSkillVisibility(bool usingGun)
+    {
+        Image activeSkillIcon = usingGun ? chargedShotSkillIcon : slashSkillIcon;
+        Image inactiveSkillIcon = usingGun ? slashSkillIcon : chargedShotSkillIcon;
+
+        if (hideInactiveWeaponSkillIcon)
+        {
+            SetAlpha(activeSkillIcon, activeIconAlpha);
+            SetAlpha(inactiveSkillIcon, inactiveWeaponSkillAlpha);
+        }
+        else
+        {
+            SetAlpha(activeSkillIcon, activeIconAlpha);
+            SetAlpha(inactiveSkillIcon, inactiveIconAlpha);
+        }
+
+        if (bringActiveIconToFront)
+        {
+            if (activeSkillIcon != null)
+                activeSkillIcon.rectTransform.SetAsLastSibling();
+        }
+    }
+
+    private void UpdateSkillCooldownOverlays()
+    {
+        if (playerCombat != null)
+        {
+            bool swordCoolingDown = playerCombat.GetChargedSwordCooldownRemaining() > 0.001f;
+            bool shotCoolingDown = playerCombat.GetChargedShotCooldownRemaining() > 0.001f;
+
+            UpdateCooldownOverlayVisual(slashCooldownFill, slashSkillIcon, swordCoolingDown);
+            UpdateCooldownOverlayVisual(chargedShotCooldownFill, chargedShotSkillIcon, shotCoolingDown);
+
+            // Weapon switch cooldown
+            if (weaponSwitchCooldownFill != null)
+            {
+                float switchRemain = 0f;
+                var pc = playerCombat;
+                var type = pc.GetType();
+                var remainProp = type.GetField("weaponSwitchCooldownTimer", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (remainProp != null)
+                    switchRemain = (float)remainProp.GetValue(pc);
+                bool switchingCoolingDown = switchRemain > 0.001f;
+                UpdateCooldownOverlayVisual(weaponSwitchCooldownFill, null, switchingCoolingDown);
+            }
+        }
+
+        if (playerMovement != null)
+        {
+            bool dashCoolingDown = playerMovement.GetDashCooldownRemaining() > 0.001f;
+            UpdateCooldownOverlayVisual(dashCooldownFill, dashSkillIcon, dashCoolingDown);
+        }
+    }
+
+    private void UpdateCooldownOverlayVisual(Image overlay, Image owningSkillIcon, bool isCoolingDown)
+    {
+        if (overlay == null)
+            return;
+
+        if (overlay == slashCooldownFill)
+            SetRgb(overlay, slashCooldownBaseColor);
+        else if (overlay == chargedShotCooldownFill)
+            SetRgb(overlay, chargedShotCooldownBaseColor);
+        else if (overlay == dashCooldownFill)
+            SetRgb(overlay, dashCooldownBaseColor);
+
+        bool iconVisible = owningSkillIcon == null || owningSkillIcon.color.a > 0.01f;
+        float baseOverlayAlpha = GetBaseOverlayAlpha(overlay);
+        float overlayAlpha = (isCoolingDown && iconVisible) ? baseOverlayAlpha * activeIconAlpha : 0f;
+        SetAlpha(overlay, overlayAlpha);
+
+        if (bringActiveIconToFront && isCoolingDown && iconVisible)
+            overlay.rectTransform.SetAsLastSibling();
+    }
+
+    private float GetBaseOverlayAlpha(Image overlay)
+    {
+        if (overlay == slashCooldownFill)
+            return slashCooldownBaseColor.a;
+
+        if (overlay == chargedShotCooldownFill)
+            return chargedShotCooldownBaseColor.a;
+
+        if (overlay == dashCooldownFill)
+            return dashCooldownBaseColor.a;
+
+        if (overlay == weaponSwitchCooldownFill)
+            return weaponSwitchCooldownBaseColor.a;
+
+        return overlay != null ? overlay.color.a : 1f;
+    }
+
+    private void ConfigureCooldownOverlay(Image overlay)
+    {
+        if (!forceFilledCooldownImages || overlay == null)
+            return;
+
+        overlay.type = Image.Type.Filled;
+        overlay.fillMethod = Image.FillMethod.Radial360;
+        overlay.fillClockwise = false;
+    }
+
+    private void ApplySkillAvailability(bool isHuman)
+    {
+        Color targetTint = isHuman ? humanSkillTint : slimeDisabledSkillTint;
+
+        SetTintPreserveAlpha(slashSkillIcon, targetTint);
+        SetTintPreserveAlpha(chargedShotSkillIcon, targetTint);
+        SetTintPreserveAlpha(dashSkillIcon, targetTint);
+    }
+
+    private void CacheCooldownBaseColors()
+    {
+        if (slashCooldownFill != null)
+            slashCooldownBaseColor = slashCooldownFill.color;
+
+        if (chargedShotCooldownFill != null)
+            chargedShotCooldownBaseColor = chargedShotCooldownFill.color;
+
+        if (dashCooldownFill != null)
+            dashCooldownBaseColor = dashCooldownFill.color;
+
+        if (weaponSwitchCooldownFill != null)
+            weaponSwitchCooldownBaseColor = weaponSwitchCooldownFill.color;
+    }
+
     private void ApplyActiveInactiveVisuals(Image active, Image inactive)
     {
         SetAlpha(active, activeIconAlpha);
@@ -185,6 +393,30 @@ public class SkillCooldownUI : MonoBehaviour
 
         Color c = image.color;
         c.a = Mathf.Clamp01(alpha);
+        image.color = c;
+    }
+
+    private static void SetTintPreserveAlpha(Image image, Color tint)
+    {
+        if (image == null)
+            return;
+
+        Color c = image.color;
+        c.r = tint.r;
+        c.g = tint.g;
+        c.b = tint.b;
+        image.color = c;
+    }
+
+    private static void SetRgb(Image image, Color source)
+    {
+        if (image == null)
+            return;
+
+        Color c = image.color;
+        c.r = source.r;
+        c.g = source.g;
+        c.b = source.b;
         image.color = c;
     }
 
