@@ -9,6 +9,23 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class InGameSettingsMenu : MonoBehaviour
 {
+    // -------------------------------------------------------------------------
+    // Singleton — keeps SettingsManager alive across scenes without needing
+    // a separate PersistentCanvas component on this object.
+    // -------------------------------------------------------------------------
+    private static InGameSettingsMenu instance;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
     [Header("Panel")]
     [Tooltip("The root panel GameObject to show/hide on Escape.")]
     [SerializeField] private GameObject settingsPanel;
@@ -72,6 +89,16 @@ public class InGameSettingsMenu : MonoBehaviour
 
     private void Start()
     {
+        // Auto-find the panel by name if not assigned in the Inspector
+        if (settingsPanel == null)
+        {
+            settingsPanel = GameObject.Find("SettingsPanel");
+            if (settingsPanel == null)
+                Debug.LogError("[InGameSettingsMenu] 'settingsPanel' is not assigned and no GameObject named 'SettingsPanel' was found. Escape key will not show the menu.");
+            else
+                Debug.Log("[InGameSettingsMenu] settingsPanel auto-found by name.");
+        }
+
         // Load saved volumes
         float savedMusic = PlayerPrefs.GetFloat(KEY_MUSIC_VOL, 1f);
         float savedGame  = PlayerPrefs.GetFloat(KEY_GAME_VOL,  1f);
