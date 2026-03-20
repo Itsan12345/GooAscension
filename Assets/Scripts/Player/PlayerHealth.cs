@@ -30,9 +30,26 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
+
+        // Fallback UI binding in case UIConnector/persistent wiring is missing on a scene reload.
+        if (healthBarCurrent == null || healthBarTotal == null)
+            AutoBindHealthUI();
+
         // Get reference to the sibling movement script so we know which sprite to flash
         playerMovement = GetComponent<PlayerMovement>();
         UpdateUI();
+    }
+
+    private void AutoBindHealthUI()
+    {
+        GameObject totalObj = GameObject.Find("HealthbarTotal");
+        GameObject currentObj = GameObject.Find("HealthbarCurrent");
+
+        if (healthBarTotal == null && totalObj != null)
+            healthBarTotal = totalObj.GetComponent<Image>();
+
+        if (healthBarCurrent == null && currentObj != null)
+            healthBarCurrent = currentObj.GetComponent<Image>();
     }
 
     public void TakeDamage(float damage)

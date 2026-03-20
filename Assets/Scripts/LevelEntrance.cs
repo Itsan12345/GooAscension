@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
@@ -202,10 +203,16 @@ public class LevelEntrance : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible   = false;
 
-        if (SceneController.instance != null)
-            SceneController.instance.ChangeLevelTo(nextLevelName);
+        // Load the next scene directly so we don't depend on SceneController.instance
+        // being initialized (it can be null depending on scene setup/order).
+        if (!string.IsNullOrEmpty(nextLevelName))
+        {
+            SceneManager.LoadScene(nextLevelName);
+        }
         else
-            Debug.LogError("LevelEntrance: SceneController instance is null!");
+        {
+            Debug.LogError("LevelEntrance: nextLevelName is empty. Set it in the inspector.");
+        }
     }
 
     private void OnConfirmNo()

@@ -12,6 +12,13 @@ public class PlayerCombat : MonoBehaviour
     private Animator anim;
     private bool facingRight = true;
 
+    // Quick melee uses attackPoint.position for OverlapCircleAll.
+    // Because PlayerMovement no longer rotates the player root (to preserve minimap/icons),
+    // we must mirror the attackPoint manually when facing direction changes.
+    private Vector3 attackPointBaseLocalPos;
+    private bool attackPointCached;
+    private bool lastFacingRight;
+
     // Public accessor for PlayerAnimationEvents
     public PlayerMovement PlayerMovementRef => playerMovement;
 
@@ -111,6 +118,13 @@ public class PlayerCombat : MonoBehaviour
         
         if (playerEnergy == null)
             playerEnergy = GetComponent<PlayerEnergy>();
+
+        if (attackPoint != null)
+        {
+            attackPointBaseLocalPos = attackPoint.localPosition;
+            attackPointCached = true;
+            lastFacingRight = facingRight;
+        }
     }
 
     private void Update()
@@ -126,6 +140,15 @@ public class PlayerCombat : MonoBehaviour
         // Keep these synced from movement
         anim = playerMovement.CurrentAnimator;
         facingRight = playerMovement.FacingRight;
+
+        if (attackPointCached && facingRight != lastFacingRight)
+        {
+            // Mirror the point around the player root's local Y/Z.
+            // Positive X in local space is "right" when facingRight=true.
+            float x = attackPointBaseLocalPos.x * (facingRight ? 1f : -1f);
+            attackPoint.localPosition = new Vector3(x, attackPointBaseLocalPos.y, attackPointBaseLocalPos.z);
+            lastFacingRight = facingRight;
+        }
 
         // Check if attack animation has finished and clear attacking state
         if (isAttackAnimationPlaying && anim != null)

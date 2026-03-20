@@ -24769,6 +24769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1671fcaa74e1c5c41a4fe6da00c5bf36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CodeFragment
+  debugLogs: 1
 --- !u!61 &1396136303
 BoxCollider2D:
   m_ObjectHideFlags: 0

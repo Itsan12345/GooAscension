@@ -19,7 +19,19 @@ public class PlayerEnergy : MonoBehaviour
     private void Start()
     {
         currentEnergy = maxEnergy;
+        // Fallback UI binding in case UIConnector/persistent wiring is missing on a scene reload.
+        if (energySlider == null)
+            AutoBindEnergyUI();
         UpdateUI();
+    }
+
+    private void AutoBindEnergyUI()
+    {
+        GameObject energyBarObj = GameObject.Find("EnergyBar");
+        if (energyBarObj == null)
+            return;
+
+        energySlider = energyBarObj.GetComponent<Slider>();
     }
 
     private void Update()
