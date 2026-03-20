@@ -51,7 +51,7 @@ public class PlayerEnergy : MonoBehaviour
         UpdateUI();
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         if (energySlider != null)
         {

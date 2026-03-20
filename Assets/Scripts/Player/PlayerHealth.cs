@@ -87,12 +87,10 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void UpdateUI()
+    public void UpdateUI()
     {
         if (healthBarCurrent != null)
-        {
             healthBarCurrent.fillAmount = currentHealth / maxHealth;
-        }
     }
 
     [Header("Death Settings")]

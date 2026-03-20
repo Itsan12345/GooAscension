@@ -33,6 +33,43 @@ public class InGameSettingsMenu : MonoBehaviour
 
     private bool isOpen = false;
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Re-find the settings panel by name in case the reference was lost
+        if (settingsPanel == null)
+        {
+            GameObject found = GameObject.Find("SettingsPanel");
+            if (found != null)
+            {
+                settingsPanel = found;
+                Debug.Log("[InGameSettingsMenu] SettingsPanel re-found after scene load.");
+            }
+            else
+            {
+                Debug.LogWarning("[InGameSettingsMenu] SettingsPanel not found in scene.");
+            }
+        }
+
+        // Always close and reset when entering a new scene
+        isOpen = false;
+        if (settingsPanel != null)
+            settingsPanel.SetActive(false);
+
+        PauseController.SetPause(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible   = false;
+    }
+
     private void Start()
     {
         // Load saved volumes
