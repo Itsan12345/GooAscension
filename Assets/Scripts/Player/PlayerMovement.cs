@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -75,6 +76,13 @@ public class PlayerMovement : MonoBehaviour
 
     private const string KEY_PENDING_DEATH_RELOAD = "PendingDeathReload";
 
+    [Header("Flip Visuals")]
+    [Tooltip("If a Light2D is a child of the player, flip it when turning.")]
+    [SerializeField] private bool flipLight2D = true;
+
+    private Light2D[] light2DsToFlip;
+    private Vector3[] light2DBaseLocalEuler;
+
     [Header("Transformation")]
     [SerializeField] private float transformCost = 25f;
     [SerializeField] private int transformBlinkCount = 8;
@@ -111,6 +119,19 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerEnergy = GetComponent<PlayerEnergy>();
+
+        if (flipLight2D)
+        {
+            light2DsToFlip = GetComponentsInChildren<Light2D>(true);
+            light2DBaseLocalEuler = new Vector3[light2DsToFlip.Length];
+
+            for (int i = 0; i < light2DsToFlip.Length; i++)
+            {
+                var l = light2DsToFlip[i];
+                if (l != null)
+                    light2DBaseLocalEuler[i] = l.transform.localEulerAngles;
+            }
+        }
 
         // Level 1 dev mode: lock transformation on initial entry,
         // but DO NOT wipe unlock data on death reloads.
@@ -436,6 +457,24 @@ public class PlayerMovement : MonoBehaviour
         Quaternion rot = facingRight ? Quaternion.identity : Quaternion.Euler(0, 180, 0);
         if (humanAnimator != null) humanAnimator.transform.localRotation = rot;
         if (slimeAnimator  != null) slimeAnimator.transform.localRotation = rot;
+
+        if (flipLight2D && light2DsToFlip != null)
+        {
+            float yAdd = facingRight ? 0f : 180f;
+            for (int i = 0; i < light2DsToFlip.Length; i++)
+            {
+                Light2D l = light2DsToFlip[i];
+                if (l != null)
+                {
+                    Vector3 baseEuler = (light2DBaseLocalEuler != null && i < light2DBaseLocalEuler.Length)
+                        ? light2DBaseLocalEuler[i]
+                        : l.transform.localEulerAngles;
+
+                    // Preserve the original Z offset (and any X), and only flip around Y.
+                    l.transform.localRotation = Quaternion.Euler(baseEuler.x, baseEuler.y + yAdd, baseEuler.z);
+                }
+            }
+        }
     }
 
     

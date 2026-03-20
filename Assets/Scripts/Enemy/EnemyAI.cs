@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -43,6 +44,11 @@ public class EnemyAI : MonoBehaviour
     private bool movingRight = true;
     private bool waitingAtPatrolEnd = false;
     private float patrolWaitTimer;
+
+    // For correct 2D lighting with normal maps, flip sprites using SpriteRenderer.flipX
+    // instead of rotating the whole animator object (which can invert tangent space).
+    private SpriteRenderer[] spriteRenderersToFlip;
+    private bool[] baseFlipX;
     
     // Enemy collision avoidance
     private float lastCollisionTime = 0f;
@@ -55,6 +61,15 @@ public class EnemyAI : MonoBehaviour
         if (animatorObj != null)
         {
             anim = animatorObj.GetComponent<Animator>();
+
+            // Cache all renderers we need to mirror.
+            spriteRenderersToFlip = animatorObj.GetComponentsInChildren<SpriteRenderer>(true);
+            baseFlipX = new bool[spriteRenderersToFlip.Length];
+            for (int i = 0; i < spriteRenderersToFlip.Length; i++)
+            {
+                if (spriteRenderersToFlip[i] != null)
+                    baseFlipX[i] = spriteRenderersToFlip[i].flipX;
+            }
         }
         // Get the AttackPointTrigger from the attack point child
         if (attackPoint != null)
@@ -64,9 +79,28 @@ public class EnemyAI : MonoBehaviour
         }
         // Look for the player right at the start
         FindTargetPlayer();
+
+        // Apply initial facing visuals.
+        ApplySpriteFacing();
         
         // Initialize patrol points around starting position
         SetupPatrolArea(transform.position);
+    }
+
+    private void ApplySpriteFacing()
+    {
+        if (spriteRenderersToFlip == null || baseFlipX == null)
+            return;
+
+        for (int i = 0; i < spriteRenderersToFlip.Length; i++)
+        {
+            SpriteRenderer sr = spriteRenderersToFlip[i];
+            if (sr == null)
+                continue;
+
+            bool original = i < baseFlipX.Length ? baseFlipX[i] : false;
+            sr.flipX = facingRight ? original : !original;
+        }
     }
     
     private void SetupPatrolArea(Vector2 centerPosition)
@@ -256,9 +290,8 @@ public class EnemyAI : MonoBehaviour
     private void Flip()
     {
         facingRight = !facingRight;
-        animatorObj.localRotation = facingRight
-            ? Quaternion.Euler(0, 0, 0)
-            : Quaternion.Euler(0, 180, 0);
+        // Use flipX (not Y-rotation) so URP 2D normal-map lighting stays correct.
+        ApplySpriteFacing();
         UpdateAttackPointPosition();
     }
     

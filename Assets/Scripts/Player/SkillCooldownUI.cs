@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SkillCooldownUI : MonoBehaviour
 {
@@ -67,6 +68,29 @@ public class SkillCooldownUI : MonoBehaviour
 
     private void Awake()
     {
+        RefreshPlayerReferences();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Wait a couple frames so the new Player exists and its Awake/Start has run.
+        StartCoroutine(RebindNextFrames());
+    }
+
+    private System.Collections.IEnumerator RebindNextFrames()
+    {
+        yield return null;
+        yield return null;
         RefreshPlayerReferences();
     }
 
