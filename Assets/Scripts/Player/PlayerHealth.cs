@@ -109,6 +109,12 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player has died!");
 
+        // Mark that the upcoming scene reload is due to death.
+        // PlayerMovement can use this to avoid re-applying Level 1 dev locks
+        // and wiping the transform-unlock state mid-run.
+        PlayerPrefs.SetInt("PendingDeathReload", 1);
+        PlayerPrefs.Save();
+
         // Show game over text
         if (gameOverText != null)
             gameOverText.SetActive(true);
@@ -117,10 +123,10 @@ public class PlayerHealth : MonoBehaviour
         if (explosionPrefab != null)
             Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y, -1f), Quaternion.identity);
 
-        // Disable movement
+        // Lock out all input and stop any in-progress transformation
         var pm = GetComponent<PlayerMovement>();
         if (pm != null)
-            pm.EnableMovementAndJump(false);
+            pm.SetDead();
 
         // Disable hitboxes / visuals (children)
         foreach (Transform child in transform)

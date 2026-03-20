@@ -54,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Collision Detection")]
     [SerializeField] private float groundCheckDistance = 0.1f;
-    [SerializeField] private float ventCheckDistance = 1f;
+    [SerializeField] private float ventCheckDistance = 0.6f;
     [SerializeField] private LayerMask whatIsGround;
 
     private bool isGrounded;
@@ -70,12 +70,20 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isHuman;                 // Start as Slime (false)
     private bool canTransform;            // Enable after Code Fragment
+    private bool isDead;                  // Set on death; blocks all input and transformation
     private Vector2 preservedVelocity;
+
+    private const string KEY_PENDING_DEATH_RELOAD = "PendingDeathReload";
 
     [Header("Transformation")]
     [SerializeField] private float transformCost = 25f;
     [SerializeField] private int transformBlinkCount = 8;
     [SerializeField] private float transformBlinkInterval = 0.07f;
+
+    [Header("Level / Dev Settings")]
+    [Tooltip("Tick ON for Level 1. Resets the transform-unlock flag so the player always starts locked, " +
+             "regardless of what was saved in PlayerPrefs from a previous session.")]
+    [SerializeField] private bool lockTransformInThisScene = false;
 
     private bool isTransforming = false;
 
@@ -104,15 +112,31 @@ public class PlayerMovement : MonoBehaviour
     {
         playerEnergy = GetComponent<PlayerEnergy>();
 
-        // Restore transformation ability and last-used form from previous scene
+        // Level 1 dev mode: lock transformation on initial entry,
+        // but DO NOT wipe unlock data on death reloads.
+        bool isDeathReload = PlayerPrefs.GetInt(KEY_PENDING_DEATH_RELOAD, 0) == 1;
+
+        if (lockTransformInThisScene && !isDeathReload)
+        {
+            PlayerPrefs.SetInt("TransformUnlocked", 0);
+            PlayerPrefs.SetInt("PlayerIsHuman", 0);
+            PlayerPrefs.Save();
+        }
+
         bool transformUnlocked = PlayerPrefs.GetInt("TransformUnlocked", 0) == 1;
         bool wasHuman          = PlayerPrefs.GetInt("PlayerIsHuman", 0) == 1;
 
-        // Only restore human form if the ability was already unlocked
+        // Restore current form + ability from PlayerPrefs.
+        // If Level 1 cleared the prefs above, this will start as locked slime.
         SetForm(transformUnlocked && wasHuman);
+        canTransform = transformUnlocked;
 
-        if (transformUnlocked)
-            canTransform = true;
+        // Clear the marker after we used it, so the next (non-death) Level 1 entry locks again.
+        if (isDeathReload)
+        {
+            PlayerPrefs.SetInt(KEY_PENDING_DEATH_RELOAD, 0);
+            PlayerPrefs.Save();
+        }
 
         playerLayer = gameObject.layer;
         enemyLayer = LayerMask.NameToLayer(enemyLayerName);
@@ -138,6 +162,28 @@ public class PlayerMovement : MonoBehaviour
     {
         canJump = enable;
         canMove = enable;
+    }
+
+    /// <summary>
+    /// Called by PlayerHealth.Die(). Locks out all input and transformation
+    /// so the death sequence cannot be interrupted or corrupted.
+    /// </summary>
+    public void SetDead()
+    {
+        isDead  = true;
+        canMove = false;
+        canJump = false;
+
+        // Stop any in-progress transformation immediately so children stay disabled
+        // and PlayerPrefs is not overwritten with the wrong form.
+        if (isTransforming)
+        {
+            StopAllCoroutines();
+            isTransforming = false;
+
+            // Restore the form the player had before they started transforming
+            SetForm(isHuman);
+        }
     }
 
     public float GetDashCooldownRemaining()
@@ -173,12 +219,12 @@ public class PlayerMovement : MonoBehaviour
     // =========================================================
     private void HandleInput()
     {
+        if (isDead) return;
+
         xInput = Input.GetAxisRaw("Horizontal");
 
         if (Input.GetKeyDown(KeyCode.Space))
             TryToJump();
-
-       
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
             TryToDash();
@@ -443,6 +489,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void SwitchForm()
     {
+        if (isDead) return;
         if (isTransforming) return;
 
         // Prevent morphing while attacking or charging (e.g., charged sword/gun)
@@ -472,11 +519,6 @@ public class PlayerMovement : MonoBehaviour
 
         preservedVelocity = rb.linearVelocity;
 
-        // Sync hitbox positions before animation starts
-        Vector3 pos = rb.transform.position;
-        if (isHuman) slimeHitbox.transform.position = pos;
-        else humanHitbox.transform.position = pos;
-
         StartCoroutine(TransformCoroutine(!isHuman));
     }
 
@@ -490,6 +532,11 @@ public class PlayerMovement : MonoBehaviour
             canJump = false;
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         }
+
+        // Keep the player's "feet" at the same world Y when swapping between
+        // different hitboxes (human vs slime). Without this, different collider
+        // sizes/pivots can cause the player to appear below ground.
+        float feetYBefore = GetActiveHitboxFeetWorldY();
 
         // Cache both animators up front
         Animator humanAnim = humanAnimator.GetComponent<Animator>();
@@ -529,6 +576,10 @@ public class PlayerMovement : MonoBehaviour
         slimeAnimator.SetActive(!toHuman);
         humanAnimator.SetActive(toHuman);
 
+        // After enabling the new hitbox, align the new collider bottom to where
+        // the old collider bottom was.
+        AlignFeetToWorldY(feetYBefore);
+
         // Save current form so the next scene restores it correctly
         PlayerPrefs.SetInt("PlayerIsHuman", toHuman ? 1 : 0);
         PlayerPrefs.Save();
@@ -550,6 +601,42 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerEnergy != null)
             playerEnergy.SpendEnergy(transformCost);
+    }
+
+    private float GetActiveHitboxFeetWorldY()
+    {
+        GameObject hb = isHuman ? humanHitbox : slimeHitbox;
+        if (hb == null)
+            return rb != null ? rb.position.y : transform.position.y;
+
+        Collider2D col = hb.GetComponentInChildren<Collider2D>();
+        if (col == null)
+            return rb != null ? rb.position.y : transform.position.y;
+
+        return col.bounds.min.y;
+    }
+
+    private void AlignFeetToWorldY(float targetFeetY)
+    {
+        if (rb == null)
+            return;
+
+        GameObject hb = isHuman ? humanHitbox : slimeHitbox;
+        if (hb == null)
+            return;
+
+        Collider2D col = hb.GetComponentInChildren<Collider2D>();
+        if (col == null)
+            return;
+
+        float currentFeetY = col.bounds.min.y;
+        float delta = targetFeetY - currentFeetY;
+
+        // Avoid tiny jitter due to bounds precision.
+        if (Mathf.Abs(delta) < 0.0001f)
+            return;
+
+        rb.position = rb.position + Vector2.up * delta;
     }
 
     private void SetForm(bool human)

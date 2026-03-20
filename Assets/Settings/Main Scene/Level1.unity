@@ -38631,6 +38631,10 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3055725872363073182, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+      propertyPath: lockTransformInThisScene
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3348761552033424659, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: m_Name
       value: Player
@@ -38651,6 +38655,10 @@ PrefabInstance:
       propertyPath: soundEffectLibrary
       value: 
       objectReference: {fileID: 242710318}
+    - target: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+      propertyPath: weaponSwitchCooldown
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: chargeLoopAudioSource
       value: 

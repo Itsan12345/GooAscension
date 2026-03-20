@@ -60,21 +60,37 @@ public class InGameSettingsMenu : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    /// <summary>
+    /// Finds "SettingsPanel" by name, including inactive GameObjects and
+    /// objects that live in the DontDestroyOnLoad scene.
+    /// Regular GameObject.Find() silently skips inactive objects.
+    /// </summary>
+    private static GameObject FindPanelByName(string panelName)
+    {
+        // Fast path: active objects (includes DontDestroyOnLoad scene)
+        GameObject found = GameObject.Find(panelName);
+        if (found != null) return found;
+
+        // Slow path: search every loaded object including inactive ones
+        foreach (GameObject go in Resources.FindObjectsOfTypeAll<GameObject>())
+        {
+            // scene.IsValid() filters out prefab assets sitting in memory
+            if (go.name == panelName && go.scene.IsValid())
+                return go;
+        }
+        return null;
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Re-find the settings panel by name in case the reference was lost
+        // Re-find the settings panel in case the reference was lost on reload
         if (settingsPanel == null)
         {
-            GameObject found = GameObject.Find("SettingsPanel");
-            if (found != null)
-            {
-                settingsPanel = found;
+            settingsPanel = FindPanelByName("SettingsPanel");
+            if (settingsPanel != null)
                 Debug.Log("[InGameSettingsMenu] SettingsPanel re-found after scene load.");
-            }
             else
-            {
                 Debug.LogWarning("[InGameSettingsMenu] SettingsPanel not found in scene.");
-            }
         }
 
         // Always close and reset when entering a new scene
@@ -92,7 +108,7 @@ public class InGameSettingsMenu : MonoBehaviour
         // Auto-find the panel by name if not assigned in the Inspector
         if (settingsPanel == null)
         {
-            settingsPanel = GameObject.Find("SettingsPanel");
+            settingsPanel = FindPanelByName("SettingsPanel");
             if (settingsPanel == null)
                 Debug.LogError("[InGameSettingsMenu] 'settingsPanel' is not assigned and no GameObject named 'SettingsPanel' was found. Escape key will not show the menu.");
             else
