@@ -380,16 +380,16 @@ public class PlayerMovement : MonoBehaviour
     private void Flip()
     {
         facingRight = !facingRight;
+        ApplyFacingRotation();
+    }
 
-        // Use rotation instead of scale so your 2D lights and UI don't break!
-        if (facingRight)
-        {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-        }
-        else
-        {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
-        }
+    // Rotates only the visual animator children so the root transform stays
+    // at zero rotation — this keeps minimap icons and other root children unaffected.
+    private void ApplyFacingRotation()
+    {
+        Quaternion rot = facingRight ? Quaternion.identity : Quaternion.Euler(0, 180, 0);
+        if (humanAnimator != null) humanAnimator.transform.localRotation = rot;
+        if (slimeAnimator  != null) slimeAnimator.transform.localRotation = rot;
     }
 
     
@@ -573,14 +573,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ApplyFacingDirection()
     {
-        Transform animObj = isHuman
-            ? (humanAnimator != null ? humanAnimator.transform : null)
-            : (slimeAnimator  != null ? slimeAnimator.transform  : null);
-
-        if (animObj != null)
-            animObj.localRotation = facingRight
-                ? Quaternion.Euler(0, 0, 0)
-                : Quaternion.Euler(0, 180, 0);
+        ApplyFacingRotation();
     }
 
     // =========================================================
