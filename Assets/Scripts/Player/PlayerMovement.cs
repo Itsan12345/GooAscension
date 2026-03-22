@@ -105,7 +105,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float humanWeight = 5f;    // downward clamp for human
     [SerializeField] private float waterDrag = 2f;
 
+    [Tooltip("Also used if a water volume is tagged wrong but placed on the Water layer.")]
+    [SerializeField] private string waterLayerName = "Water";
+
+    [Tooltip("Logs trigger overlap, water checks, and slime buoyancy. Disable when done debugging.")]
+    [SerializeField] private bool debugWaterPhysics = true;
+
+    [SerializeField, Min(0.1f)]
+    private float waterDebugLogInterval = 0.5f;
+
+    private int waterLayerIndex = -1;
     private bool isInWater;
+    private float waterDebugNextLogTime;
 
     // =========================================================
     // Knockback
@@ -164,6 +175,18 @@ public class PlayerMovement : MonoBehaviour
 
         if (enemyLayer == -1)
             Debug.LogError($"Enemy layer '{enemyLayerName}' does not exist. Create it in Layers.");
+
+        waterLayerIndex = LayerMask.NameToLayer(waterLayerName);
+        if (waterLayerIndex == -1)
+            Debug.LogWarning($"Water layer '{waterLayerName}' does not exist. Water triggers must use tag \"Water\".");
+
+        if (debugWaterPhysics)
+        {
+            Debug.Log(
+                $"[WaterDebug] Awake '{gameObject.name}': rb={(rb != null ? "OK" : "NULL")}, " +
+                $"waterLayerIndex={waterLayerIndex} ('{waterLayerName}'), isHuman={isHuman}. " +
+                $"OnTrigger* must run on this same GameObject as Rigidbody2D for water to register.");
+        }
     }
 
     private void Update()
@@ -490,29 +513,91 @@ public class PlayerMovement : MonoBehaviour
         if (!isHuman)
         {
             rb.AddForce(Vector2.up * slimeBuoyancy);
+
+            if (debugWaterPhysics && Time.time >= waterDebugNextLogTime)
+            {
+                waterDebugNextLogTime = Time.time + waterDebugLogInterval;
+                Debug.Log(
+                    $"[WaterDebug] Slime buoyancy tick: vel={rb.linearVelocity}, buoyancy={slimeBuoyancy}, " +
+                    $"drag={rb.linearDamping}, gravityScale={rb.gravityScale}");
+            }
         }
         else
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Max(rb.linearVelocity.y, -humanWeight));
+
+            if (debugWaterPhysics && Time.time >= waterDebugNextLogTime)
+            {
+                waterDebugNextLogTime = Time.time + waterDebugLogInterval;
+                Debug.Log(
+                    $"[WaterDebug] Human in water: vel={rb.linearVelocity}, humanWeightClamp={-humanWeight}");
+            }
         }
+    }
+
+    /// <summary>
+    /// Matches tag "Water" or the configured water physics layer (default name "Water").
+    /// Prefabs like WaterReflection must be tagged or layered consistently or triggers never fire.
+    /// </summary>
+    private bool IsWaterVolume(Collider2D collision)
+    {
+        if (collision == null)
+            return false;
+        if (collision.CompareTag("Water"))
+            return true;
+        if (waterLayerIndex >= 0 && collision.gameObject.layer == waterLayerIndex)
+            return true;
+        return false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Water"))
+        if (debugWaterPhysics)
+        {
+            bool isWater = IsWaterVolume(collision);
+            Debug.Log(
+                $"[WaterDebug] OnTriggerEnter2D: other='{collision.name}' tag={collision.tag} " +
+                $"layer={collision.gameObject.layer} ({LayerMask.LayerToName(collision.gameObject.layer)}) " +
+                $"isWaterVolume={isWater} rbNull={rb == null}");
+        }
+
+        if (rb == null)
+        {
+            if (debugWaterPhysics)
+                Debug.LogError("[WaterDebug] Rigidbody2D is null — movement/water cannot run. Put Rigidbody2D on the same GameObject as PlayerMovement.");
+            return;
+        }
+
+        if (!IsWaterVolume(collision))
             return;
 
         isInWater = true;
         rb.linearDamping = waterDrag;
+
+        if (debugWaterPhysics)
+            Debug.Log($"[WaterDebug] Entered water. isHuman={isHuman}, linearDamping set to {waterDrag}");
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Water"))
+        if (debugWaterPhysics)
+        {
+            Debug.Log(
+                $"[WaterDebug] OnTriggerExit2D: other='{collision.name}' tag={collision.tag} " +
+                $"isWaterVolume={IsWaterVolume(collision)}");
+        }
+
+        if (rb == null)
+            return;
+
+        if (!IsWaterVolume(collision))
             return;
 
         isInWater = false;
         rb.linearDamping = 0f;
+
+        if (debugWaterPhysics)
+            Debug.Log("[WaterDebug] Exited water. linearDamping reset to 0.");
     }
 
     // =========================================================
