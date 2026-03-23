@@ -6709,7 +6709,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -410922877
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_RenderMode: 0
@@ -18943,7 +18943,7 @@ SortingGroup:
   m_GameObject: {fileID: 1305327381}
   m_Enabled: 1
   m_SortingLayerID: 155372963
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 2
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
@@ -19296,7 +19296,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -410922877
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 10
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -20908,7 +20908,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 155372963
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5217025926233733535, guid: 1df4f44c9f8c26d4eaedcae3ecc67d90, type: 3}
@@ -21288,7 +21288,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -410922877
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}

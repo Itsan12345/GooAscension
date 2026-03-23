@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 853782197863115917}
   - component: {fileID: 6088811353553307948}
   - component: {fileID: 3733502671583585235}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MechBoss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6088811353553307948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,21 +91,25 @@ MonoBehaviour:
   loseTargetRadius: 18
   waterLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 16
   waterCheckDistance: 1.2
   waterCheckHeightOffset: 0
   meleeDamage: 20
   meleeAttackRange: 2.5
   meleeAttackCooldown: 2
   meleeAttackRadius: 2
+  meleeHitDelay: 0.12
+  meleeTelegraph: {fileID: 0}
+  meleeTelegraphDuration: 0.8
   laserDamage: 15
   laserAttackRange: 10
   laserAttackCooldown: 3
   laserProjectileSpeed: 9
-  stompDamage: 25
-  stompRadius: 3
-  stompCooldown: 6
   phase2AttackSpeedMultiplier: 1.4
+  glowDuration: 5
+  glowWindupDuration: 0.8
+  glowCooldown: 18
+  glowTintColor: {r: 1, g: 0.85, b: 0.3, a: 1}
   bossStaggerDuration: 1
   parryKnockbackForce: 12
   knockbackFreeTime: 0.2
@@ -136,6 +140,16 @@ MonoBehaviour:
   deathAnimationDuration: 2
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.12
+  bloodImpactPrefab: {fileID: 0}
+  bloodImpactTemplateName: BloodImpact_Medium
+  bloodSpawnOffset: {x: 0, y: 1.1}
+  bloodSpawnZ: -0.5
+  bloodSpawnJitter: 0.28
+  bloodSpawnMinInterval: 0.08
+  blockedAudioSource: {fileID: 0}
+  blockedSoundClip: {fileID: 0}
+  blockedShakeDuration: 0.15
+  blockedShakeMagnitude: 0.1
 --- !u!1 &3158602397636785859
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,7 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2700579329267460422}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LaserFirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +193,7 @@ GameObject:
   - component: {fileID: 3188058809760579113}
   - component: {fileID: 4360971043778917529}
   - component: {fileID: 5350379734215771474}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BossAnimator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +317,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2479729896560480249}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MeleeAttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
