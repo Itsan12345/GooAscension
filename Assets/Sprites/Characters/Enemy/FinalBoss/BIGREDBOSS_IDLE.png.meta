@@ -1,40 +1,40 @@
 fileFormatVersion: 2
-guid: 2557d6c9c86e991428498d9b459fb8dd
+guid: c7f132f2cde7e074e9f2a1611c8ed3d7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5194146729559630886
-    second: SlimeHumanMove_0
+      213: 7861422438586385470
+    second: BIGREDBOSS_IDLE_0
   - first:
-      213: 8279217865470814181
-    second: SlimeHumanMove_1
+      213: 8045802418964897251
+    second: BIGREDBOSS_IDLE_1
   - first:
-      213: -5663077242138544379
-    second: SlimeHumanMove_2
+      213: 6943728679883702552
+    second: BIGREDBOSS_IDLE_2
   - first:
-      213: -6372183318976790346
-    second: SlimeHumanMove_3
+      213: -5902161455506519615
+    second: BIGREDBOSS_IDLE_3
   - first:
-      213: 6945443264448184646
-    second: SlimeHumanMove_4
+      213: 3847971007431006723
+    second: BIGREDBOSS_IDLE_4
   - first:
-      213: 4988668976022533005
-    second: SlimeHumanMove_5
+      213: 9209779869922811817
+    second: BIGREDBOSS_IDLE_5
   - first:
-      213: -2169852088047746922
-    second: SlimeHumanMove_6
+      213: 703798838883131976
+    second: BIGREDBOSS_IDLE_6
   - first:
-      213: 7061643342648488544
-    second: SlimeHumanMove_7
+      213: -5710514184785582022
+    second: BIGREDBOSS_IDLE_7
   - first:
-      213: 6144169001730601931
-    second: SlimeHumanMove_8
+      213: 5198886396386969452
+    second: BIGREDBOSS_IDLE_8
   - first:
-      213: -814271240244851794
-    second: SlimeHumanMove_9
+      213: -7197361151435680589
+    second: BIGREDBOSS_IDLE_9
   - first:
-      213: -4778094570359344699
-    second: SlimeHumanMove_10
+      213: 5649566687831889761
+    second: BIGREDBOSS_IDLE_10
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -81,7 +81,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 28
+  spritePixelsToUnits: 35
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -130,13 +130,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanMove_0
+      name: BIGREDBOSS_IDLE_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 0
-        width: 44
-        height: 63
+        x: 63
+        y: 2480
+        width: 209
+        height: 132
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,184 +145,228 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: adb5759b11faae7b0800000000000000
-      internalID: -5194146729559630886
+      spriteID: e340a396e02691d60800000000000000
+      internalID: 7861422438586385470
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_1
+      name: BIGREDBOSS_IDLE_1
       rect:
         serializedVersion: 2
-        x: 76
-        y: 0
-        width: 38
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5e7a47198c0b5e270800000000000000
-      internalID: 8279217865470814181
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_3
-      rect:
-        serializedVersion: 2
-        x: 141
-        y: 0
-        width: 32
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6b008bc58057197a0800000000000000
-      internalID: -6372183318976790346
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_4
-      rect:
-        serializedVersion: 2
-        x: 199
-        y: 0
-        width: 41
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6414019b9db236060800000000000000
-      internalID: 6945443264448184646
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_5
-      rect:
-        serializedVersion: 2
-        x: 261
-        y: 0
-        width: 46
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d83b5d9a0005b3540800000000000000
-      internalID: 4988668976022533005
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_6
-      rect:
-        serializedVersion: 2
-        x: 326
-        y: 0
-        width: 43
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 69046c4b50323e1e0800000000000000
-      internalID: -2169852088047746922
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_7
-      rect:
-        serializedVersion: 2
-        x: 391
-        y: 0
-        width: 41
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 062b019b43ffff160800000000000000
-      internalID: 7061643342648488544
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_9
-      rect:
-        serializedVersion: 2
-        x: 461
-        y: 0
-        width: 32
-        height: 63
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eab83660f9023b4f0800000000000000
-      internalID: -814271240244851794
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: SlimeHumanMove_10
-      rect:
-        serializedVersion: 2
-        x: 524
-        y: 0
-        width: 38
-        height: 63
+        x: 64
+        y: 2232
+        width: 209
+        height: 132
       alignment: 9
-      pivot: {x: 0.5, y: 0.53}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c1328ebd4cc0bdb0800000000000000
-      internalID: -4778094570359344699
+      spriteID: 3ed916bebae68af60800000000000000
+      internalID: 8045802418964897251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_2
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 1984
+        width: 219
+        height: 132
+      alignment: 9
+      pivot: {x: 0.48, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8110925e1741d5060800000000000000
+      internalID: 6943728679883702552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_3
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1736
+        width: 223
+        height: 132
+      alignment: 9
+      pivot: {x: 0.46, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c9088d5d6f471ea0800000000000000
+      internalID: -5902161455506519615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_4
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 1488
+        width: 232
+        height: 132
+      alignment: 9
+      pivot: {x: 0.46, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30a5deb6e3db66530800000000000000
+      internalID: 3847971007431006723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_5
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 1240
+        width: 223
+        height: 132
+      alignment: 9
+      pivot: {x: 0.465, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9afda460ff5bfcf70800000000000000
+      internalID: 9209779869922811817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_6
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 992
+        width: 217
+        height: 132
+      alignment: 9
+      pivot: {x: 0.48, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84226f8a05564c900800000000000000
+      internalID: 703798838883131976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_7
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 744
+        width: 220
+        height: 132
+      alignment: 9
+      pivot: {x: 0.49, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a38a603ca9d20c0b0800000000000000
+      internalID: -5710514184785582022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_8
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 496
+        width: 219
+        height: 132
+      alignment: 9
+      pivot: {x: 0.48, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c678144f1a7262840800000000000000
+      internalID: 5198886396386969452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_9
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 248
+        width: 219
+        height: 132
+      alignment: 9
+      pivot: {x: 0.49, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b4da708a26dd1c90800000000000000
+      internalID: -7197361151435680589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_IDLE_10
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 0
+        width: 209
+        height: 132
+      alignment: 9
+      pivot: {x: 0.51, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 167991b48fa476e40800000000000000
+      internalID: 5649566687831889761
       vertices: []
       indices: 
       edges: []
@@ -331,7 +375,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d06a80de84a956b4bb04f0e051ca9b96
+    spriteID: 534e86539641cd7408bfc7ad223a2dfc
     internalID: 0
     vertices: []
     indices: 
@@ -341,17 +385,17 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanMove_0: -5194146729559630886
-      SlimeHumanMove_1: 8279217865470814181
-      SlimeHumanMove_10: -4778094570359344699
-      SlimeHumanMove_2: -5663077242138544379
-      SlimeHumanMove_3: -6372183318976790346
-      SlimeHumanMove_4: 6945443264448184646
-      SlimeHumanMove_5: 4988668976022533005
-      SlimeHumanMove_6: -2169852088047746922
-      SlimeHumanMove_7: 7061643342648488544
-      SlimeHumanMove_8: 6144169001730601931
-      SlimeHumanMove_9: -814271240244851794
+      BIGREDBOSS_IDLE_0: 7861422438586385470
+      BIGREDBOSS_IDLE_1: 8045802418964897251
+      BIGREDBOSS_IDLE_10: 5649566687831889761
+      BIGREDBOSS_IDLE_2: 6943728679883702552
+      BIGREDBOSS_IDLE_3: -5902161455506519615
+      BIGREDBOSS_IDLE_4: 3847971007431006723
+      BIGREDBOSS_IDLE_5: 9209779869922811817
+      BIGREDBOSS_IDLE_6: 703798838883131976
+      BIGREDBOSS_IDLE_7: -5710514184785582022
+      BIGREDBOSS_IDLE_8: 5198886396386969452
+      BIGREDBOSS_IDLE_9: -7197361151435680589
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

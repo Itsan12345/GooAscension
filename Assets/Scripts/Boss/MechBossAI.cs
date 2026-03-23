@@ -1,8 +1,43 @@
+
 using System.Collections;
 using UnityEngine;
 
+
 public class MechBossAI : MonoBehaviour
 {
+    // ...existing fields...
+
+    // ...existing fields...
+
+    /// <summary>
+    /// Called by MechBossHealth after taking damage to randomly trigger a defensive state.
+    /// </summary>
+    public void TryTriggerDefensiveStates()
+    {
+        // If any defensive state is already active, do not trigger another
+        if (isImmune || isArmorBuffed || isBlocking)
+            return;
+
+        float roll = Random.value;
+        if (roll < immuneChance)
+        {
+            SetImmune(true, Random.Range(immuneMinDuration, immuneMaxDuration));
+            return;
+        }
+        roll -= immuneChance;
+        if (roll < armorBuffChance)
+        {
+            SetArmorBuff(true, Random.Range(armorBuffMinDuration, armorBuffMaxDuration));
+            return;
+        }
+        roll -= armorBuffChance;
+        if (roll < blockChance)
+        {
+            SetBlock(true, Random.Range(blockMinDuration, blockMaxDuration));
+            return;
+        }
+        // No state triggered
+    }
     [Header("References")]
     [SerializeField] private Transform animatorObj;
     [SerializeField] private LayerMask groundLayer;
@@ -16,6 +51,46 @@ public class MechBossAI : MonoBehaviour
     private Animator anim;
     private Transform player;
     private MechBossHealth bossHealth;
+
+    [Header("Movement")]
+
+    [Header("Detection")]
+
+    [Header("Water Avoidance")]
+
+    [Header("Melee Attack")]
+
+    [Header("Laser Attack")]
+
+    [Header("Phase 2 Settings")]
+
+    [Header("Boss Glow Settings")]
+
+    // State
+
+    // Parry / Stagger State
+
+
+    // Defensive Mechanics
+    [Header("Defensive Mechanics")]
+    [SerializeField] private float immuneMinDuration = 1f;
+    [SerializeField] private float immuneMaxDuration = 2f;
+    [SerializeField] private float armorBuffMinDuration = 2f;
+    [SerializeField] private float armorBuffMaxDuration = 3f;
+    [SerializeField] private float blockMinDuration = 1f;
+    [SerializeField] private float blockMaxDuration = 2f;
+    [SerializeField, Range(0f, 1f)] private float immuneChance = 0.33f;
+    [SerializeField, Range(0f, 1f)] private float armorBuffChance = 0.33f;
+    [SerializeField, Range(0f, 1f)] private float blockChance = 0.33f;
+    private bool isImmune = false;
+    private bool isArmorBuffed = false;
+    private bool isBlocking = false;
+    private float immuneTimer = 0f;
+    private float armorBuffTimer = 0f;
+    private float blockTimer = 0f;
+    public bool IsImmune => isImmune;
+    public bool IsArmorBuffed => isArmorBuffed;
+    public bool IsBlocking => isBlocking;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 2.5f;
@@ -208,6 +283,52 @@ public class MechBossAI : MonoBehaviour
         return health;
     }
 
+    // Setters for defensive states
+    public void SetImmune(bool value, float duration = 0f)
+    {
+        isImmune = value;
+        if (isImmune)
+        {
+            immuneTimer = duration > 0f ? duration : immuneMaxDuration;
+        }
+        else
+        {
+            immuneTimer = 0f;
+        }
+        if (anim != null)
+            anim.SetBool("immune", isImmune);
+    }
+
+    public void SetArmorBuff(bool value, float duration = 0f)
+    {
+        isArmorBuffed = value;
+        if (isArmorBuffed)
+        {
+            armorBuffTimer = duration > 0f ? duration : armorBuffMaxDuration;
+        }
+        else
+        {
+            armorBuffTimer = 0f;
+        }
+        if (anim != null)
+            anim.SetBool("armorBuff", isArmorBuffed);
+    }
+
+    public void SetBlock(bool value, float duration = 0f)
+    {
+        isBlocking = value;
+        if (isBlocking)
+        {
+            blockTimer = duration > 0f ? duration : blockMaxDuration;
+        }
+        else
+        {
+            blockTimer = 0f;
+        }
+        if (anim != null)
+            anim.SetBool("block", isBlocking);
+    }
+
     private void Update()
     {
         // Handle stagger from parry
@@ -235,6 +356,33 @@ public class MechBossAI : MonoBehaviour
             UpdateAnimations();
             return;
         }
+
+        // Defensive state timers
+        if (isImmune)
+        {
+            immuneTimer -= Time.deltaTime;
+            if (immuneTimer <= 0f)
+            {
+                SetImmune(false);
+            }
+        }
+        if (isArmorBuffed)
+        {
+            armorBuffTimer -= Time.deltaTime;
+            if (armorBuffTimer <= 0f)
+            {
+                SetArmorBuff(false);
+            }
+        }
+        if (isBlocking)
+        {
+            blockTimer -= Time.deltaTime;
+            if (blockTimer <= 0f)
+            {
+                SetBlock(false);
+            }
+        }
+
 
         CheckGrounded();
         CheckPlayerDetection();

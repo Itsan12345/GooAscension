@@ -1,40 +1,37 @@
 fileFormatVersion: 2
-guid: 2557d6c9c86e991428498d9b459fb8dd
+guid: 4ab6c066e856c0b40911558a500fdbb1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5194146729559630886
-    second: SlimeHumanMove_0
+      213: 4005516451000857100
+    second: BIGREDBOSS_MOVE_0
   - first:
-      213: 8279217865470814181
-    second: SlimeHumanMove_1
+      213: 2214861216970031590
+    second: BIGREDBOSS_MOVE_1
   - first:
-      213: -5663077242138544379
-    second: SlimeHumanMove_2
+      213: -6446696318095038068
+    second: BIGREDBOSS_MOVE_2
   - first:
-      213: -6372183318976790346
-    second: SlimeHumanMove_3
+      213: 1936585175485270666
+    second: BIGREDBOSS_MOVE_3
   - first:
-      213: 6945443264448184646
-    second: SlimeHumanMove_4
+      213: 1261176500717606868
+    second: BIGREDBOSS_MOVE_4
   - first:
-      213: 4988668976022533005
-    second: SlimeHumanMove_5
+      213: -8374133116984137954
+    second: BIGREDBOSS_MOVE_5
   - first:
-      213: -2169852088047746922
-    second: SlimeHumanMove_6
+      213: 5704542521181944137
+    second: BIGREDBOSS_MOVE_6
   - first:
-      213: 7061643342648488544
-    second: SlimeHumanMove_7
+      213: -9146973896591696721
+    second: BIGREDBOSS_MOVE_7
   - first:
-      213: 6144169001730601931
-    second: SlimeHumanMove_8
+      213: -885429814209292907
+    second: BIGREDBOSS_MOVE_8
   - first:
-      213: -814271240244851794
-    second: SlimeHumanMove_9
-  - first:
-      213: -4778094570359344699
-    second: SlimeHumanMove_10
+      213: -4465135205852077427
+    second: BIGREDBOSS_MOVE_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -81,7 +78,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 28
+  spritePixelsToUnits: 35
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -130,13 +127,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SlimeHumanMove_0
+      name: BIGREDBOSS_MOVE_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 0
-        width: 44
-        height: 63
+        x: 46
+        y: 2241
+        width: 246
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +142,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: adb5759b11faae7b0800000000000000
-      internalID: -5194146729559630886
+      spriteID: c02b3e37df3769730800000000000000
+      internalID: 4005516451000857100
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_1
+      name: BIGREDBOSS_MOVE_1
       rect:
         serializedVersion: 2
-        x: 76
-        y: 0
-        width: 38
-        height: 63
+        x: 91
+        y: 1989
+        width: 190
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,20 +164,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5e7a47198c0b5e270800000000000000
-      internalID: 8279217865470814181
+      spriteID: 6e1c940ca84ccbe10800000000000000
+      internalID: 2214861216970031590
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_3
+      name: BIGREDBOSS_MOVE_2
       rect:
         serializedVersion: 2
-        x: 141
-        y: 0
-        width: 32
-        height: 63
+        x: 97
+        y: 1740
+        width: 149
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -189,20 +186,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6b008bc58057197a0800000000000000
-      internalID: -6372183318976790346
+      spriteID: c896021dadbb886a0800000000000000
+      internalID: -6446696318095038068
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_4
+      name: BIGREDBOSS_MOVE_3
       rect:
         serializedVersion: 2
-        x: 199
-        y: 0
-        width: 41
-        height: 63
+        x: 97
+        y: 1490
+        width: 154
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -211,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6414019b9db236060800000000000000
-      internalID: 6945443264448184646
+      spriteID: a8a4616e4f120ea10800000000000000
+      internalID: 1936585175485270666
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_5
+      name: BIGREDBOSS_MOVE_4
       rect:
         serializedVersion: 2
-        x: 261
-        y: 0
-        width: 46
-        height: 63
+        x: 62
+        y: 1242
+        width: 252
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -233,20 +230,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d83b5d9a0005b3540800000000000000
-      internalID: 4988668976022533005
+      spriteID: 4d7d75c6859908110800000000000000
+      internalID: 1261176500717606868
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_6
+      name: BIGREDBOSS_MOVE_5
       rect:
         serializedVersion: 2
-        x: 326
-        y: 0
-        width: 43
-        height: 63
+        x: 40
+        y: 994
+        width: 234
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -255,20 +252,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69046c4b50323e1e0800000000000000
-      internalID: -2169852088047746922
+      spriteID: e1763545c4a19cb80800000000000000
+      internalID: -8374133116984137954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_7
+      name: BIGREDBOSS_MOVE_6
       rect:
         serializedVersion: 2
-        x: 391
-        y: 0
-        width: 41
-        height: 63
+        x: 92
+        y: 744
+        width: 182
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -277,20 +274,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 062b019b43ffff160800000000000000
-      internalID: 7061643342648488544
+      spriteID: 9493925f23b9a2f40800000000000000
+      internalID: 5704542521181944137
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_9
+      name: BIGREDBOSS_MOVE_7
       rect:
         serializedVersion: 2
-        x: 461
-        y: 0
-        width: 32
-        height: 63
+        x: 97
+        y: 497
+        width: 157
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -299,30 +296,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eab83660f9023b4f0800000000000000
-      internalID: -814271240244851794
+      spriteID: fac91eb24bb6f0180800000000000000
+      internalID: -9146973896591696721
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SlimeHumanMove_10
+      name: BIGREDBOSS_MOVE_8
       rect:
         serializedVersion: 2
-        x: 524
-        y: 0
-        width: 38
-        height: 63
-      alignment: 9
-      pivot: {x: 0.5, y: 0.53}
+        x: 97
+        y: 251
+        width: 103
+        height: 138
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5c1328ebd4cc0bdb0800000000000000
-      internalID: -4778094570359344699
+      spriteID: 595d382764256b3f0800000000000000
+      internalID: -885429814209292907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_MOVE_9
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 3
+        width: 198
+        height: 138
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d82a8150037a802c0800000000000000
+      internalID: -4465135205852077427
       vertices: []
       indices: 
       edges: []
@@ -331,7 +350,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: d06a80de84a956b4bb04f0e051ca9b96
+    spriteID: ce04fde4728ad2247a92f023cd0b5326
     internalID: 0
     vertices: []
     indices: 
@@ -341,17 +360,16 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SlimeHumanMove_0: -5194146729559630886
-      SlimeHumanMove_1: 8279217865470814181
-      SlimeHumanMove_10: -4778094570359344699
-      SlimeHumanMove_2: -5663077242138544379
-      SlimeHumanMove_3: -6372183318976790346
-      SlimeHumanMove_4: 6945443264448184646
-      SlimeHumanMove_5: 4988668976022533005
-      SlimeHumanMove_6: -2169852088047746922
-      SlimeHumanMove_7: 7061643342648488544
-      SlimeHumanMove_8: 6144169001730601931
-      SlimeHumanMove_9: -814271240244851794
+      BIGREDBOSS_MOVE_0: 4005516451000857100
+      BIGREDBOSS_MOVE_1: 2214861216970031590
+      BIGREDBOSS_MOVE_2: -6446696318095038068
+      BIGREDBOSS_MOVE_3: 1936585175485270666
+      BIGREDBOSS_MOVE_4: 1261176500717606868
+      BIGREDBOSS_MOVE_5: -8374133116984137954
+      BIGREDBOSS_MOVE_6: 5704542521181944137
+      BIGREDBOSS_MOVE_7: -9146973896591696721
+      BIGREDBOSS_MOVE_8: -885429814209292907
+      BIGREDBOSS_MOVE_9: -4465135205852077427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

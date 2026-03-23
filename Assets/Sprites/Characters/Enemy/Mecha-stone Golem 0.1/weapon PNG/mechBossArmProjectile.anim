@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MeleeAttack
+  m_Name: mechBossArmProjectile
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,25 +21,19 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 250336590424882049, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - time: 0.1
-      value: {fileID: 9045868289050147091, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
+      value: {fileID: 959987844630726459, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
     - time: 0.2
-      value: {fileID: 5162489290143405782, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - time: 0.3
-      value: {fileID: -7118986585471239432, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
+      value: {fileID: 8066067344937695706, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
     - time: 0.4
-      value: {fileID: -6767465236375707607, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - time: 0.5
-      value: {fileID: -5921279112560920671, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
+      value: {fileID: 8081469474457304709, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
     - time: 0.6
-      value: {fileID: 6483820714161112200, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
+      value: {fileID: -4212147560741854503, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 10
+  m_SampleRate: 5
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -56,19 +50,16 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 250336590424882049, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: 9045868289050147091, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: 5162489290143405782, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: -7118986585471239432, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: -6767465236375707607, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: -5921279112560920671, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
-    - {fileID: 6483820714161112200, guid: 1b994faa7a3a4ed478528fb4b7829674, type: 3}
+    - {fileID: 959987844630726459, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
+    - {fileID: 8066067344937695706, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
+    - {fileID: 8081469474457304709, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
+    - {fileID: -4212147560741854503, guid: f6371939da4ea9f49a3cdebc70f9c07b, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.70000005
+    m_StopTime: 0.8
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -87,11 +78,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.6
-    functionName: DamageMelee
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

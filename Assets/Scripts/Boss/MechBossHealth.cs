@@ -1,9 +1,18 @@
+
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+// For interface compliance
 public class MechBossHealth : MonoBehaviour, IDamageable
 {
+    public void TakeDamage(float damage)
+    {
+        // Default to ranged=false, melee=false for generic calls
+        TakeDamage(damage, false, false);
+    }
+
+// ...existing code...
     [Header("Health")]
     [SerializeField] private float maxHealth = 500f;
     private float currentHealth;
@@ -104,16 +113,44 @@ public class MechBossHealth : MonoBehaviour, IDamageable
         UpdateWorldHealthBarPosition();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool isRanged = false, bool isMelee = false)
     {
         if (dead) return;
 
-        // Boss is immune during the Glow phase — play blocked feedback and bail
+        // Defensive state checks (priority: immune > block > armorBuff)
+        if (bossAI != null)
+        {
+            bossAI.TryTriggerDefensiveStates();
+            // Immune blocks ALL damage (melee and ranged)
+            if (bossAI.IsImmune)
+            {
+                if (blockedAudioSource != null && blockedSoundClip != null)
+                    blockedAudioSource.PlayOneShot(blockedSoundClip);
+                ScreenShake.Trigger(blockedShakeDuration, blockedShakeMagnitude);
+                Debug.Log("[MechBoss] Hit blocked — boss is immune.");
+                return;
+            }
+            // Block blocks melee only
+            if (bossAI.IsBlocking && isMelee)
+            {
+                if (blockedAudioSource != null && blockedSoundClip != null)
+                    blockedAudioSource.PlayOneShot(blockedSoundClip);
+                ScreenShake.Trigger(blockedShakeDuration, blockedShakeMagnitude);
+                Debug.Log("[MechBoss] Melee hit blocked — boss is blocking.");
+                return;
+            }
+            // ArmorBuff reduces all damage
+            if (bossAI.IsArmorBuffed)
+            {
+                damage *= 0.5f; // 50% damage reduction
+            }
+        }
+
+        // Legacy: Glow phase immunity (if not using new immune state)
         if (isImmune)
         {
             if (blockedAudioSource != null && blockedSoundClip != null)
                 blockedAudioSource.PlayOneShot(blockedSoundClip);
-
             ScreenShake.Trigger(blockedShakeDuration, blockedShakeMagnitude);
             Debug.Log("[MechBoss] Hit blocked — boss is immune during Glow phase.");
             return;
