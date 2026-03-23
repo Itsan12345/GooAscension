@@ -376,6 +376,7 @@ GameObject:
   - component: {fileID: 687301027799820871}
   - component: {fileID: 318785889131751902}
   - component: {fileID: 437365597400961510}
+  - component: {fileID: -2232369229092928408}
   m_Layer: 9
   m_Name: OrangeSentinelMinion
   m_TagString: Enemy
@@ -426,6 +427,12 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
   preAttackFlashDuration: 0.5
+  bloodImpactPrefab: {fileID: 0}
+  bloodImpactTemplateName: BloodImpact_Medium
+  bloodSpawnOffset: {x: 0, y: 0.35}
+  bloodSpawnZ: -0.5
+  bloodSpawnJitter: 0.18
+  bloodSpawnMinInterval: 0.08
 --- !u!114 &318785889131751902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -490,6 +497,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!210 &-2232369229092928408
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4187707842346551434}
+  m_Enabled: 1
+  m_SortingLayerID: -2102382197
+  m_SortingLayer: 8
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &6293775623299210929
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,7 +702,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -2102382197
-  m_SortingLayer: 4
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4787551328154833436, guid: bd885bd815a312c47b9e64a7b9d59de5, type: 3}

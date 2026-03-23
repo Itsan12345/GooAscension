@@ -6219,7 +6219,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_277
+      name: sunken_seamless_Torch
       rect:
         serializedVersion: 2
         x: 256
@@ -6228,7 +6228,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 0, y: 0, z: 24, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -8560,7 +8560,6 @@ TextureImporter:
       sunken_seamless_274: -952173718
       sunken_seamless_275: 166752570
       sunken_seamless_276: 770882952
-      sunken_seamless_277: 1560024961
       sunken_seamless_278: 438977666
       sunken_seamless_279: -293465221
       sunken_seamless_28: 2066856420
@@ -8736,6 +8735,7 @@ TextureImporter:
       sunken_seamless_97: -739016906
       sunken_seamless_98: -82781261
       sunken_seamless_99: 382943421
+      sunken_seamless_Torch: 1560024961
       waterfall_front_1: -4977929668910206904
       waterfall_front_2: 4368950407450329729
       waterfall_front_3: -8769235485718702812

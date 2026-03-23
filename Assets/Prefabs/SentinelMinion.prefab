@@ -228,6 +228,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &458570813558574262
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -273,6 +274,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 3641206842415056288, guid: 9a2a90e17a324e449ad98991e90134d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -282,7 +284,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &2182773813833581227
 Animator:
@@ -653,9 +654,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b862e07a0fa3994f9c74874f3802526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackTelegraph
-  telegraphDuration: 0.5
+  pulseDuration: 0.4
   telegraphColor: {r: 1, g: 0, b: 0, a: 0.5411765}
-  telegraphSize: 5
+  pulseScaleMultiplier: 1.3
+  parryWindowColor: {r: 1, g: 0.85, b: 0, a: 0.9}
 --- !u!1 &8005886238473180642
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,6 +706,7 @@ GameObject:
   - component: {fileID: 7896458979338503859}
   - component: {fileID: 193047375997108689}
   - component: {fileID: 876894214487034444}
+  - component: {fileID: 4007312581871558725}
   m_Layer: 9
   m_Name: SentinelMinion
   m_TagString: Enemy
@@ -753,6 +756,13 @@ MonoBehaviour:
   deathAnimationDuration: 3
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  preAttackFlashDuration: 0.5
+  bloodImpactPrefab: {fileID: 0}
+  bloodImpactTemplateName: BloodImpact_Medium
+  bloodSpawnOffset: {x: 0, y: 0.35}
+  bloodSpawnZ: -0.5
+  bloodSpawnJitter: 0.18
+  bloodSpawnMinInterval: 0.08
 --- !u!114 &193047375997108689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -769,6 +779,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
   attackPoint: {fileID: 2789119480334182865}
   attackPointOffset: 1.5
   moveSpeed: 3
@@ -782,6 +795,11 @@ MonoBehaviour:
   waitTimeAtEnd: 1
   damageAmount: 30
   attackCooldown: 1
+  parryWindowDuration: 1
+  staggerDuration: 1.5
+  parryKnockbackForce: 18
+  knockbackFreeTime: 0.25
+  knockbackDecayRate: 6
 --- !u!50 &876894214487034444
 Rigidbody2D:
   serializedVersion: 5
@@ -808,4 +826,17 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
+--- !u!210 &4007312581871558725
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8017643231737877559}
+  m_Enabled: 1
+  m_SortingLayerID: -2102382197
+  m_SortingLayer: 8
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
