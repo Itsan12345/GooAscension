@@ -1577,7 +1577,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_66
+      name: sunken_seamless_V1
       rect:
         serializedVersion: 2
         x: 224
@@ -1907,7 +1907,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_81
+      name: sunken_seamless_V2
       rect:
         serializedVersion: 2
         x: 224
@@ -2105,7 +2105,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_90
+      name: sunken_seamless_G1
       rect:
         serializedVersion: 2
         x: 32
@@ -2127,7 +2127,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_91
+      name: sunken_seamless_G2
       rect:
         serializedVersion: 2
         x: 64
@@ -2149,7 +2149,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_92
+      name: sunken_seamless_G3
       rect:
         serializedVersion: 2
         x: 96
@@ -2171,7 +2171,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_93
+      name: sunken_seamless_G4
       rect:
         serializedVersion: 2
         x: 128
@@ -2193,7 +2193,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_94
+      name: sunken_seamless_G5
       rect:
         serializedVersion: 2
         x: 160
@@ -2215,7 +2215,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_95
+      name: sunken_seamless_G6
       rect:
         serializedVersion: 2
         x: 192
@@ -2237,7 +2237,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_96
+      name: sunken_seamless_V3
       rect:
         serializedVersion: 2
         x: 224
@@ -2435,7 +2435,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_105
+      name: sunken_seamless_G7
       rect:
         serializedVersion: 2
         x: 32
@@ -2457,7 +2457,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_106
+      name: sunken_seamless_G8
       rect:
         serializedVersion: 2
         x: 64
@@ -2479,7 +2479,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_107
+      name: sunken_seamless_G9
       rect:
         serializedVersion: 2
         x: 96
@@ -2501,7 +2501,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_108
+      name: sunken_seamless_G10
       rect:
         serializedVersion: 2
         x: 128
@@ -2523,7 +2523,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_109
+      name: sunken_seamless_G11
       rect:
         serializedVersion: 2
         x: 160
@@ -2545,7 +2545,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_110
+      name: sunken_seamless_G
       rect:
         serializedVersion: 2
         x: 192
@@ -2567,7 +2567,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sunken_seamless_111
+      name: sunken_seamless_V4
       rect:
         serializedVersion: 2
         x: 224
@@ -8383,14 +8383,7 @@ TextureImporter:
       sunken_seamless_102: 1487471683
       sunken_seamless_103: -737032114
       sunken_seamless_104: 1134433552
-      sunken_seamless_105: -366331836
-      sunken_seamless_106: 509296142
-      sunken_seamless_107: 783163821
-      sunken_seamless_108: -438457530
-      sunken_seamless_109: -801450421
       sunken_seamless_11: -158114311
-      sunken_seamless_110: 162421358
-      sunken_seamless_111: 436610112
       sunken_seamless_112: 1240303565
       sunken_seamless_113: 1311655193
       sunken_seamless_114: -1679897700
@@ -8698,7 +8691,6 @@ TextureImporter:
       sunken_seamless_63: 2033478206
       sunken_seamless_64: -944729006
       sunken_seamless_65: 1005374012
-      sunken_seamless_66: -2037694257
       sunken_seamless_67: -1795075261
       sunken_seamless_68: -1361967625
       sunken_seamless_69: 625766298
@@ -8715,7 +8707,6 @@ TextureImporter:
       sunken_seamless_79: -991313390
       sunken_seamless_8: -119327801
       sunken_seamless_80: 783699423
-      sunken_seamless_81: -288766587
       sunken_seamless_82: 1566922369
       sunken_seamless_83: 93179591
       sunken_seamless_84: 1401336697
@@ -8725,17 +8716,26 @@ TextureImporter:
       sunken_seamless_88: 780105342
       sunken_seamless_89: -333245297
       sunken_seamless_9: -1617631767
-      sunken_seamless_90: 364812959
-      sunken_seamless_91: 1410834097
-      sunken_seamless_92: 257946492
-      sunken_seamless_93: 956836728
-      sunken_seamless_94: -1051021417
-      sunken_seamless_95: -1949973016
-      sunken_seamless_96: 713199501
       sunken_seamless_97: -739016906
       sunken_seamless_98: -82781261
       sunken_seamless_99: 382943421
+      sunken_seamless_G: 162421358
+      sunken_seamless_G1: 364812959
+      sunken_seamless_G10: -438457530
+      sunken_seamless_G11: -801450421
+      sunken_seamless_G2: 1410834097
+      sunken_seamless_G3: 257946492
+      sunken_seamless_G4: 956836728
+      sunken_seamless_G5: -1051021417
+      sunken_seamless_G6: -1949973016
+      sunken_seamless_G7: -366331836
+      sunken_seamless_G8: 509296142
+      sunken_seamless_G9: 783163821
       sunken_seamless_Torch: 1560024961
+      sunken_seamless_V1: -2037694257
+      sunken_seamless_V2: -288766587
+      sunken_seamless_V3: 713199501
+      sunken_seamless_V4: 436610112
       waterfall_front_1: -4977929668910206904
       waterfall_front_2: 4368950407450329729
       waterfall_front_3: -8769235485718702812
