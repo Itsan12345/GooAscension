@@ -13729,11 +13729,17 @@ Transform:
   m_Children:
   - {fileID: 519420032}
   - {fileID: 324780635}
+  - {fileID: 2070155513}
   - {fileID: 619394802}
   - {fileID: 362765940}
   - {fileID: 348726799}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1002398471 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3348761552033424659, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+  m_PrefabInstance: {fileID: 3282488442168684525}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1012911810 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1423279334664974962, guid: 7c77c73f334745b40b1841994a960954, type: 3}
@@ -20844,6 +20850,102 @@ MonoBehaviour:
   fadedAlpha: 0.3
   fadeSpeed: 6
   fadeDelay: 0.3
+--- !u!1 &1394249237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1394249240}
+  - component: {fileID: 1394249239}
+  - component: {fileID: 1394249241}
+  m_Layer: 0
+  m_Name: BossCutsceneTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!61 &1394249239
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394249237}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.11130011}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 3.4486046}
+  m_EdgeRadius: 0
+--- !u!4 &1394249240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394249237}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 48.45, y: 1.93, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1394249241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394249237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174d352b7b514cc488353f891f7248a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossCutsceneTrigger
+  player: {fileID: 1002398471}
+  boss: {fileID: 706512044553597355}
+  bossCam: {fileID: 2070155515}
+  playerCam: {fileID: 324780634}
+  bossAnimDuration: 2
 --- !u!1 &1396136300
 GameObject:
   m_ObjectHideFlags: 0
@@ -31288,6 +31390,113 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
+--- !u!1 &2070155512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2070155513}
+  - component: {fileID: 2070155515}
+  - component: {fileID: 2070155514}
+  m_Layer: 0
+  m_Name: BossCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2070155513
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070155512}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.840248, y: 0.8487601, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 958986533}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2070155514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070155512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachinePositionComposer
+  CameraDistance: 10
+  DeadZoneDepth: 0
+  Composition:
+    ScreenPosition: {x: 0, y: 0}
+    DeadZone:
+      Enabled: 0
+      Size: {x: 0.2, y: 0.2}
+    HardLimits:
+      Enabled: 0
+      Size: {x: 0.8, y: 0.8}
+      Offset: {x: 0, y: 0}
+  CenterOnActivate: 1
+  TargetOffset: {x: 0, y: 0, z: 0}
+  Damping: {x: 1, y: 1, z: 1}
+  Lookahead:
+    Enabled: 0
+    Time: 0
+    Smoothing: 0
+    IgnoreY: 0
+--- !u!114 &2070155515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070155512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
+  Priority:
+    Enabled: 1
+    m_Value: 10
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 706512044553597352}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 40
+    OrthographicSize: 6.21
+    NearClipPlane: 0.3
+    FarClipPlane: 33.2
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
 --- !u!1 &2071618413
 GameObject:
   m_ObjectHideFlags: 0
@@ -32843,11 +33052,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5985541184772133586, guid: 609039d2185496641b62facec2142328, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5985541184772133586, guid: 609039d2185496641b62facec2142328, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 5985541184772133586, guid: 609039d2185496641b62facec2142328, type: 3}
       propertyPath: m_LocalPosition.z
@@ -32891,6 +33100,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5985541184772133586, guid: 609039d2185496641b62facec2142328, type: 3}
   m_PrefabInstance: {fileID: 495255140001888454}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &706512044553597355 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4557178440688650834, guid: 609039d2185496641b62facec2142328, type: 3}
+  m_PrefabInstance: {fileID: 495255140001888454}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 003223d25828c084580722abfa8cb0cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BigRedBossAI
 --- !u!1001 &1121231996055745985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33365,7 +33585,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
   m_PrefabInstance: {fileID: 3282488442168684525}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1002398471}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf6fd246db385f448b021e1cd505f77e, type: 3}
@@ -33376,7 +33596,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3055725872363073182, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
   m_PrefabInstance: {fileID: 3282488442168684525}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1002398471}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1eb2c7d54dae33a4da95fabde24d2a87, type: 3}
@@ -33586,3 +33806,4 @@ SceneRoots:
   - {fileID: 264162570}
   - {fileID: 1891467190}
   - {fileID: 909478323}
+  - {fileID: 1394249240}
