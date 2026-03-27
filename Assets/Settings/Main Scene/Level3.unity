@@ -28808,6 +28808,7 @@ GameObject:
   - component: {fileID: 1589540101}
   - component: {fileID: 1589540100}
   - component: {fileID: 1589540099}
+  - component: {fileID: 1589540102}
   m_Layer: 5
   m_Name: BossText
   m_TagString: Untagged
@@ -28934,6 +28935,18 @@ RectTransform:
   m_AnchoredPosition: {x: -734, y: 131}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1589540102
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589540098}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1621960685
 GameObject:
   m_ObjectHideFlags: 0
@@ -28971,7 +28984,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 190.44}
+  m_AnchoredPosition: {x: -2, y: -400}
   m_SizeDelta: {x: 1920, y: 988.41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1621960687
@@ -29051,7 +29064,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -254, y: 119}
+  m_AnchoredPosition: {x: -179, y: 119}
   m_SizeDelta: {x: 127.93994, y: 225.06}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1680927607
@@ -33188,6 +33201,7 @@ GameObject:
   - component: {fileID: 2073312365}
   - component: {fileID: 2073312367}
   - component: {fileID: 2073312366}
+  - component: {fileID: 2073312368}
   m_Layer: 5
   m_Name: BossName
   m_TagString: Untagged
@@ -33314,6 +33328,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2073312364}
   m_CullTransparentMesh: 1
+--- !u!225 &2073312368
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073312364}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1121231996055745985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33846,6 +33872,22 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5527914619026215058, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9545215
+      objectReference: {fileID: 0}
+    - target: {fileID: 5527914619026215058, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.638442
+      objectReference: {fileID: 0}
+    - target: {fileID: 5527914619026215058, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5527914619026215058, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 292
+      objectReference: {fileID: 0}
     - target: {fileID: 5935803338378689787, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
       propertyPath: player
       value: 
@@ -33871,9 +33913,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1621960685}
     - target: {fileID: 8941258006541223875, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: dialoguePanelRect
+      value: 
+      objectReference: {fileID: 1621960686}
+    - target: {fileID: 8941258006541223875, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
       propertyPath: soundEffectAudioSource
       value: 
       objectReference: {fileID: 242710317}
+    - target: {fileID: 8941258006541223875, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: dialogueTextCanvasGroup
+      value: 
+      objectReference: {fileID: 1589540102}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
