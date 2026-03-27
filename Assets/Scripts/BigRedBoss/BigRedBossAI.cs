@@ -384,7 +384,7 @@ public class BigRedBossAI : MonoBehaviour
             isParryable = true;
             Invoke(nameof(CloseParryWindow), parryWindowDuration);
             anim.SetBool("attack", true); // Set attack bool to true
-            Invoke(nameof(ResetAttack), .1f);
+            Invoke(nameof(ResetAttack), 1.3f);
 
             // Set cooldowns
             if (selectedSkill == 1)
