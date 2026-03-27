@@ -1,40 +1,31 @@
 fileFormatVersion: 2
-guid: c7f132f2cde7e074e9f2a1611c8ed3d7
+guid: 411ea75fa316c9b428613ab4aacdcc55
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7861422438586385470
-    second: BIGREDBOSS_IDLE_0
+      213: -4263833060618442584
+    second: BIGREDBOSS_BASICATTACKS_0
   - first:
-      213: 8045802418964897251
-    second: BIGREDBOSS_IDLE_1
+      213: -4874674493683640584
+    second: BIGREDBOSS_BASICATTACKS_1
   - first:
-      213: 6943728679883702552
-    second: BIGREDBOSS_IDLE_2
+      213: 7745351728120309897
+    second: BIGREDBOSS_BASICATTACKS_2
   - first:
-      213: -5902161455506519615
-    second: BIGREDBOSS_IDLE_3
+      213: 7425994527293293104
+    second: BIGREDBOSS_BASICATTACKS_3
   - first:
-      213: 3847971007431006723
-    second: BIGREDBOSS_IDLE_4
+      213: -4155807430841305637
+    second: BIGREDBOSS_BASICATTACKS_4
   - first:
-      213: 9209779869922811817
-    second: BIGREDBOSS_IDLE_5
+      213: -6770938640090011366
+    second: BIGREDBOSS_BASICATTACKS_5
   - first:
-      213: 703798838883131976
-    second: BIGREDBOSS_IDLE_6
+      213: -5626685579933867123
+    second: BIGREDBOSS_BASICATTACKS_6
   - first:
-      213: -5710514184785582022
-    second: BIGREDBOSS_IDLE_7
-  - first:
-      213: 5198886396386969452
-    second: BIGREDBOSS_IDLE_8
-  - first:
-      213: -7197361151435680589
-    second: BIGREDBOSS_IDLE_9
-  - first:
-      213: 5649566687831889761
-    second: BIGREDBOSS_IDLE_10
+      213: 3392542702415250456
+    second: BIGREDBOSS_BASICATTACKS_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -130,243 +121,177 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_0
+      name: BIGREDBOSS_BASICATTACKS_0
       rect:
         serializedVersion: 2
-        x: 63
-        y: 2480
-        width: 209
-        height: 132
+        x: 93
+        y: 1735
+        width: 213
+        height: 244
       alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0.64, y: 0.275}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e340a396e02691d60800000000000000
-      internalID: 7861422438586385470
+      spriteID: 8a865401c62d3d4c0800000000000000
+      internalID: -4263833060618442584
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_1
+      name: BIGREDBOSS_BASICATTACKS_1
       rect:
         serializedVersion: 2
-        x: 64
-        y: 2232
-        width: 209
-        height: 132
+        x: 93
+        y: 1487
+        width: 225
+        height: 244
       alignment: 9
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0.605, y: 0.275}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3ed916bebae68af60800000000000000
-      internalID: 8045802418964897251
+      spriteID: 8f65458006da95cb0800000000000000
+      internalID: -4874674493683640584
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_2
+      name: BIGREDBOSS_BASICATTACKS_2
       rect:
         serializedVersion: 2
-        x: 63
-        y: 1984
-        width: 219
-        height: 132
-      alignment: 9
-      pivot: {x: 0.48, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8110925e1741d5060800000000000000
-      internalID: 6943728679883702552
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_3
-      rect:
-        serializedVersion: 2
-        x: 66
-        y: 1736
-        width: 223
-        height: 132
-      alignment: 9
-      pivot: {x: 0.46, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1c9088d5d6f471ea0800000000000000
-      internalID: -5902161455506519615
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_4
-      rect:
-        serializedVersion: 2
-        x: 62
-        y: 1488
-        width: 232
-        height: 132
-      alignment: 9
-      pivot: {x: 0.46, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 30a5deb6e3db66530800000000000000
-      internalID: 3847971007431006723
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_5
-      rect:
-        serializedVersion: 2
-        x: 65
-        y: 1240
-        width: 223
-        height: 132
-      alignment: 9
-      pivot: {x: 0.465, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9afda460ff5bfcf70800000000000000
-      internalID: 9209779869922811817
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_6
-      rect:
-        serializedVersion: 2
-        x: 64
+        x: 84
         y: 992
-        width: 217
-        height: 132
+        width: 248
+        height: 248
       alignment: 9
-      pivot: {x: 0.48, y: 0.5}
+      pivot: {x: 0.585, y: 0.267}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 84226f8a05564c900800000000000000
-      internalID: 703798838883131976
+      spriteID: 988a11f2c540d7b60800000000000000
+      internalID: 7745351728120309897
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_7
+      name: BIGREDBOSS_BASICATTACKS_3
       rect:
         serializedVersion: 2
-        x: 61
-        y: 744
-        width: 220
-        height: 132
+        x: 93
+        y: 1240
+        width: 230
+        height: 244
       alignment: 9
-      pivot: {x: 0.49, y: 0.5}
+      pivot: {x: 0.591, y: 0.271}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a38a603ca9d20c0b0800000000000000
-      internalID: -5710514184785582022
+      spriteID: 032cf4f8dae6e0760800000000000000
+      internalID: 7425994527293293104
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_8
+      name: BIGREDBOSS_BASICATTACKS_4
       rect:
         serializedVersion: 2
-        x: 64
-        y: 496
-        width: 219
-        height: 132
+        x: 88
+        y: 743
+        width: 208
+        height: 244
       alignment: 9
-      pivot: {x: 0.48, y: 0.5}
+      pivot: {x: 0.677, y: 0.275}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c678144f1a7262840800000000000000
-      internalID: 5198886396386969452
+      spriteID: bd576c9f82b9356c0800000000000000
+      internalID: -4155807430841305637
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_9
+      name: BIGREDBOSS_BASICATTACKS_5
       rect:
         serializedVersion: 2
-        x: 61
-        y: 248
-        width: 219
-        height: 132
+        x: 93
+        y: 495
+        width: 202
+        height: 244
       alignment: 9
-      pivot: {x: 0.49, y: 0.5}
+      pivot: {x: 0.673, y: 0.275}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3b4da708a26dd1c90800000000000000
-      internalID: -7197361151435680589
+      spriteID: a19e7794e2bc802a0800000000000000
+      internalID: -6770938640090011366
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BIGREDBOSS_IDLE_10
+      name: BIGREDBOSS_BASICATTACKS_6
       rect:
         serializedVersion: 2
-        x: 62
+        x: 49
+        y: 247
+        width: 257
+        height: 244
+      alignment: 9
+      pivot: {x: 0.7, y: 0.275}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d83aa39c64ff9e1b0800000000000000
+      internalID: -5626685579933867123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIGREDBOSS_BASICATTACKS_7
+      rect:
+        serializedVersion: 2
+        x: 72
         y: 0
-        width: 209
-        height: 132
+        width: 234
+        height: 244
       alignment: 9
-      pivot: {x: 0.51, y: 0.5}
+      pivot: {x: 0.67, y: 0.271}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 167991b48fa476e40800000000000000
-      internalID: 5649566687831889761
+      spriteID: 8140ec60d9bb41f20800000000000000
+      internalID: 3392542702415250456
       vertices: []
       indices: 
       edges: []
@@ -375,7 +300,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 534e86539641cd7408bfc7ad223a2dfc
+    spriteID: 259f02df2384010448364773f88a4e76
     internalID: 0
     vertices: []
     indices: 
@@ -385,17 +310,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BIGREDBOSS_IDLE_0: 7861422438586385470
-      BIGREDBOSS_IDLE_1: 8045802418964897251
-      BIGREDBOSS_IDLE_10: 5649566687831889761
-      BIGREDBOSS_IDLE_2: 6943728679883702552
-      BIGREDBOSS_IDLE_3: -5902161455506519615
-      BIGREDBOSS_IDLE_4: 3847971007431006723
-      BIGREDBOSS_IDLE_5: 9209779869922811817
-      BIGREDBOSS_IDLE_6: 703798838883131976
-      BIGREDBOSS_IDLE_7: -5710514184785582022
-      BIGREDBOSS_IDLE_8: 5198886396386969452
-      BIGREDBOSS_IDLE_9: -7197361151435680589
+      BIGREDBOSS_BASICATTACKS_0: -4263833060618442584
+      BIGREDBOSS_BASICATTACKS_1: -4874674493683640584
+      BIGREDBOSS_BASICATTACKS_2: 7745351728120309897
+      BIGREDBOSS_BASICATTACKS_3: 7425994527293293104
+      BIGREDBOSS_BASICATTACKS_4: -4155807430841305637
+      BIGREDBOSS_BASICATTACKS_5: -6770938640090011366
+      BIGREDBOSS_BASICATTACKS_6: -5626685579933867123
+      BIGREDBOSS_BASICATTACKS_7: 3392542702415250456
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
