@@ -908,6 +908,18 @@ public void OnAttackAnimationEnd()
                 break;
             }
 
+            // Add support for parrying BigRedBossAI
+            BigRedBossAI bigRedBoss = col.GetComponentInParent<BigRedBossAI>();
+            if (bigRedBoss != null && bigRedBoss.IsParryable)
+            {
+                Vector2 knockbackDir = ((Vector2)(bigRedBoss.transform.position - transform.position)).normalized;
+                knockbackDir.y += 1f;
+                knockbackDir.Normalize();
+                bigRedBoss.GetParried(knockbackDir);
+                parryConnected = true;
+                break;
+            }
+
             MechBossAI boss = col.GetComponentInParent<MechBossAI>();
             if (boss != null && boss.IsParryable)
             {
