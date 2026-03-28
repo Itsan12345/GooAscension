@@ -26,24 +26,9 @@ public class BigRedBossAI : MonoBehaviour
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private float loseTargetRadius = 7f; // Slightly larger to prevent flickering
     
-    [Header("Patrol")]
-    [SerializeField] private bool enablePatrol = true;
-    [SerializeField] private float patrolDistance = 4f;
-    [SerializeField] private float patrolSpeed = 2f;
-    [SerializeField] private float waitTimeAtEnd = 1f;
-
     private bool facingRight = true;
     private bool isGrounded;
     private bool isChasing = false;
-    private bool isPatrolling = true;
-    
-    // Patrol state
-    private Vector2 currentPatrolCenter;
-    private Vector2 leftPatrolPoint;
-    private Vector2 rightPatrolPoint;
-    private bool movingRight = true;
-    private bool waitingAtPatrolEnd = false;
-    private float patrolWaitTimer;
 
     // For correct 2D lighting with normal maps, flip sprites using SpriteRenderer.flipX
     // instead of rotating the whole animator object (which can invert tangent space).
@@ -83,8 +68,7 @@ public class BigRedBossAI : MonoBehaviour
         // Apply initial facing visuals.
         ApplySpriteFacing();
         
-        // Initialize patrol points around starting position
-        SetupPatrolArea(transform.position);
+        // No patrol setup needed
     }
 
     private void ApplySpriteFacing()
@@ -103,12 +87,7 @@ public class BigRedBossAI : MonoBehaviour
         }
     }
     
-    private void SetupPatrolArea(Vector2 centerPosition)
-    {
-        currentPatrolCenter = centerPosition;
-        leftPatrolPoint = new Vector2(centerPosition.x - patrolDistance, centerPosition.y);
-        rightPatrolPoint = new Vector2(centerPosition.x + patrolDistance, centerPosition.y);
-    }
+
 
     private void FindTargetPlayer()
     {
@@ -188,13 +167,7 @@ public class BigRedBossAI : MonoBehaviour
         
         if (isChasing)
         {
-            isPatrolling = false;
             ChasePlayer();
-        }
-        else if (enablePatrol)
-        {
-            isPatrolling = true;
-            Patrol();
         }
         else
         {
@@ -227,10 +200,6 @@ public class BigRedBossAI : MonoBehaviour
         else if (isChasing && distanceToPlayer > loseTargetRadius)
         {
             isChasing = false;
-            
-            // Set up new patrol area from current position where target was lost
-            SetupPatrolArea(transform.position);
-            waitingAtPatrolEnd = false; // Start patrolling immediately
         }
     }
 
@@ -240,44 +209,7 @@ public class BigRedBossAI : MonoBehaviour
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
     
-    private void Patrol()
-    {
-        if (isAttacking)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
 
-        // Handle waiting at patrol ends
-        if (waitingAtPatrolEnd)
-        {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            patrolWaitTimer -= Time.deltaTime;
-            
-            if (patrolWaitTimer <= 0f)
-            {
-                waitingAtPatrolEnd = false;
-                movingRight = !movingRight; // Switch direction
-            }
-            return;
-        }
-
-        Vector2 targetPoint = movingRight ? rightPatrolPoint : leftPatrolPoint;
-        float distanceToTarget = Mathf.Abs(transform.position.x - targetPoint.x);
-
-        // Check if reached patrol point
-        if (distanceToTarget <= 0.1f)
-        {
-            waitingAtPatrolEnd = true;
-            patrolWaitTimer = waitTimeAtEnd;
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-            return;
-        }
-
-        // Move toward target patrol point
-        float direction = movingRight ? 1f : -1f;
-        rb.linearVelocity = new Vector2(direction * patrolSpeed, rb.linearVelocity.y);
-    }
 
     private void HandleFlip()
     {
@@ -295,20 +227,7 @@ public class BigRedBossAI : MonoBehaviour
         UpdateAttackPointPosition();
     }
     
-    private void ReverseDirection()
-    {
-        // Reverse movement direction for patrol
-        if (isPatrolling)
-        {
-            movingRight = !movingRight;
-        }
-        
-        // Stop current movement momentarily to prevent getting stuck
-        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-        
-        // Force flip to face the new direction immediately
-        Flip();
-    }
+
 
     private void UpdateAttackPointPosition()
     {
@@ -337,6 +256,7 @@ public class BigRedBossAI : MonoBehaviour
         {
             anim.SetFloat("xVelocity", Mathf.Abs(rb.linearVelocity.x));
             anim.SetBool("isGrounded", isGrounded);
+            anim.SetBool("isMoving", isChasing && Mathf.Abs(rb.linearVelocity.x) > 0.05f);
         }
     }
 
@@ -409,8 +329,7 @@ public class BigRedBossAI : MonoBehaviour
             EnemyAI otherEnemy = collision.gameObject.GetComponent<EnemyAI>();
             if (otherEnemy != null)
             {
-                // Reverse direction when colliding with another enemy
-                ReverseDirection();
+                // No patrol or direction reversal needed
                 lastCollisionTime = Time.time;
             }
         }
@@ -465,7 +384,7 @@ public class BigRedBossAI : MonoBehaviour
             isParryable = true;
             Invoke(nameof(CloseParryWindow), parryWindowDuration);
             anim.SetBool("attack", true); // Set attack bool to true
-            Invoke(nameof(ResetAttack), 1f);
+            Invoke(nameof(ResetAttack), 1.3f);
 
             // Set cooldowns
             if (selectedSkill == 1)
@@ -545,33 +464,35 @@ public class BigRedBossAI : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, 0.3f);
         }
         
-        // Draw patrol area
-        if (enablePatrol)
+        // Patrol area removed
+    }
+    // --- CUTSCENE SUPPORT ---
+    /// <summary>
+    /// Plays the Skill2 animation for the boss cutscene, disables normal AI actions temporarily.
+    /// </summary>
+    public void PlaySkill2CutsceneAnimation(float animDuration = 2.0f)
+    {
+        isAttacking = true;
+        canMove = false;
+        if (anim != null)
         {
-            // Use current patrol center in play mode, or transform position in editor
-            Vector2 center = Application.isPlaying ? currentPatrolCenter : (Vector2)transform.position;
-            Vector2 leftPoint = new Vector2(center.x - patrolDistance, center.y);
-            Vector2 rightPoint = new Vector2(center.x + patrolDistance, center.y);
-            
-            // Draw patrol line
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(leftPoint, rightPoint);
-            
-            // Draw patrol endpoints
-            Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(leftPoint, 0.2f);
-            Gizmos.DrawWireSphere(rightPoint, 0.2f);
-            
-            // Show patrol center
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(center, 0.15f);
-            
-            // Show current patrol state
-            if (Application.isPlaying && isPatrolling)
-            {
-                Gizmos.color = movingRight ? Color.green : Color.magenta;
-                Gizmos.DrawWireSphere(transform.position, 0.1f);
-            }
+            anim.SetInteger("attackType", 2); // Skill2
+            anim.SetBool("attack", true);
         }
+        if (attackTelegraph != null)
+            attackTelegraph.ShowTelegraph();
+
+        // Reset after animation
+        Invoke(nameof(EndSkill2CutsceneAnimation), animDuration);
+    }
+
+    private void EndSkill2CutsceneAnimation()
+    {
+        isAttacking = false;
+        canMove = true;
+        if (anim != null)
+            anim.SetBool("attack", false);
+        if (attackTelegraph != null)
+            attackTelegraph.HideTelegraph();
     }
 }
