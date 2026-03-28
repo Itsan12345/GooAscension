@@ -2,72 +2,116 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Video; // 1. ADD THIS NAMESPACE
+using UnityEngine.Video;
 
 public class MainMenu : MonoBehaviour
 {
     [Header("UI References")]
+    [Tooltip("Drag your MainMenu container here so it disappears!")]
+    public GameObject mainMenuUI; 
+    public GameObject BGImage; 
+
     public GameObject loadingScreen;
     public Slider slider;
 
+    [Header("Audio")]
+    [Tooltip("Drag the object playing your Main Menu music here!")]
+    public AudioSource mainMenuMusic; 
+
     [Header("Video Settings")]
-    public VideoPlayer VideoRenderTexture; // 2. Assign the Video Player here in Inspector
+    public VideoPlayer VideoRenderTexture; 
+    
+    [Tooltip("Used ONLY for the visual slider fill speed now.")]
+    public float minimumLoadingTime = 8f; 
+
+    private bool isVideoFinished = false;
 
     public void PlayGame()
     {
-        // Reset all cross-scene PlayerPrefs so every new game starts fresh
+        // 1. CRITICAL FIX: Ensure the game isn't secretly paused from a previous session!
+        Time.timeScale = 1f; 
+
         PlayerPrefs.DeleteKey("TransformUnlocked");
         PlayerPrefs.DeleteKey("PlayerIsHuman");
         PlayerPrefs.Save();
 
-        StartCoroutine(LoadLevelAsync(SceneManager.GetActiveScene().buildIndex + 1));
+        // 2. Start loading the next scene in the Build Settings
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        Debug.Log("Attempting to load Scene Index: " + nextSceneIndex);
+        StartCoroutine(LoadLevelAsync(nextSceneIndex));
     }
 
     IEnumerator LoadLevelAsync(int sceneIndex)
     {
+        // REMOVED the SetActive(false) lines so the Coroutine stays alive!
+        
+        if (mainMenuMusic != null) mainMenuMusic.Stop(); // Keeping this so the music still stops!
+
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
-
-        // Stop scene from activating immediately
-        operation.allowSceneActivation = false;
-
-        // Activate the Loading Screen UI
-        loadingScreen.SetActive(true);
-
-        // 3. PLAY THE VIDEO
-        if (VideoRenderTexture != null)
+        // ... rest of the code stays exactly the same
+        
+        if (operation == null)
         {
-            VideoRenderTexture.Prepare(); // Optional, but good for stability
-            VideoRenderTexture.Play();
+            Debug.LogError("CRITICAL ERROR: SceneManager could not find Scene Index " + sceneIndex + "! Is it in your Build Settings?");
+            yield break; // Stop the coroutine so it doesn't crash
         }
 
-        float currentProgress = 0f;
+        operation.allowSceneActivation = false;
+        loadingScreen.SetActive(true);
+
+        isVideoFinished = false;
+
+        if (VideoRenderTexture != null)
+        {
+            VideoRenderTexture.loopPointReached += OnVideoFinished;
+            // Removed .Prepare() as .Play() automatically handles it and prevents sync bugs
+            VideoRenderTexture.Play(); 
+        }
+        else
+        {
+            isVideoFinished = true; 
+        }
+
+        float elapsedTime = 0f; 
+        float safeSliderTime = minimumLoadingTime > 0.1f ? minimumLoadingTime : 8f;
 
         while (!operation.isDone)
         {
-            float targetProgress = Mathf.Clamp01(operation.progress / 0.9f);
+            // CRITICAL FIX: Use unscaledDeltaTime so the timer runs even if the game glitches and thinks it's paused
+            elapsedTime += Time.unscaledDeltaTime; 
+            slider.value = Mathf.Clamp01(elapsedTime / safeSliderTime);
 
-            // Artificial Delay Logic
-            currentProgress = Mathf.MoveTowards(currentProgress, targetProgress, Time.deltaTime * 0.5f);
-
-            slider.value = currentProgress;
-
-            // Check if loading is finished AND the artificial bar is full
-            if (operation.progress >= 0.9f && currentProgress >= 0.99f)
+            if (operation.progress >= 0.9f)
             {
-                operation.allowSceneActivation = true;
+                bool videoStoppedPlaying = VideoRenderTexture != null && !VideoRenderTexture.isPlaying && elapsedTime > 2f;
+
+                if (isVideoFinished || videoStoppedPlaying)
+                {
+                    Debug.Log("Video finished! Activating Scene...");
+                    operation.allowSceneActivation = true;
+                }
             }
 
             yield return null;
         }
     }
 
+    void OnVideoFinished(VideoPlayer vp)
+    {
+        Debug.Log("Video event 'loopPointReached' fired!");
+        isVideoFinished = true;
+        vp.loopPointReached -= OnVideoFinished; 
+    }
+
     public void GoToSettingsMenu()
     {
+        Time.timeScale = 1f; // Always unpause when switching scenes
         SceneManager.LoadScene("SettingsMenu");
     }
 
     public void GoToMainMenu()
     {
+        Time.timeScale = 1f; // Always unpause when switching scenes
         SceneManager.LoadScene("MainMenu");
     }
 

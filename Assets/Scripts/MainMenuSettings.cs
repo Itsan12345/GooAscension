@@ -111,7 +111,7 @@ public class MainMenuSettings : MonoBehaviour
         }
 
         resolutionDropdown.AddOptions(options as List<string>);
-        resolutionDropdown.value = savedIndex >= 0 ? savedIndex : currentIndex;
+            resolutionDropdown.value = savedIndex >= 0 ? savedIndex : currentIndex;
         resolutionDropdown.RefreshShownValue();
         resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
     }
