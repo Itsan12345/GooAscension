@@ -76,6 +76,7 @@ public class RuleTileCaveGenerator : MonoBehaviour
         RandomFill();
         BuildStairs();
         for (int i = 0; i < iterations; i++) Smooth();
+        BuildFloorPlatforms();
         CarveHolesAndHeadroom();
         CarveQuestLocations();
         
@@ -119,6 +120,24 @@ public class RuleTileCaveGenerator : MonoBehaviour
                     }
                     if (isFloorDivider) map[x, y] = 1; 
                     else map[x, y] = (Random.Range(0, 100) < obstacleChance) ? 1 : 0;
+                }
+            }
+        }
+    }
+
+    void BuildFloorPlatforms() {
+        int floorSpacing = height / numberOfFloors;
+        for (int i = 1; i < numberOfFloors; i++) {
+            int floorY = i * floorSpacing;
+            bool isLeftEdge = (i % 2 != 0);
+            int holeStartX = isLeftEdge ? 2 : width - 2 - holeWidth;
+            int holeEndX = holeStartX + holeWidth;
+
+            for (int x = 1; x < width - 1; x++) {
+                if (x >= holeStartX && x <= holeEndX) continue;
+                for (int t = -1; t <= 1; t++) {
+                    int y = floorY + t;
+                    if (y > 0 && y < height) map[x, y] = 1;
                 }
             }
         }

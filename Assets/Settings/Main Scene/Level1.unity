@@ -33102,6 +33102,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1660222065310690945, guid: 7c77c73f334745b40b1841994a960954, type: 3}
+      propertyPath: m_text
+      value: "\"<b>\u2014 CONTROLS \u2014</b>\\n\\n\" +\r\n        \"<b>A / D</b>         
+        Move Left / Right\\n\" +\r\n        \"<b>Space</b>       Jump\\n\" +\r\n       
+        \"<b>Left Shift</b>  Dash\\n\" +\r\n        \"<b>E</b>               Transform 
+        <size=70%>(Slime \u2194 Human)</size>\\n\\n\" +\r\n        \"<b>\u2014 COMBAT
+        \u2014</b>\\n\\n\" +\r\n        \"<b>Q</b>               Switch Weapon  <size=70%>(Sword
+        / Gun)</size>\\n\" +\r\n        \"<b>Left Click</b>  Attack / Shoot\\n\"
+        +\r\n        \"<b>Hold Click</b> Charge Attack / Charged Shot\\n\\n\" +\r\n       
+        \"<b>\u2014 MENU \u2014</b>\\n\\n\" +\r\n        \"<b>Escape</b>      Open
+        Settings\";"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660222065310690945, guid: 7c77c73f334745b40b1841994a960954, type: 3}
+      propertyPath: m_fontSize
+      value: 20.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660222065310690945, guid: 7c77c73f334745b40b1841994a960954, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3727991586352473613, guid: 7c77c73f334745b40b1841994a960954, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

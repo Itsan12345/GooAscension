@@ -535,7 +535,7 @@ Transform:
   m_GameObject: {fileID: 89211291}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -44.6, y: 15.3, z: 0}
+  m_LocalPosition: {x: -44.6, y: 3, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -84083,7 +84083,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: moveSpeed
-      value: 17.29
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: humanWeight
@@ -84092,6 +84092,10 @@ PrefabInstance:
     - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: slimeBuoyancy
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
+      propertyPath: lockTransformInThisScene
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3348761552033424659, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: m_Name
@@ -84250,9 +84254,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
+      propertyPath: stairRise
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
       propertyPath: playerSpawn
       value: 
       objectReference: {fileID: 1769852919167796402}
+    - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
+      propertyPath: numberOfFloors
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
+      propertyPath: doubleJumpHeight
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
+      propertyPath: landingExtension
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5124795910226260835, guid: 3158bb9c164c31b429318a0318498602, type: 3}
       propertyPath: backgroundTilemap
       value: 

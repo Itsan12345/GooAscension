@@ -21,18 +21,28 @@ public class CodeFragmentPanel : MonoBehaviour
 
     private bool openedFromSettings = false;
 
+    // --- FIXED: Properly escaped quotation marks and clean TMP formatting ---
     private const string KEYBIND_CONTENT =
-        "<b>— CONTROLS —</b>\n\n" +
-        "<b>A / D</b>          Move Left / Right\n" +
-        "<b>Space</b>       Jump  <size=70%>(double jump in Human form)</size>\n" +
-        "<b>Left Shift</b>  Dash\n" +
-        "<b>E</b>               Transform  <size=70%>(Slime ↔ Human)</size>\n\n" +
-        "<b>— COMBAT —</b>\n\n" +
-        "<b>Q</b>               Switch Weapon  <size=70%>(Sword / Gun)</size>\n" +
-        "<b>Left Click</b>  Attack / Shoot\n" +
-        "<b>Hold Click</b> Charge Attack / Charged Shot\n\n" +
-        "<b>— MENU —</b>\n\n" +
-        "<b>Escape</b>      Open Settings";
+        "<align=\"center\"><b>— CONTROLS —</b></align>\n\n" +
+
+        "<b>A / D</b><pos=45%>Move Left / Right\n" +
+        "<b>Space</b><pos=45%>Jump\n" +
+        "<b>Left Shift</b><pos=45%>Dash\n" +
+        "<b>E</b><pos=45%>Transform  <size=70%>(Slime ↔ Human)</size>\n\n" +
+
+        "<align=\"center\"><b>— COMBAT —</b></align>\n\n" +
+
+        "<b>Q</b><pos=45%>Switch Weapon\n" +
+        "<b>F</b><pos=45%>Parry\n" +
+        "<b>Right Click</b><pos=45%>Block\n" +
+        "<b>Left Click</b><pos=45%>Attack / Shoot\n" +
+        "<b>Hold Click</b><pos=45%>Charge Attack\n\n" +
+
+        "<align=\"center\"><b>— MENU —</b></align>\n\n" +
+
+        "<b>Escape</b><pos=45%>Open Settings";
+    // ----------------------------------------------------------------------
+
 
     private void OnEnable()
     {
