@@ -57,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private float ventCheckDistance = 0.6f;
     [SerializeField] private LayerMask whatIsGround;
+    [Header("Enemy Jump Support")]
+    [Tooltip("Layers considered as enemies for jumping on top")] 
+    [SerializeField] private LayerMask whatIsEnemy;
 
     private bool isGrounded;
 
@@ -438,9 +441,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector2 raycastOrigin = new Vector2(rb.transform.position.x, col.bounds.min.y);
 
-        isGrounded = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsGround);
+        // Check for ground or enemy below
+        bool onGround = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsGround);
+        bool onEnemy = Physics2D.Raycast(raycastOrigin, Vector2.down, groundCheckDistance, whatIsEnemy);
+        isGrounded = onGround || onEnemy;
 
-        Debug.DrawRay(raycastOrigin, Vector2.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
+        // Debug: green if on ground, yellow if on enemy, red if not grounded
+        Color debugColor = onGround ? Color.green : (onEnemy ? Color.yellow : Color.red);
+        Debug.DrawRay(raycastOrigin, Vector2.down * groundCheckDistance, debugColor);
 
         // Reset jump counter on landing
         if (isGrounded && !wasGrounded)

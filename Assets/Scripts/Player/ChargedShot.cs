@@ -4,11 +4,11 @@ public class ChargedShot : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float baseSpeed = 15f;
-    [SerializeField] private float chargedSpeedMultiplier = 2f;
+    [SerializeField] private float chargedSpeedMultiplier = 1f;
 
     [Header("Damage")]
     [SerializeField] private float baseDamage = 20f;
-    [SerializeField] private float maxChargeDamage = 20f;
+    [SerializeField] private float maxChargeDamage = 100f; // Cap maximum damage to 100
 
     [Header("Effects")]
     [SerializeField] private float knockbackForce = 500f;
@@ -51,6 +51,7 @@ public class ChargedShot : MonoBehaviour
     {
         chargeLevel = Mathf.Clamp01(charge01);
         currentDamage = Mathf.Lerp(baseDamage, maxChargeDamage, chargeLevel);
+        currentDamage = Mathf.Min(currentDamage, 100f); // Ensure cap
         currentSpeed = baseSpeed * (1f + (chargedSpeedMultiplier - 1f) * chargeLevel);
         Debug.Log($"ChargedShot created with charge: {chargeLevel:F2}, damage: {currentDamage}, speed: {currentSpeed}");
     }
@@ -77,8 +78,9 @@ public class ChargedShot : MonoBehaviour
 
     private void ApplyDamageAndKnockback(Collider2D col, IDamageable target)
     {
-        target.TakeDamage(currentDamage);
-        Debug.Log($"ChargedShot hit dealt {currentDamage} damage to {col.name}");
+        float clampedDamage = Mathf.Min(currentDamage, 100f);
+        target.TakeDamage(clampedDamage);
+        Debug.Log($"ChargedShot hit dealt {clampedDamage} damage to {col.name}");
 
         bool isBoss = col.GetComponentInParent<MechBossAI>() != null;
         if (!isBoss)
@@ -118,7 +120,10 @@ public class ChargedShot : MonoBehaviour
 
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null)
-            target.TakeDamage(currentDamage * Time.deltaTime);
+        {
+            float tickDamage = Mathf.Min(currentDamage, 100f) * Time.deltaTime;
+            target.TakeDamage(tickDamage);
+        }
     }
 
     // --- Collision path (boss/enemies with non-trigger colliders) ---
@@ -154,7 +159,10 @@ public class ChargedShot : MonoBehaviour
 
         IDamageable target = collision.collider.GetComponentInParent<IDamageable>();
         if (target != null)
-            target.TakeDamage(currentDamage * Time.deltaTime);
+        {
+            float tickDamage = Mathf.Min(currentDamage, 100f) * Time.deltaTime;
+            target.TakeDamage(tickDamage);
+        }
     }
 
     private void CreateImpactEffect()

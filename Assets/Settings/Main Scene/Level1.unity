@@ -33169,6 +33169,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3055725872363073182, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+      propertyPath: whatIsEnemy.m_Bits
+      value: 1536
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055725872363073182, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: lockTransformInThisScene
       value: 1
       objectReference: {fileID: 0}
@@ -33183,6 +33187,10 @@ PrefabInstance:
     - target: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: attackRange
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+      propertyPath: maxChargeTime
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5044189866185494302, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: attackAudioSource
