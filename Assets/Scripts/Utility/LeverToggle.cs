@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using TMPro;
 
 public class LeverToggle : MonoBehaviour, IInteractable
 {
@@ -21,9 +23,45 @@ public class LeverToggle : MonoBehaviour, IInteractable
     [SerializeField] private string pullTriggerName = "Pull";
     [SerializeField] private string returnTriggerName = "Return";
 
+    [Header("Prompt UI")]
+    [SerializeField] private Vector3 promptOffset = new Vector3(0f, 1.5f, 0f);
+
     private bool playerNearby;
     private bool isOn;
     private bool isApplying;
+
+    private GameObject promptPanel;
+
+    private void Awake()
+    {
+        CreatePromptUI();
+    }
+
+    private void CreatePromptUI()
+    {
+        promptPanel = new GameObject("LeverPrompt");
+        promptPanel.transform.SetParent(transform, false);
+        promptPanel.transform.localPosition = promptOffset;
+        promptPanel.transform.localScale = Vector3.one;
+
+        var sortGroup = promptPanel.AddComponent<SortingGroup>();
+        sortGroup.sortingLayerName = "Background_Lights";
+        sortGroup.sortingOrder = 100;
+
+        var tmp = promptPanel.AddComponent<TextMeshPro>();
+        tmp.text = $"Press <b>{interactionKey}</b> to Activate";
+        tmp.fontSize = 4f;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.white;
+
+        TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts & Materials/lithosbold SDF");
+        if (font != null) tmp.font = font;
+
+        var rt = promptPanel.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(4f, 1f);
+
+        promptPanel.SetActive(false);
+    }
 
     public bool CanInteract()
     {
@@ -47,6 +85,10 @@ public class LeverToggle : MonoBehaviour, IInteractable
         if (!CanInteract()) return;
 
         isOn = !isOn;
+
+        if (promptPanel != null && oneShot && isOn)
+            promptPanel.SetActive(false);
+
         StartCoroutine(ApplyToggleAfterDelay());
     }
 
@@ -116,12 +158,22 @@ public class LeverToggle : MonoBehaviour, IInteractable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (IsPlayerCollider(other)) playerNearby = true;
+        if (IsPlayerCollider(other))
+        {
+            playerNearby = true;
+            if (promptPanel != null && CanInteract())
+                promptPanel.SetActive(true);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (IsPlayerCollider(other)) playerNearby = false;
+        if (IsPlayerCollider(other))
+        {
+            playerNearby = false;
+            if (promptPanel != null)
+                promptPanel.SetActive(false);
+        }
     }
 
     private bool IsPlayerCollider(Collider2D other)
