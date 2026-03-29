@@ -83,15 +83,28 @@ public class InGameSettingsMenu : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Re-find the settings panel in case the reference was lost on reload
-        if (settingsPanel == null)
+        // If we landed on the main menu, destroy this singleton so it
+        // doesn't keep playing level music or intercepting Escape.
+        if (scene.name == mainMenuSceneName)
         {
-            settingsPanel = FindPanelByName("SettingsPanel");
-            if (settingsPanel != null)
-                Debug.Log("[InGameSettingsMenu] SettingsPanel re-found after scene load.");
-            else
-                Debug.LogWarning("[InGameSettingsMenu] SettingsPanel not found in scene.");
+            instance = null;
+            Destroy(gameObject);
+            return;
         }
+
+        // Re-find the settings panel in the new scene
+        settingsPanel = FindPanelByName("SettingsPanel");
+        if (settingsPanel != null)
+        {
+            Debug.Log("[InGameSettingsMenu] SettingsPanel re-found after scene load.");
+            RebindSliders();
+        }
+        else
+        {
+            Debug.LogWarning("[InGameSettingsMenu] SettingsPanel not found in scene.");
+        }
+
+        RebindMusicSource();
 
         // Always close and reset when entering a new scene
         isOpen = false;
@@ -101,6 +114,68 @@ public class InGameSettingsMenu : MonoBehaviour
         PauseController.SetPause(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible   = false;
+    }
+
+    private void RebindMusicSource()
+    {
+        if (musicSource != null && musicSource.isPlaying) return;
+
+        // The music AudioSource lives on the persistent Canvas.
+        // Re-find it if the reference was lost or it stopped playing.
+        if (musicSource == null)
+        {
+            PersistentCanvas pc = FindObjectOfType<PersistentCanvas>(true);
+            if (pc != null)
+                musicSource = pc.GetComponent<AudioSource>();
+        }
+
+        if (musicSource != null)
+        {
+            musicSource.loop = true;
+            float savedVol = PlayerPrefs.GetFloat(KEY_MUSIC_VOL, 1f);
+            musicSource.volume = savedVol;
+
+            if (!musicSource.isPlaying)
+                musicSource.Play();
+        }
+    }
+
+    private void RebindSliders()
+    {
+        if (settingsPanel == null) return;
+
+        Slider[] sliders = settingsPanel.GetComponentsInChildren<Slider>(true);
+        musicVolumeSlider = null;
+        gameVolumeSlider = null;
+
+        foreach (Slider s in sliders)
+        {
+            string lowerName = s.gameObject.name.ToLower();
+            if (lowerName.Contains("music"))
+                musicVolumeSlider = s;
+            else if (lowerName.Contains("game") || lowerName.Contains("sfx") || lowerName.Contains("volume"))
+                gameVolumeSlider = s;
+        }
+
+        float savedMusic = PlayerPrefs.GetFloat(KEY_MUSIC_VOL, 1f);
+        float savedGame  = PlayerPrefs.GetFloat(KEY_GAME_VOL,  1f);
+
+        if (musicVolumeSlider != null)
+        {
+            musicVolumeSlider.onValueChanged.RemoveAllListeners();
+            musicVolumeSlider.value = savedMusic;
+            musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+        }
+
+        if (gameVolumeSlider != null)
+        {
+            gameVolumeSlider.onValueChanged.RemoveAllListeners();
+            gameVolumeSlider.value = savedGame;
+            gameVolumeSlider.onValueChanged.AddListener(OnGameVolumeChanged);
+        }
+
+        ApplyMusicVolume(savedMusic);
+        ApplyGameVolume(savedGame);
     }
 
     private void Start()
@@ -223,6 +298,9 @@ public class InGameSettingsMenu : MonoBehaviour
     /// </summary>
     public void OnQuitClicked()
     {
+        if (musicSource != null)
+            musicSource.Stop();
+
         PauseController.SetPause(false);
         Time.timeScale = 1f;
         SceneManager.LoadScene(mainMenuSceneName);
