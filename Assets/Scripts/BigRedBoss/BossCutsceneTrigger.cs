@@ -75,7 +75,7 @@ public class BossCutsceneTrigger : MonoBehaviour
         // 9. Start boss fight music (optional)
         // ...
 
-        // 10. Destroy trigger so it doesn't repeat
-        Destroy(gameObject);
+        // 10. Disable trigger so it doesn't repeat
+        gameObject.SetActive(false);
     }
 }

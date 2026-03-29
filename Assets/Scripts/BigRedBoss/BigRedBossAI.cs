@@ -164,7 +164,7 @@ public class BigRedBossAI : MonoBehaviour
 
         CheckGrounded();
         CheckPlayerDetection();
-        
+
         if (isChasing)
         {
             ChasePlayer();
@@ -173,9 +173,18 @@ public class BigRedBossAI : MonoBehaviour
         {
             StopMoving();
         }
-            
+
+        // Always face the player if they exist
+        if (player != null && player.gameObject.activeInHierarchy)
+        {
+            float playerDir = player.position.x - transform.position.x;
+            if (playerDir > 0 && !facingRight)
+                Flip();
+            else if (playerDir < 0 && facingRight)
+                Flip();
+        }
+
         UpdateAttackPointPosition();
-        HandleFlip();
         UpdateAnimations();
     }
 
