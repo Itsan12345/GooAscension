@@ -84091,7 +84091,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: slimeBuoyancy
-      value: 25
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 3055725872363073182, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: lockTransformInThisScene
@@ -84164,6 +84164,10 @@ PrefabInstance:
     - target: {fileID: 6608761209691198392, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: energySlider
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6608761209691198392, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
+      propertyPath: energyRegenRate
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8249473750756909821, guid: ee276312cab808a47ac87ceb1a752bcd, type: 3}
       propertyPath: gameOverText

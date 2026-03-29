@@ -28,11 +28,15 @@ public class NPC : MonoBehaviour, IInteractable
    public int npcSoundElementIndex = 0;
    public bool playVoiceWithTyping = true;
 
+   [Header("Prompt UI")]
+   [SerializeField] private Vector3 promptOffset = new Vector3(0f, 2f, 0f);
+
    [Header("Debug")]
    [Tooltip("Verbose interaction / dialogue logs. Off by default for shipping builds.")]
    [SerializeField] private bool debugLogging;
 
    private GameObject currentPlayer;
+   private GameObject promptPanel;
 
    private int dialogueIndex;
    private bool isTyping, isDialogueActive;
@@ -72,6 +76,34 @@ public class NPC : MonoBehaviour, IInteractable
        {
            LogDbg($"Dialogue data loaded — {dialogueData.npcName}");
        }
+
+       CreatePromptUI();
+   }
+
+   private void CreatePromptUI()
+   {
+       promptPanel = new GameObject("NPCPrompt");
+       promptPanel.transform.SetParent(transform, false);
+       promptPanel.transform.localPosition = promptOffset;
+       promptPanel.transform.localScale = Vector3.one;
+
+       var sortGroup = promptPanel.AddComponent<UnityEngine.Rendering.SortingGroup>();
+       sortGroup.sortingLayerName = "Background_Lights";
+       sortGroup.sortingOrder = 100;
+
+       var tmp = promptPanel.AddComponent<TextMeshPro>();
+       tmp.text = $"Press <b>{interactionKey}</b> to talk";
+       tmp.fontSize = 4f;
+       tmp.alignment = TextAlignmentOptions.Center;
+       tmp.color = Color.white;
+
+       TMP_FontAsset font = Resources.Load<TMP_FontAsset>("Fonts & Materials/lithosbold SDF");
+       if (font != null) tmp.font = font;
+
+       var rt = promptPanel.GetComponent<RectTransform>();
+       rt.sizeDelta = new Vector2(4f, 1f);
+
+       promptPanel.SetActive(false);
    }
 
     public bool CanInteract()
@@ -86,6 +118,27 @@ public class NPC : MonoBehaviour, IInteractable
         {
             LogDbg($"{interactionKey} pressed — Interact()");
             Interact();
+        }
+
+        // Face toward the player when nearby
+        if (playerNearby && currentPlayer != null)
+        {
+            float dir = currentPlayer.transform.position.x - transform.position.x;
+            if (Mathf.Abs(dir) > 0.1f)
+            {
+                Vector3 s = transform.localScale;
+                s.x = dir > 0 ? Mathf.Abs(s.x) : -Mathf.Abs(s.x);
+                transform.localScale = s;
+            }
+        }
+
+        // Keep prompt text unflipped regardless of NPC facing direction
+        if (promptPanel != null && promptPanel.activeInHierarchy)
+        {
+            Vector3 ls = promptPanel.transform.localScale;
+            float parentX = transform.lossyScale.x;
+            ls.x = parentX < 0 ? -Mathf.Abs(ls.x) : Mathf.Abs(ls.x);
+            promptPanel.transform.localScale = ls;
         }
 
         // Update exclamation sprite position to follow player if active
@@ -151,8 +204,9 @@ public class NPC : MonoBehaviour, IInteractable
             Debug.LogWarning($"NPC {gameObject.name}: SoundEffectLibrary not assigned!");
         }
         
-        // Hide exclamation sprite during dialogue
+        // Hide exclamation sprite and prompt during dialogue
         ShowExclamationSprite(false);
+        if (promptPanel != null) promptPanel.SetActive(false);
         
         isDialogueActive = true;
         dialogueIndex = 0;
@@ -267,10 +321,11 @@ public class NPC : MonoBehaviour, IInteractable
         }
         // -----------------------------------------------
         
-        // Show exclamation again if player is still nearby
+        // Show exclamation and prompt again if player is still nearby
         if (playerNearby && CanInteract() && currentPlayer != null)
         {
             ShowExclamationSprite(true);
+            if (promptPanel != null) promptPanel.SetActive(true);
         }
     }
 
@@ -356,6 +411,7 @@ public class NPC : MonoBehaviour, IInteractable
             if (CanInteract())
             {
                 ShowExclamationSprite(true);
+                if (promptPanel != null) promptPanel.SetActive(true);
             }
         }
     }
@@ -370,6 +426,7 @@ public class NPC : MonoBehaviour, IInteractable
             
             // Hide exclamation sprite when player leaves
             ShowExclamationSprite(false);
+            if (promptPanel != null) promptPanel.SetActive(false);
         }
     }
     
