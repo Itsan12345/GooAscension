@@ -27,20 +27,30 @@ public class NPC : MonoBehaviour, IInteractable
    public string npcSoundGroupName = "NPC";
    public int npcSoundElementIndex = 0;
    public bool playVoiceWithTyping = true;
-   
+
+   [Header("Debug")]
+   [Tooltip("Verbose interaction / dialogue logs. Off by default for shipping builds.")]
+   [SerializeField] private bool debugLogging;
+
    private GameObject currentPlayer;
 
    private int dialogueIndex;
    private bool isTyping, isDialogueActive;
    private bool playerNearby = false;
-   
+
+   private void LogDbg(string message)
+   {
+       if (debugLogging)
+           Debug.Log($"[NPC:{gameObject.name}] {message}");
+   }
+
    void Start()
    {
        // Ensure dialogue panel is disabled at start
        if (dialoguePanel != null)
        {
            dialoguePanel.SetActive(false);
-           Debug.Log($"NPC {gameObject.name}: Dialogue panel disabled at start");
+           LogDbg("Dialogue panel disabled at start");
        }
        else
        {
@@ -60,7 +70,7 @@ public class NPC : MonoBehaviour, IInteractable
        }
        else
        {
-           Debug.Log($"NPC {gameObject.name}: Dialogue data loaded - {dialogueData.npcName}");
+           LogDbg($"Dialogue data loaded — {dialogueData.npcName}");
        }
    }
 
@@ -74,16 +84,10 @@ public class NPC : MonoBehaviour, IInteractable
         // Check for interaction input when player is nearby
         if (playerNearby && Input.GetKeyDown(interactionKey))
         {
-            Debug.Log($"NPC {gameObject.name}: F key pressed! Calling Interact()");
+            LogDbg($"{interactionKey} pressed — Interact()");
             Interact();
         }
-        
-        // Debug key press even when not near
-        if (Input.GetKeyDown(interactionKey))
-        {
-            Debug.Log($"NPC {gameObject.name}: F key pressed, playerNearby = {playerNearby}");
-        }
-        
+
         // Update exclamation sprite position to follow player if active
         if (exclamationSprite != null && exclamationSprite.activeInHierarchy && currentPlayer != null)
         {
@@ -94,8 +98,8 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        Debug.Log($"NPC {gameObject.name}: Interact() called");
-        
+        LogDbg("Interact()");
+
         // Check for null dialogue data
         if (dialogueData == null)
         {
@@ -106,18 +110,18 @@ public class NPC : MonoBehaviour, IInteractable
         // If game is paused and no dialogue is active
         if (PauseController.IsGamePaused && !isDialogueActive)
         {
-            Debug.Log($"NPC {gameObject.name}: Cannot interact - game is paused");
+            LogDbg("Cannot interact — game is paused");
             return;
         }
 
         if (isDialogueActive)
         {
-            Debug.Log($"NPC {gameObject.name}: Dialogue active - going to next line");
+            LogDbg("Advance dialogue line");
             NextLine();
         }
         else
         {
-            Debug.Log($"NPC {gameObject.name}: Starting dialogue");
+            LogDbg("Starting dialogue");
             StartDialogue();
         }
     }
@@ -125,7 +129,7 @@ public class NPC : MonoBehaviour, IInteractable
 
     void StartDialogue()
     {
-        Debug.Log($"NPC {gameObject.name}: StartDialogue() called");
+        LogDbg("StartDialogue()");
         EnsureDialogueUIHierarchyEnabled();
         EnsureDialoguePanelVisibleScale();
         
@@ -135,7 +139,7 @@ public class NPC : MonoBehaviour, IInteractable
             if (soundEffectAudioSource != null)
             {
                 soundEffectLibrary.PlaySoundEffect(soundEffectAudioSource, npcSoundGroupName, npcSoundElementIndex);
-                Debug.Log($"NPC {gameObject.name}: Playing sound effect '{npcSoundGroupName}'");
+                LogDbg($"Playing sound effect '{npcSoundGroupName}'");
             }
             else
             {
@@ -166,7 +170,7 @@ public class NPC : MonoBehaviour, IInteractable
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(true);
-            Debug.Log($"NPC {gameObject.name}: Dialogue panel activated!");
+            LogDbg("Dialogue panel activated");
         }
         else
         {
@@ -179,28 +183,39 @@ public class NPC : MonoBehaviour, IInteractable
 
     void NextLine()
     {
+        if (dialogueData?.dialogueLines == null || dialogueText == null)
+        {
+            EndDialogue();
+            return;
+        }
+
         if (isTyping)
         {
             StopAllCoroutines();
             dialogueText.SetText(dialogueData.dialogueLines[dialogueIndex]);
             isTyping = false;
         }
-        else if(++dialogueIndex < dialogueData.dialogueLines.Length)
+        else if (++dialogueIndex < dialogueData.dialogueLines.Length)
         {
             StartCoroutine(TypeLine());
         }
         else
         {
             EndDialogue();
-            
         }
     }
 
     IEnumerator TypeLine()
     {
+        if (dialogueData?.dialogueLines == null || dialogueText == null)
+            yield break;
+
+        if (dialogueIndex < 0 || dialogueIndex >= dialogueData.dialogueLines.Length)
+            yield break;
+
         isTyping = true;
         dialogueText.SetText("");
-        
+
         string currentLine = dialogueData.dialogueLines[dialogueIndex];
         string displayText = "";
 
@@ -221,7 +236,9 @@ public class NPC : MonoBehaviour, IInteractable
         isTyping = false;
 
         // AutoProgress
-        if (dialogueData.autoProgressLines.Length > dialogueIndex && dialogueData.autoProgressLines[dialogueIndex])
+        if (dialogueData.autoProgressLines != null
+            && dialogueIndex < dialogueData.autoProgressLines.Length
+            && dialogueData.autoProgressLines[dialogueIndex])
         {
             yield return new WaitForSecondsRealtime(dialogueData.autoProgressDelay);
             // Display NextLine
@@ -233,9 +250,22 @@ public class NPC : MonoBehaviour, IInteractable
     {
         StopAllCoroutines();
         isDialogueActive = false;
-        dialogueText.SetText("");
-        dialoguePanel.SetActive(false);
+        
+        if (dialogueText != null)
+            dialogueText.SetText("");
+            
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
+            
         PauseController.SetPause(false);
+        
+        // --- NEW: START THE QUEST WHEN DIALOGUE ENDS ---
+        if (KillQuestManager.Instance != null && !KillQuestManager.Instance.isQuestActive)
+        {
+            LogDbg("Starting Kill Quest!");
+            KillQuestManager.Instance.StartQuest();
+        }
+        // -----------------------------------------------
         
         // Show exclamation again if player is still nearby
         if (playerNearby && CanInteract() && currentPlayer != null)
@@ -311,16 +341,16 @@ public class NPC : MonoBehaviour, IInteractable
     // =========================================================
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"NPC {gameObject.name}: OnTriggerEnter2D with {other.gameObject.name}, tag: {other.tag}");
-        
+        LogDbg($"OnTriggerEnter2D '{other.gameObject.name}' tag={other.tag}");
+
         if (other.CompareTag(playerTag))
         {
             playerNearby = true;
-            
+
             // Find the parent GameObject with PlayerMovement component
             currentPlayer = FindPlayerWithMovement(other.gameObject);
-            
-            Debug.Log($"NPC {gameObject.name}: Player entered interaction zone! Press {interactionKey} to talk to {dialogueData?.npcName ?? "NPC"}");
+
+            LogDbg($"Player in range — press {interactionKey} to talk to {dialogueData?.npcName ?? "NPC"}");
             
             // Show exclamation sprite above player if dialogue is not active
             if (CanInteract())
@@ -336,7 +366,7 @@ public class NPC : MonoBehaviour, IInteractable
         {
             playerNearby = false;
             currentPlayer = null;
-            Debug.Log($"NPC {gameObject.name}: Player left interaction zone");
+            LogDbg("Player left interaction zone");
             
             // Hide exclamation sprite when player leaves
             ShowExclamationSprite(false);
@@ -409,7 +439,7 @@ public class NPC : MonoBehaviour, IInteractable
             PlayerMovement playerMovement = current.GetComponent<PlayerMovement>();
             if (playerMovement != null)
             {
-                Debug.Log($"NPC {gameObject.name}: Found PlayerMovement on {current.name}");
+                LogDbg($"Found PlayerMovement on {current.name}");
                 return current;
             }
             

@@ -202,58 +202,52 @@ public class RuleTileCaveGenerator : MonoBehaviour
     }
 
     void CarveQuestLocations() {
-        // 1. Suspended Secret Room (Above the Water on the Left)
+        // 1. Top Left Teleporter Room (The "-|" Enclosed Box)
+        int topFloorY = (numberOfFloors - 1) * (height / numberOfFloors);
         int roomWidth = 16;
         int roomHeight = 6;
-        int roomFloorY = waterLevel + 7; 
 
         for (int x = 1; x <= roomWidth; x++) {
-            if (x < width && roomFloorY < height) map[x, roomFloorY] = 1; 
-            for (int y = roomFloorY + 1; y <= roomFloorY + roomHeight; y++) {
-                if (x < width && y < height) map[x, y] = 0; 
-            }
-            if (x < width && roomFloorY + roomHeight + 1 < height) {
-                map[x, roomFloorY + roomHeight + 1] = 1; 
+            // We build up to roomHeight + 2 to give it a nice thick ceiling!
+            for (int y = topFloorY; y <= topFloorY + roomHeight + 2; y++) {
+                
+                // A. The Floor
+                if (y == topFloorY && x < width && y < height) {
+                    map[x, y] = 1; 
+                }
+                // B. The Ceiling (The "-" on top)
+                else if (y >= topFloorY + roomHeight + 1 && x < width && y < height) {
+                    map[x, y] = 1; 
+                }
+                // C. The Right Wall (The "|" on the side)
+                else if (x == roomWidth && x < width && y < height) {
+                    map[x, y] = 1; 
+                }
+                // D. The Hollow Inside where the Teleporter goes!
+                else if (x < width && y < height) {
+                    map[x, y] = 0; 
+                }
             }
         }
 
-        for (int x = roomWidth - 4; x < roomWidth; x++) {
-            map[x, roomFloorY] = 0; 
-            for (int y = waterLevel + 1; y < roomFloorY; y++) {
-                map[x, y] = 0; 
-            }
-        }
-
-        // 2. --- FIXED: Bottom Right Slime Tunnel & Lever Room ---
+        // 2. Bottom Right Slime Tunnel & Lever Room
         int tunnelLength = 35; 
         for (int x = width - tunnelLength; x < width - 1; x++) {
-            
-            // 1. Force a flat, solid floor at the water level
             map[x, waterLevel] = 1; 
-            
-            // 2. Guarantee exactly 2 blocks of empty space for the Slime
             map[x, waterLevel + 1] = 0; 
             map[x, waterLevel + 2] = 0; 
 
-            // 3. The actual Lever Room (Deeper inside the wall)
             if (x > width - 12) {
-                // Taller ceiling for the room
                 map[x, waterLevel + 3] = 0;
                 map[x, waterLevel + 4] = 0;
-                
-                // FIX: Force a solid roof over the room so the ceiling isn't broken!
                 if (waterLevel + 5 < height) map[x, waterLevel + 5] = 1;
                 if (waterLevel + 6 < height) map[x, waterLevel + 6] = 1;
-            } 
-            // 4. The Entrance Tunnel
-            else {
-                // FIX: Cap the entrance with a solid rock roof right above the 2-block gap
+            } else {
                 if (waterLevel + 3 < height) map[x, waterLevel + 3] = 1;
                 if (waterLevel + 4 < height) map[x, waterLevel + 4] = 1;
             }
         }
     }
-
     int GetNeighbors(int gx, int gy) {
         int count = 0;
         for (int x = gx - 1; x <= gx + 1; x++) {
@@ -269,8 +263,6 @@ public class RuleTileCaveGenerator : MonoBehaviour
         foregroundTilemap.ClearAllTiles();
         backgroundTilemap.ClearAllTiles();
         if (secretDoorTilemap != null) secretDoorTilemap.ClearAllTiles();
-        
-        // --- NEW: Clear old decorations ---
         if (decorationTilemap != null) decorationTilemap.ClearAllTiles(); 
 
         int topFloorY = (numberOfFloors - 1) * (height / numberOfFloors);
@@ -287,14 +279,9 @@ public class RuleTileCaveGenerator : MonoBehaviour
                     foregroundTilemap.SetTile(pos, foregroundRuleTile);
                 } else {
                     backgroundTilemap.SetTile(pos, backgroundTile);
-
-                    // Secret Door Check
-                    if (x == roomWidth && y > topFloorY && y <= topFloorY + roomHeight && secretDoorTilemap != null && secretDoorTile != null) {
-                        secretDoorTilemap.SetTile(pos, secretDoorTile);
-                    }
                     
-                    // Lanterns Check
-                    else if (y >= waterLevel && y > 0 && map[x, y - 1] == 1 && !(x <= roomWidth && y > topFloorY) && !IsInSafeZone(x, y)) {
+                    // Lanterns Check (Kept from spawning inside the teleporter room)
+                    if (y >= waterLevel && y > 0 && map[x, y - 1] == 1 && !(x <= roomWidth && y > topFloorY && y <= topFloorY + roomHeight) && !IsInSafeZone(x, y)) {
                         Vector2 currentPos = new Vector2(x, y);
                         if (lanternPrefab != null && Random.Range(0f, 100f) < lanternChance) {
                             bool tooClose = false;
@@ -312,7 +299,7 @@ public class RuleTileCaveGenerator : MonoBehaviour
                         }
                     }
 
-                    // --- NEW: DECORATION LOGIC ---
+                    // --- DECORATION LOGIC ---
                     if (decorationTilemap != null && map[x, y] == 0)
                     {
                         // 1. Check Floor (Grass)
@@ -328,12 +315,9 @@ public class RuleTileCaveGenerator : MonoBehaviour
                             
                             bool spawnedWaterfall = false;
 
-                            // A. Try spawning a Waterfall first!
                             if (waterfallTile != null && y > waterLevel + 5) {
                                 if (Random.Range(0f, 100f) < waterfallChance) {
                                     spawnedWaterfall = true;
-                                    
-                                    // Flow downwards behind EVERYTHING until it hits the water line!
                                     for (int flowY = y; flowY >= waterLevel; flowY--) {
                                         Vector3Int flowPos = new Vector3Int(x + startPos.x, flowY + startPos.y, 0);
                                         decorationTilemap.SetTile(flowPos, waterfallTile);
@@ -341,7 +325,6 @@ public class RuleTileCaveGenerator : MonoBehaviour
                                 }
                             }
 
-                            // B. If a Waterfall didn't spawn, try spawning Vines!
                             if (!spawnedWaterfall && ceilingDecorations.Length > 0) {
                                 if (Random.Range(0f, 100f) < ceilingDecorChance) {
                                     TileBase randomDecor = ceilingDecorations[Random.Range(0, ceilingDecorations.Length)];
@@ -362,6 +345,7 @@ public class RuleTileCaveGenerator : MonoBehaviour
             }
         }
 
+        // Spawn Water
         if (waterPrefab != null && waterLevel > 0) {
             Vector3 bottomLeft = foregroundTilemap.GetCellCenterWorld(new Vector3Int(startPos.x, startPos.y, 0));
             Vector3 waterCenter = new Vector3(bottomLeft.x + (width / 2f) - 0.5f, bottomLeft.y + (waterLevel / 2f) - 0.5f, 0);

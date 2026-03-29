@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour, IDamageable
 {
+    [Header("Quest Info")]
+    [Tooltip("Type 'Slime' or 'Sentinel' to match the Quest Manager.")]
+    public string enemyType = "Slime";
+
     [Header("Health")]
     [SerializeField] private float maxHealth = 50f;
     private float currentHealth;
@@ -336,6 +340,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         // Notify player of energy gain for kill
         NotifyPlayerOfKill();
 
+        // --- NEW: Notify the Quest Manager that an enemy died! ---
+        if (KillQuestManager.Instance != null)
+        {
+            KillQuestManager.Instance.OnEnemyKilled(enemyType);
+        }
         // Stop any active flash coroutine and restore colors before death
         if (flashCoroutine != null)
         {

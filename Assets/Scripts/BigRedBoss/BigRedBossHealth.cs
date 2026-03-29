@@ -19,6 +19,12 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
     [SerializeField] private Transform animatorObj;
     [SerializeField] private float deathAnimationDuration = 1f;
 
+    // --- NEW: END GAME CREDITS ---
+    [Header("End Game / Credits")]
+    [Tooltip("Drag your giant End Credits Canvas or Panel here. It will activate when the boss explodes!")]
+    [SerializeField] private GameObject creditsPanel;
+    // -----------------------------
+
     [Header("Damage Flash")]
     [Tooltip("The color the sprite flashes when hit.")]
     [SerializeField] private Color flashColor = Color.red;
@@ -76,6 +82,9 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
         SetupHealthBar();
 
         ResolveBloodImpactTemplate();
+        
+        // Hide credits at start just in case!
+        if (creditsPanel != null) creditsPanel.SetActive(false);
     }
 
     private void Start()
@@ -280,14 +289,12 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
 
     private void Flash()
     {
-        // Don't start a new flash if already flashing
         if (isFlashing) return;
         
-        // Stop any existing coroutine
         if (flashCoroutine != null) 
         {
             StopCoroutine(flashCoroutine);
-            RestoreOriginalColors(); // Make sure colors are restored before starting new flash
+            RestoreOriginalColors(); 
         }
         
         flashCoroutine = StartCoroutine(FlashRoutine());
@@ -306,24 +313,20 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
         isFlashing = false;
     }
 
-    // The routine that handles changing colors over time
     private IEnumerator FlashRoutine()
     {
         if (spriteRenderers == null || spriteRenderers.Length == 0) yield break;
         
         isFlashing = true;
 
-        // Change to flash color
         for (int i = 0; i < spriteRenderers.Length; i++)
         {
             if (spriteRenderers[i] != null)
                 spriteRenderers[i].color = flashColor;
         }
 
-        // Wait for flash duration
         yield return new WaitForSeconds(flashDuration);
 
-        // Restore original colors
         RestoreOriginalColors();
         
         flashCoroutine = null;
@@ -333,10 +336,8 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
     {
         dead = true;
 
-        // Notify player of energy gain for kill
         NotifyPlayerOfKill();
 
-        // Stop any active flash coroutine and restore colors before death
         if (flashCoroutine != null)
         {
             StopCoroutine(flashCoroutine);
@@ -344,61 +345,52 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
         }
         RestoreOriginalColors();
 
-        // Stop AI
         if (enemyAI != null)
             enemyAI.enabled = false;
 
-        // Stop physics / movement
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
             rb.simulated = false;
         }
 
-        // Disable attack/damage colliders but keep main body collider for ground collision
         if (colliders != null)
         {
             foreach (var c in colliders)
             {
-                if (c != null && c.gameObject != gameObject) // Don't disable main body collider
+                if (c != null && c.gameObject != gameObject) 
                 {
                     c.enabled = false;
                 }
             }
         }
 
-        // Disable FollowHitbox component to stop position following
         FollowHitbox followHitbox = GetComponentInChildren<FollowHitbox>();
         if (followHitbox != null)
         {
             followHitbox.enabled = false;
         }
 
-        // Trigger death animation first
         if (anim != null)
         {
             anim.SetTrigger("die");
         }
         
-        // Hide health bar when enemy dies
         if (healthBarCanvas != null)
         {
             healthBarCanvas.gameObject.SetActive(false);
         }
         
-        // Wait for death animation to complete, then show explosion and destroy
         Invoke(nameof(OnDeathAnimationComplete), deathAnimationDuration);
     }
     
     private void Update()
     {
-        // Update health bar position to stay above enemy
         UpdateHealthBarPosition();
     }
     
     private void SetupHealthBar()
     {
-        // If no health bar assigned, try to find one in children
         if (healthBarCanvas == null)
         {
             healthBarCanvas = GetComponentInChildren<Canvas>();
@@ -414,7 +406,6 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
             healthBarCanvas.renderMode = RenderMode.WorldSpace;
             healthBarCanvas.transform.localScale = Vector3.one * 0.01f;
             UpdateHealthBarPosition();
-            // Will be enabled in Start()
             healthBarCanvas.gameObject.SetActive(false);
         }
         
@@ -453,12 +444,10 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
 
     private void OnDeathAnimationComplete()
     {
-        // Hide visuals (disable all SpriteRenderers) after animation
         var renderers = GetComponentsInChildren<SpriteRenderer>(true);
         foreach (var r in renderers)
             r.enabled = false;
 
-        // Spawn explosion after death animation
         if (explosionPrefab != null)
         {
             Instantiate(
@@ -468,13 +457,18 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
             );
         }
 
-        // Remove enemy after FX time
+        // --- NEW: POP THE CREDITS ---
+        if (creditsPanel != null)
+        {
+            creditsPanel.SetActive(true);
+            Debug.Log("BOSS DEFEATED! Credits Rolling!");
+        }
+
         Destroy(gameObject, destroyDelay);
     }
     
     private void NotifyPlayerOfKill()
     {
-        // Find the player in the scene and notify their energy system
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -494,4 +488,3 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
         }
     }
 }
-    

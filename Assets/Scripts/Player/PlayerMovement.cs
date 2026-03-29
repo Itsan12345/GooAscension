@@ -82,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Light2D[] light2DsToFlip;
     private Vector3[] light2DBaseLocalEuler;
+    private Vector3[] light2DBaseLocalPos; // <-- NEW: Stores the starting position
 
     [Header("Transformation")]
     [SerializeField] private float transformCost = 25f;
@@ -108,8 +109,11 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Also used if a water volume is tagged wrong but placed on the Water layer.")]
     [SerializeField] private string waterLayerName = "Water";
 
-    [Tooltip("Logs trigger overlap, water checks, and slime buoyancy. Disable when done debugging.")]
-    [SerializeField] private bool debugWaterPhysics = true;
+    [Tooltip("Logs trigger overlap, water checks, and slime buoyancy.")]
+    [SerializeField] private bool debugWaterPhysics;
+
+    [Tooltip("Logs transform failures, unlock message, and form changes.")]
+    [SerializeField] private bool debugTransformLogs;
 
     [SerializeField, Min(0.1f)]
     private float waterDebugLogInterval = 0.5f;
@@ -135,15 +139,18 @@ public class PlayerMovement : MonoBehaviour
         {
             light2DsToFlip = GetComponentsInChildren<Light2D>(true);
             light2DBaseLocalEuler = new Vector3[light2DsToFlip.Length];
+            light2DBaseLocalPos = new Vector3[light2DsToFlip.Length]; // <-- NEW
 
             for (int i = 0; i < light2DsToFlip.Length; i++)
             {
                 var l = light2DsToFlip[i];
                 if (l != null)
+                {
                     light2DBaseLocalEuler[i] = l.transform.localEulerAngles;
+                    light2DBaseLocalPos[i] = l.transform.localPosition; // <-- NEW
+                }
             }
         }
-
         // Level 1 dev mode: lock transformation on initial entry,
         // but DO NOT wipe unlock data on death reloads.
         bool isDeathReload = PlayerPrefs.GetInt(KEY_PENDING_DEATH_RELOAD, 0) == 1;
@@ -484,17 +491,26 @@ public class PlayerMovement : MonoBehaviour
         if (flipLight2D && light2DsToFlip != null)
         {
             float yAdd = facingRight ? 0f : 180f;
+            float xMult = facingRight ? 1f : -1f; // <-- NEW: 1 for right, -1 for left!
+
             for (int i = 0; i < light2DsToFlip.Length; i++)
             {
                 Light2D l = light2DsToFlip[i];
                 if (l != null)
                 {
+                    // 1. Flip the Rotation
                     Vector3 baseEuler = (light2DBaseLocalEuler != null && i < light2DBaseLocalEuler.Length)
                         ? light2DBaseLocalEuler[i]
                         : l.transform.localEulerAngles;
-
-                    // Preserve the original Z offset (and any X), and only flip around Y.
                     l.transform.localRotation = Quaternion.Euler(baseEuler.x, baseEuler.y + yAdd, baseEuler.z);
+
+                    // 2. NEW: Flip the Position!
+                    if (light2DBaseLocalPos != null && i < light2DBaseLocalPos.Length)
+                    {
+                        Vector3 basePos = light2DBaseLocalPos[i];
+                        // Multiplies the X offset by -1 to mirror it perfectly
+                        l.transform.localPosition = new Vector3(basePos.x * xMult, basePos.y, basePos.z);
+                    }
                 }
             }
         }
@@ -563,8 +579,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (rb == null)
         {
-            if (debugWaterPhysics)
-                Debug.LogError("[WaterDebug] Rigidbody2D is null — movement/water cannot run. Put Rigidbody2D on the same GameObject as PlayerMovement.");
+            Debug.LogError(
+                "[PlayerMovement] Rigidbody2D is null — movement/water cannot run. Put Rigidbody2D on the same GameObject as PlayerMovement.");
             return;
         }
 
@@ -608,7 +624,8 @@ public class PlayerMovement : MonoBehaviour
         canTransform = true;
         PlayerPrefs.SetInt("TransformUnlocked", 1);
         PlayerPrefs.Save();
-        Debug.Log("Human transformation unlocked! Press E to transform.");
+        if (debugTransformLogs)
+            Debug.Log("Human transformation unlocked! Press E to transform.");
     }
 
     private void SwitchForm()
@@ -619,25 +636,29 @@ public class PlayerMovement : MonoBehaviour
         // Prevent morphing while attacking or charging (e.g., charged sword/gun)
         if (isAttackingOrCharging)
         {
-            Debug.Log("Cannot transform while attacking or charging.");
+            if (debugTransformLogs)
+                Debug.Log("Cannot transform while attacking or charging.");
             return;
         }
 
         if (playerEnergy != null && !playerEnergy.CanAffordTransform(transformCost))
         {
-            Debug.Log("Not enough energy to transform!");
+            if (debugTransformLogs)
+                Debug.Log("Not enough energy to transform!");
             return;
         }
 
         if (!canTransform)
         {
-            Debug.Log("Cannot transform yet - need Code Fragment!");
+            if (debugTransformLogs)
+                Debug.Log("Cannot transform yet - need Code Fragment!");
             return;
         }
 
         if (!isHuman && IsConfinedSpace())
         {
-            Debug.Log("Cannot transform - confined space above!");
+            if (debugTransformLogs)
+                Debug.Log("Cannot transform - confined space above!");
             return;
         }
 
@@ -721,7 +742,8 @@ public class PlayerMovement : MonoBehaviour
         }
         isTransforming = false;
 
-        Debug.Log("Transformed to " + (toHuman ? "Human" : "Slime"));
+        if (debugTransformLogs)
+            Debug.Log("Transformed to " + (toHuman ? "Human" : "Slime"));
 
         if (playerEnergy != null)
             playerEnergy.SpendEnergy(transformCost);

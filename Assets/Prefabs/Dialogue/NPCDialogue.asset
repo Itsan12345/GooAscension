@@ -15,7 +15,7 @@ MonoBehaviour:
   npcName: Charlie Kirk
   npcPortrait: {fileID: -855298285791758126, guid: 90eb10822bf351a4c90801e70300d82d, type: 3}
   dialogueLines:
-  - What's Up, Nigger!
+  - What's Up!
   - Palit kag bato? Barato nalang kaayo ni oh kaning akong gikuptan mao nalang ni
     nahibilin
   autoProgressLines: 0100
