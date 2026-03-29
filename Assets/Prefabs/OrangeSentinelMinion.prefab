@@ -383,7 +383,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2562832269426516996
 Transform:
   m_ObjectHideFlags: 0
@@ -415,6 +415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12586902ea080b548836f68884dd1882, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  enemyType: Slime
   maxHealth: 90
   healthBarCanvas: {fileID: 5263942530920456184}
   healthBarSlider: {fileID: 8090898404340887887}

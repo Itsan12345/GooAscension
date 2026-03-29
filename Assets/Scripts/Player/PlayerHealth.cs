@@ -4,12 +4,20 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement; // Needed to restart the game
 using UnityEngine.Audio; // Needed for the audio source
 
-
 public class PlayerHealth : MonoBehaviour
 {
     [Header("Health Settings")]
     public float maxHealth = 100f;
     private float currentHealth;
+
+    // --- NEW: REGENERATION SETTINGS ---
+    [Header("Regeneration Settings")]
+    [Tooltip("Amount of health restored per second.")]
+    public float healthRegenRate = 5f; 
+    [Tooltip("Delay in seconds after taking damage before regen starts.")]
+    public float regenDelay = 3f; 
+    private float lastDamageTime;
+    // ----------------------------------
 
     [Header("UI References")]
     public Image healthBarTotal;
@@ -21,8 +29,6 @@ public class PlayerHealth : MonoBehaviour
     [Tooltip("How long the flash lasts in seconds.")]
     [SerializeField] private float flashDuration = 0.1f;
 
-
-    
     // Internal references
     private Coroutine flashCoroutine;
     private PlayerMovement playerMovement;
@@ -40,6 +46,22 @@ public class PlayerHealth : MonoBehaviour
         UpdateUI();
     }
 
+    // --- NEW: UPDATE LOOP FOR REGENERATION ---
+    private void Update()
+    {
+        // Only regenerate if the player is alive, below max health, and the delay has passed
+        if (currentHealth > 0 && currentHealth < maxHealth)
+        {
+            if (Time.time >= lastDamageTime + regenDelay)
+            {
+                currentHealth += healthRegenRate * Time.deltaTime;
+                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+                UpdateUI();
+            }
+        }
+    }
+    // -----------------------------------------
+
     private void AutoBindHealthUI()
     {
         GameObject totalObj = GameObject.Find("HealthbarTotal");
@@ -54,15 +76,17 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-
         // I-frames: ignore damage while invulnerable (dash)
         PlayerMovement pm = GetComponent<PlayerMovement>();
         if (pm != null && pm.IsInvulnerable)
             return;
 
-
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        
+        // --- NEW: Reset the regen timer when hit ---
+        lastDamageTime = Time.time;
+        // -------------------------------------------
 
         UpdateUI();
 
@@ -168,7 +192,6 @@ public class PlayerHealth : MonoBehaviour
             soundEffectLibrary.PlaySoundEffect(deathAudioSource, youDeadSoundGroupName, youDeadSoundElementIndex);
         }
     }
-
 
     void ReloadLevel()
     {

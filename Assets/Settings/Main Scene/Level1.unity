@@ -33371,6 +33371,10 @@ PrefabInstance:
       propertyPath: energySlider
       value: 
       objectReference: {fileID: 2002402200}
+    - target: {fileID: 6608761209691198392, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
+      propertyPath: energyRegenRate
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8249473750756909821, guid: 294f78f6b5f0d4148b87cb39c8c1c63c, type: 3}
       propertyPath: gameOverText
       value: 

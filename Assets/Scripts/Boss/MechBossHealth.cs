@@ -367,6 +367,7 @@ public class MechBossHealth : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        if (KillQuestManager.Instance != null) KillQuestManager.Instance.DefeatMiniBoss();
         dead = true;
 
         NotifyPlayerOfKill();

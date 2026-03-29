@@ -208,7 +208,6 @@ public class RuleTileCaveGenerator : MonoBehaviour
         int roomHeight = 6;
 
         for (int x = 1; x <= roomWidth; x++) {
-            // We build up to roomHeight + 2 to give it a nice thick ceiling!
             for (int y = topFloorY; y <= topFloorY + roomHeight + 2; y++) {
                 
                 // A. The Floor
@@ -219,11 +218,11 @@ public class RuleTileCaveGenerator : MonoBehaviour
                 else if (y >= topFloorY + roomHeight + 1 && x < width && y < height) {
                     map[x, y] = 1; 
                 }
-                // C. The Right Wall (The "|" on the side)
+                // C. The Right Wall (Set to 0 so we can paint the Secret Door there instead!)
                 else if (x == roomWidth && x < width && y < height) {
-                    map[x, y] = 1; 
+                    map[x, y] = 0; 
                 }
-                // D. The Hollow Inside where the Teleporter goes!
+                // D. The Hollow Inside
                 else if (x < width && y < height) {
                     map[x, y] = 0; 
                 }
@@ -231,23 +230,43 @@ public class RuleTileCaveGenerator : MonoBehaviour
         }
 
         // 2. Bottom Right Slime Tunnel & Lever Room
-        int tunnelLength = 35; 
-        for (int x = width - tunnelLength; x < width - 1; x++) {
-            map[x, waterLevel] = 1; 
-            map[x, waterLevel + 1] = 0; 
-            map[x, waterLevel + 2] = 0; 
+        int tunnelLength = 35; // Total length of the tunnel section.
+        int tunnelStartX = width - tunnelLength; // Calculate where it starts on the X-axis.
 
+        // --- NEW: Entrance Carving ---
+        // We need to ensure connectivity by blasting open an entrance at tunnelStartX.
+        // We'll carve 4 blocks to the left to force an opening from the cave into the tunnel.
+        int entranceLength = 4;
+        for (int x = tunnelStartX - entranceLength; x < tunnelStartX; x++) {
+            if (x > 0 && x < width - 1) { // Bounds safety check
+                // Force empty air (cave) to ensure connectivity.
+                map[x, waterLevel + 1] = 0; // Same height as the low slime tunnel
+                map[x, waterLevel + 2] = 0;
+            }
+        }
+
+        // --- (EXISTING LOOP: Now starts at tunnelStartX) ---
+        for (int x = tunnelStartX; x < width - 1; x++) {
+            map[x, waterLevel] = 1;         // Creates solid rock floor for the tunnel at waterLevel.
+            map[x, waterLevel + 1] = 0;     // Carves 1st block of headroom.
+            map[x, waterLevel + 2] = 0;     // Carves 2nd block of headroom. (This makes the tunnel 2 blocks high).
+
+            // This handles the taller lever room at the end of the tunnel.
             if (x > width - 12) {
-                map[x, waterLevel + 3] = 0;
-                map[x, waterLevel + 4] = 0;
-                if (waterLevel + 5 < height) map[x, waterLevel + 5] = 1;
+                // The last 12 blocks of the tunnel are carved taller for the room.
+                map[x, waterLevel + 3] = 0; // 3rd block of headroom.
+                map[x, waterLevel + 4] = 0; // 4th block of headroom. (Room is 4 blocks high).
+                if (waterLevel + 5 < height) map[x, waterLevel + 5] = 1; // Thick ceiling for the room.
                 if (waterLevel + 6 < height) map[x, waterLevel + 6] = 1;
             } else {
-                if (waterLevel + 3 < height) map[x, waterLevel + 3] = 1;
+                // The rest of the tunnel has a low rock ceiling.
+                if (waterLevel + 3 < height) map[x, waterLevel + 3] = 1; // Ceiling for the low tunnel part.
                 if (waterLevel + 4 < height) map[x, waterLevel + 4] = 1;
             }
         }
     }
+
+
     int GetNeighbors(int gx, int gy) {
         int count = 0;
         for (int x = gx - 1; x <= gx + 1; x++) {
@@ -279,8 +298,15 @@ public class RuleTileCaveGenerator : MonoBehaviour
                     foregroundTilemap.SetTile(pos, foregroundRuleTile);
                 } else {
                     backgroundTilemap.SetTile(pos, backgroundTile);
+
+                    // --- NEW: Paint the Secret Door Wall! ---
+                    if (x == roomWidth && y > topFloorY && y <= topFloorY + roomHeight) {
+                        if (secretDoorTilemap != null && secretDoorTile != null) {
+                            secretDoorTilemap.SetTile(pos, secretDoorTile);
+                        }
+                    }
                     
-                    // Lanterns Check (Kept from spawning inside the teleporter room)
+                    // Lanterns Check
                     if (y >= waterLevel && y > 0 && map[x, y - 1] == 1 && !(x <= roomWidth && y > topFloorY && y <= topFloorY + roomHeight) && !IsInSafeZone(x, y)) {
                         Vector2 currentPos = new Vector2(x, y);
                         if (lanternPrefab != null && Random.Range(0f, 100f) < lanternChance) {
@@ -347,6 +373,7 @@ public class RuleTileCaveGenerator : MonoBehaviour
 
         // Spawn Water
         if (waterPrefab != null && waterLevel > 0) {
+            // (Your water spawning code stays the same)
             Vector3 bottomLeft = foregroundTilemap.GetCellCenterWorld(new Vector3Int(startPos.x, startPos.y, 0));
             Vector3 waterCenter = new Vector3(bottomLeft.x + (width / 2f) - 0.5f, bottomLeft.y + (waterLevel / 2f) - 0.5f, 0);
             Vector3 finalWaterPos = waterCenter + waterPositionOffset;

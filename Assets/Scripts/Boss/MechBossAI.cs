@@ -826,8 +826,15 @@ public class MechBossAI : MonoBehaviour
     private void Flip()
     {
         facingRight = !facingRight;
+        
+        // --- FIXED: Use Scale instead of Rotation so 2D Lighting doesn't break! ---
         if (animatorObj != null)
-            animatorObj.localRotation = facingRight ? Quaternion.Euler(0, 0, 0) : Quaternion.Euler(0, 180, 0);
+        {
+            Vector3 newScale = animatorObj.localScale;
+            newScale.x = facingRight ? Mathf.Abs(newScale.x) : -Mathf.Abs(newScale.x);
+            animatorObj.localScale = newScale;
+        }
+        // -------------------------------------------------------------------------
 
         if (laserFirePoint != null)
         {

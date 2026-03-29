@@ -8098,7 +8098,7 @@ MonoBehaviour:
   width: 100
   height: 50
   playerSpawn: {fileID: 378525810}
-  bossPrefab: {fileID: 8832557627647654730, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+  bossPrefab: {fileID: 0}
   bossOffset: {x: 0, y: 1, z: 0}
   arenaWidth: 40
   arenaCeilingHeight: 15
@@ -78810,6 +78810,71 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1001 &2017791907
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.28545
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.23473
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1357085923871807215, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113396300295190109, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113396300295190109, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8832557627647654730, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
+      propertyPath: m_Name
+      value: BigRedBoss
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: abe9d569ecb6984459805abbc71a2b30, type: 3}
 --- !u!1 &2069895661
 GameObject:
   m_ObjectHideFlags: 0
@@ -84502,3 +84567,4 @@ SceneRoots:
   - {fileID: 1763805699}
   - {fileID: 1093620935}
   - {fileID: 800062902}
+  - {fileID: 2017791907}

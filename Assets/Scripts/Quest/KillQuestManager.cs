@@ -9,11 +9,14 @@ public class KillQuestManager : MonoBehaviour
     public static KillQuestManager Instance { get; private set; }
 
     [Header("Quest Settings")]
-    [Tooltip("Choose what kind of quest this level has.")]
     public QuestType currentQuest = QuestType.KillMobs;
     
     public bool isQuestActive = false;
     private bool isQuestComplete = false;
+
+    // --- NEW: Boss States ---
+    private bool miniBossEncountered = false;
+    private bool miniBossDefeated = false;
 
     [Header("Kill Quest Targets (Level 1)")]
     public int targetSlimes = 1;
@@ -31,7 +34,6 @@ public class KillQuestManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        // --- NEW: Automatically reconnect to the Level 1 Canvas! ---
         if (questUIPanel == null || questText == null)
         {
             ReconnectToPersistentUI();
@@ -40,16 +42,13 @@ public class KillQuestManager : MonoBehaviour
 
     private void ReconnectToPersistentUI()
     {
-        // This trick finds the UI from Level 1 even if it is currently SetActive(false)!
         TMP_Text[] allTexts = Resources.FindObjectsOfTypeAll<TMP_Text>();
         foreach (TMP_Text t in allTexts)
         {
-            // Look for the exact name of your text object from your hierarchy ("KillCount")
             if (t.gameObject.scene.name != null && t.gameObject.name == "KillCount")
             {
                 questText = t;
-                questUIPanel = t.transform.parent.gameObject; // The panel is the parent!
-                Debug.Log("QuestManager successfully hijacked the Level 1 UI!");
+                questUIPanel = t.transform.parent.gameObject; 
                 break;
             }
         }
@@ -57,21 +56,19 @@ public class KillQuestManager : MonoBehaviour
 
     private void Start()
     {
-        // If this is the Lever Quest (Level 2), start it automatically!
         if (currentQuest == QuestType.FindLever)
         {
             isQuestActive = true;
             if (questUIPanel != null) questUIPanel.SetActive(true);
             UpdateQuestUI();
         }
-        else // Otherwise (Level 1), hide it and wait for the NPC
+        else 
         {
             if (questUIPanel != null) questUIPanel.SetActive(false);
             if (questText != null) questText.text = "";
         }
     }
 
-    // Called by your NPC
     public void StartQuest()
     {
         if (currentQuest == QuestType.KillMobs)
@@ -86,19 +83,12 @@ public class KillQuestManager : MonoBehaviour
         }
     }
 
-    // Called by EnemyHealth script
     public void OnEnemyKilled(string enemyType)
     {
         if (!isQuestActive || isQuestComplete || currentQuest != QuestType.KillMobs) return;
 
-        if (enemyType == "Slime" && slimesKilled < targetSlimes)
-        {
-            slimesKilled++;
-        }
-        else if (enemyType == "Sentinel" && sentinelsKilled < targetSentinels)
-        {
-            sentinelsKilled++;
-        }
+        if (enemyType == "Slime" && slimesKilled < targetSlimes) slimesKilled++;
+        else if (enemyType == "Sentinel" && sentinelsKilled < targetSentinels) sentinelsKilled++;
 
         CheckQuestCompletion();
         UpdateQuestUI();
@@ -109,11 +99,29 @@ public class KillQuestManager : MonoBehaviour
         if (slimesKilled >= targetSlimes && sentinelsKilled >= targetSentinels)
         {
             isQuestComplete = true;
-            Debug.Log("Quest Complete! Player can now proceed to the exit.");
         }
     }
 
-    // Call this from your Lever script when the player pulls it!
+    // --- NEW: Mini Boss Methods ---
+    public void EncounterMiniBoss()
+    {
+        if (currentQuest == QuestType.FindLever && !isQuestComplete && !miniBossDefeated)
+        {
+            miniBossEncountered = true;
+            UpdateQuestUI();
+        }
+    }
+
+    public void DefeatMiniBoss()
+    {
+        if (currentQuest == QuestType.FindLever && !isQuestComplete)
+        {
+            miniBossDefeated = true;
+            UpdateQuestUI();
+        }
+    }
+    // ------------------------------
+
     public void CompleteLeverQuest()
     {
         if (currentQuest == QuestType.FindLever && !isQuestComplete)
@@ -122,8 +130,6 @@ public class KillQuestManager : MonoBehaviour
             
             if (questText != null)
                 questText.text = "<b>— QUEST —</b>\nHidden room unlocked! Enter the teleporter.";
-            
-            Debug.Log("Lever pulled! Teleporter room is open.");
         }
     }
 
@@ -131,12 +137,16 @@ public class KillQuestManager : MonoBehaviour
     {
         if (questText == null) return;
 
-        // --- LEVEL 2 QUEST TEXT ---
         if (currentQuest == QuestType.FindLever)
         {
-            questText.text = "<b>— QUEST —</b>\nFind the lever at the bottom to unlock the hidden room.";
+            // Update text based on boss status!
+            if (miniBossDefeated)
+                questText.text = "<b>— QUEST —</b>\nPull the lever to unlock the hidden room.";
+            else if (miniBossEncountered)
+                questText.text = "<b>— QUEST —</b>\nDefeat the mini boss to proceed.";
+            else
+                questText.text = "<b>— QUEST —</b>\nFind the lever at the bottom to unlock the hidden room.";
         }
-        // --- LEVEL 1 QUEST TEXT ---
         else if (currentQuest == QuestType.KillMobs)
         {
             if (isQuestComplete)
