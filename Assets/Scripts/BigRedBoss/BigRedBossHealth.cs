@@ -387,6 +387,15 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
     private void Update()
     {
         UpdateHealthBarPosition();
+
+        #if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.K) && !dead)
+        {
+            Debug.Log("[DEBUG] Force-killing boss!");
+            currentHealth = 0f;
+            Die();
+        }
+        #endif
     }
     
     private void SetupHealthBar()
@@ -457,16 +466,26 @@ public class BigRedBossHealth : MonoBehaviour, IDamageable
             );
         }
 
-        // --- NEW: POP THE CREDITS ---
-        if (creditsPanel != null)
-        {
-            creditsPanel.SetActive(true);
-            Debug.Log("BOSS DEFEATED! Credits Rolling!");
-        }
+        ShowCredits();
 
         Destroy(gameObject, destroyDelay);
     }
     
+    private void ShowCredits()
+    {
+        if (creditsPanel != null)
+        {
+            creditsPanel.SetActive(true);
+        }
+        else
+        {
+            var creditsGO = new GameObject("EndCredits");
+            DontDestroyOnLoad(creditsGO);
+            creditsGO.AddComponent<EndCredits>();
+        }
+        Debug.Log("BOSS DEFEATED! Credits Rolling!");
+    }
+
     private void NotifyPlayerOfKill()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");

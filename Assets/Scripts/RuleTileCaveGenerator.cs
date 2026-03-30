@@ -257,30 +257,27 @@ public class RuleTileCaveGenerator : MonoBehaviour
         // We'll carve 4 blocks to the left to force an opening from the cave into the tunnel.
         int entranceLength = 4;
         for (int x = tunnelStartX - entranceLength; x < tunnelStartX; x++) {
-            if (x > 0 && x < width - 1) { // Bounds safety check
-                // Force empty air (cave) to ensure connectivity.
-                map[x, waterLevel + 1] = 0; // Same height as the low slime tunnel
+            if (x > 0 && x < width - 1) {
+                map[x, waterLevel + 1] = 0;
                 map[x, waterLevel + 2] = 0;
+                map[x, waterLevel + 3] = 0;
             }
         }
 
-        // --- (EXISTING LOOP: Now starts at tunnelStartX) ---
         for (int x = tunnelStartX; x < width - 1; x++) {
-            map[x, waterLevel] = 1;         // Creates solid rock floor for the tunnel at waterLevel.
-            map[x, waterLevel + 1] = 0;     // Carves 1st block of headroom.
-            map[x, waterLevel + 2] = 0;     // Carves 2nd block of headroom. (This makes the tunnel 2 blocks high).
+            map[x, waterLevel] = 1;
+            map[x, waterLevel + 1] = 0;
+            map[x, waterLevel + 2] = 0;
+            map[x, waterLevel + 3] = 0;
 
-            // This handles the taller lever room at the end of the tunnel.
             if (x > width - 12) {
-                // The last 12 blocks of the tunnel are carved taller for the room.
-                map[x, waterLevel + 3] = 0; // 3rd block of headroom.
-                map[x, waterLevel + 4] = 0; // 4th block of headroom. (Room is 4 blocks high).
-                if (waterLevel + 5 < height) map[x, waterLevel + 5] = 1; // Thick ceiling for the room.
+                map[x, waterLevel + 4] = 0;
+                map[x, waterLevel + 5] = 0;
                 if (waterLevel + 6 < height) map[x, waterLevel + 6] = 1;
+                if (waterLevel + 7 < height) map[x, waterLevel + 7] = 1;
             } else {
-                // The rest of the tunnel has a low rock ceiling.
-                if (waterLevel + 3 < height) map[x, waterLevel + 3] = 1; // Ceiling for the low tunnel part.
                 if (waterLevel + 4 < height) map[x, waterLevel + 4] = 1;
+                if (waterLevel + 5 < height) map[x, waterLevel + 5] = 1;
             }
         }
     }

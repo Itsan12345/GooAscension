@@ -43,6 +43,10 @@ public class BigRedBossAI : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         enemyHealth = GetComponent<BigRedBossHealth>();
+
+        // Prevent the collider from snagging on tilemap tile-edge seams.
+        ApplyZeroFrictionMaterial();
+
         if (animatorObj != null)
         {
             anim = animatorObj.GetComponent<Animator>();
@@ -67,8 +71,25 @@ public class BigRedBossAI : MonoBehaviour
 
         // Apply initial facing visuals.
         ApplySpriteFacing();
-        
-        // No patrol setup needed
+    }
+
+    private void ApplyZeroFrictionMaterial()
+    {
+        PhysicsMaterial2D frictionless = new PhysicsMaterial2D("BossNoFriction")
+        {
+            friction = 0f,
+            bounciness = 0f
+        };
+
+        Collider2D[] cols = GetComponentsInChildren<Collider2D>(true);
+        foreach (Collider2D col in cols)
+        {
+            if (!col.isTrigger)
+                col.sharedMaterial = frictionless;
+        }
+
+        if (rb != null)
+            rb.sharedMaterial = frictionless;
     }
 
     private void ApplySpriteFacing()
