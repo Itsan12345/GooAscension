@@ -16,8 +16,10 @@ public class UIConnector : MonoBehaviour
     [SerializeField] private Image healthBarCurrent;
 
     [Header("Energy Bar")]
-    [Tooltip("The energy Slider inside this Canvas.")]
-    [SerializeField] private Slider energySlider;
+    [Tooltip("The 'total' energy bar background Image inside this Canvas.")]
+    [SerializeField] private Image energyBarTotal;
+    [Tooltip("The 'current' energy bar fill Image inside this Canvas.")]
+    [SerializeField] private Image energyBarCurrent;
 
     [Header("Skill Icons")]
     [Tooltip("The SkillCooldownUI component inside this Canvas.")]
@@ -63,9 +65,10 @@ public class UIConnector : MonoBehaviour
         PlayerEnergy energy = FindFirstObjectByType<PlayerEnergy>();
         if (energy != null)
         {
-            energy.energySlider = energySlider;
+            energy.energyBarTotal = energyBarTotal;
+            energy.energyBarCurrent = energyBarCurrent;
             energy.UpdateUI();
-            Debug.Log($"[UIConnector] Energy slider rewired to '{energy.gameObject.name}'.");
+            Debug.Log($"[UIConnector] Energy bar rewired to '{energy.gameObject.name}'.");
         }
         else
         {

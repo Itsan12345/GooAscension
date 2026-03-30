@@ -41,7 +41,7 @@ public class BossCutsceneTrigger : MonoBehaviour
 
         // 3. Show dialogue
         if (DialogueManager.Instance != null)
-            yield return DialogueManager.Instance.ShowDialogue("BigRedBoss: So, you’ve finally made it this far... Foolish mortal! Witness my true power!");
+            yield return DialogueManager.Instance.ShowDialogue("TARGET ACQUIRED. EXTERMINATE ALL... [glitches] ...Goo, please... run away... I can't stop my hands...");
         else
         {
             Debug.Log("BigRedBoss: So, you’ve finally made it this far... Foolish mortal! Witness my true power!");

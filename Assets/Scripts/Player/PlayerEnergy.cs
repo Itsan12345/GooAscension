@@ -8,30 +8,36 @@ public class PlayerEnergy : MonoBehaviour
     public float maxEnergy = 100f;
     public float currentEnergy;
     [SerializeField] private float energyRegenRate = 5f; // Passive regen over time
-    
+
     [Header("Kill Rewards")]
     [SerializeField] private float energyGainOnKill = 15f; // Energy gained when player kills an enemy
     [SerializeField] private bool showKillEnergyGainDebug = true;
 
-    [Header("UI Reference")]
-    public Slider energySlider;
+    [Header("UI References")]
+    [Tooltip("The background (total) energy bar Image.")]
+    public Image energyBarTotal;
+    [Tooltip("The foreground (current) energy bar Image.")]
+    public Image energyBarCurrent;
 
     private void Start()
     {
         currentEnergy = maxEnergy;
         // Fallback UI binding in case UIConnector/persistent wiring is missing on a scene reload.
-        if (energySlider == null)
+        if (energyBarCurrent == null || energyBarTotal == null)
             AutoBindEnergyUI();
         UpdateUI();
     }
 
     private void AutoBindEnergyUI()
     {
-        GameObject energyBarObj = GameObject.Find("EnergyBar");
-        if (energyBarObj == null)
-            return;
+        GameObject totalObj = GameObject.Find("EnergybarTotal");
+        GameObject currentObj = GameObject.Find("EnergybarCurrent");
 
-        energySlider = energyBarObj.GetComponent<Slider>();
+        if (energyBarTotal == null && totalObj != null)
+            energyBarTotal = totalObj.GetComponent<Image>();
+
+        if (energyBarCurrent == null && currentObj != null)
+            energyBarCurrent = currentObj.GetComponent<Image>();
     }
 
     private void Update()
@@ -65,18 +71,16 @@ public class PlayerEnergy : MonoBehaviour
 
     public void UpdateUI()
     {
-        if (energySlider != null)
-        {
-            energySlider.value = currentEnergy / maxEnergy;
-        }
+        if (energyBarCurrent != null)
+            energyBarCurrent.fillAmount = currentEnergy / maxEnergy;
     }
-    
+
     // Called when player kills an enemy
     public void OnEnemyKilled()
     {
         float previousEnergy = currentEnergy;
         GainEnergy(energyGainOnKill);
-        
+
         if (showKillEnergyGainDebug)
         {
             Debug.Log($"⚡ ENERGY REWARD: Gained {energyGainOnKill} energy for enemy kill! Energy: {previousEnergy:F1} → {currentEnergy:F1}");
