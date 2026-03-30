@@ -19,7 +19,7 @@ public class NPC : MonoBehaviour, IInteractable
    public GameObject exclamationSprite;
    [Header("Form-Specific Offsets")]
    public float slimeYOffset = 1.5f;
-   public float humanYOffset = 2.0f;
+   public float humanYOffset = 3.2f;
    
    [Header("Sound Effect Settings")]
    public SoundEffectLibrary soundEffectLibrary;
@@ -461,22 +461,12 @@ public class NPC : MonoBehaviour, IInteractable
     {
         if (currentPlayer != null)
         {
-            PlayerMovement playerMovement = currentPlayer.GetComponent<PlayerMovement>();
-            if (playerMovement != null)
+            Collider2D col = currentPlayer.GetComponentInChildren<Collider2D>();
+            if (col != null && col.enabled)
             {
-                bool isHuman = playerMovement.IsHuman;
-                float yOffset = isHuman ? humanYOffset : slimeYOffset;
-        
-                return new Vector3(0f, yOffset, 0f);
+                float topY = col.bounds.max.y - currentPlayer.transform.position.y;
+                return new Vector3(0f, topY + 0.5f, 0f);
             }
-            else
-            {
-                Debug.LogWarning($"NPC {gameObject.name}: PlayerMovement component not found on {currentPlayer.name}!");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"NPC {gameObject.name}: currentPlayer is null!");
         }
         return new Vector3(0f, slimeYOffset, 0f);
     }
